@@ -2,6 +2,11 @@
 AI-Powered Talent &amp; Workforce Hub (College project SEM 5,6)
 Project Title:
 AI-Powered Talent & Workforce Hub
+
+My college team members:
+DIVYA DEVENBHAI SHAH
+VIVEK MAHESHKUMAR WADHWANI
+
 Front-end Technology:
 React.js with Tailwind CSS (Frontend)
 Back-end Technology:
