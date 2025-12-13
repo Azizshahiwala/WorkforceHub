@@ -65,38 +65,57 @@ Benefits
 - Seamless integration with existing employee records.
 
 2. Employee Module
-Introduction:
+Introduction
 The Employee Module serves as the backbone of the Smart Workforce Hub, as it holds and organizes all employee-related data in one place. It goes beyond storing basic details by capturing employment history, job roles, assigned responsibilities, and career progress. This structured digital profile enables HR teams to track employee growth, allocate resources effectively, and ensure fair practices across departments. By centralizing the information, the module eliminates redundancy, reduces paperwork, and strengthens communication between employees and decision-makers.
-Objectives:
-The main objective of this module is to maintain a structured digital database of all employees that minimizes manual errors and paperwork. It ensures that employee records are kept updated and accessible for HR, managers, and authorized staff. Another goal is to provide clarity in role assignments and reporting structures, making it easier for organizations to monitor workforce distribution and plan for promotions or transfers.
-Core Features:
-1. Employee Database – Stores personal and professional details
-2. Role Assignment – Assigns roles and departments
-3. Document Repository – Stores resumes and contracts
-4. Performance Tracking – Records evaluations and KPIs
-5. Reporting Hierarchy – Defines team structures
-Workflows:
-When a new employee joins, HR creates their profile, uploads documents, and assigns roles. Any changes such as promotions, transfers, or performance updates are added continuously, giving managers access to updated data.
-Benefits:
-Centralized workforce records, Reduced errors and paperwork, Increased transparency, Faster role assignment, Data-driven decision-making.
-3. Leave Module Introduction:
-The Leave Module digitizes and streamlines the entire leave process, making it easier for both employees and managers to handle requests without relying on paperwork. Employees can apply for leave through an online system that is accessible anytime, while managers can immediately view these requests, check departmental schedules, and respond quickly. This reduces delays, prevents communication gaps, and ensures that work continuity is maintained even when multiple employees take leave. By integrating with company policies and official holiday calendars, the module ensures fairness, compliance, and effective planning for both short-term and long-term staffing needs.
-Objectives:
-The primary objective is to create a transparent, fair, and efficient leave process that minimizes confusion and errors. Employees gain real-time visibility into their available leave balances, while managers can make informed decisions based on staffing requirements. Another key goal is to provide HR with reliable data to analyze leave trends, monitor absenteeism, and ensure adherence to organizational and labor policies.
-Overall, the objective is to build trust and accountability by making leave tracking structured and accessible.
-Core Features:
-1. Leave Application – Employees request casual, medical, or earned leave
-2. Approval Workflow – Managers approve or reject requests
-3. Leave Balance Tracking – Updates automatically
-4. Holiday Calendar Integration
+
+Objectives
+    The main objective of this module is to maintain a structured digital database of all employees that minimizes manual errors and paperwork. It ensures that employee records are kept updated and accessible
+    for HR, managers, and authorized staff. Another goal is to provide clarity in role assignments and reporting structures, making it easier for organizations to monitor workforce distribution and plan for
+    promotions or transfers.
+
+Core Features
+- Employee Database – Stores personal and professional details
+- Role Assignment – Assigns roles and departments
+- Document Repository – Stores resumes and contracts
+- Performance Tracking – Records evaluations and KPIs
+- Reporting Hierarchy – Defines team structures
+
+Workflows
+    When a new employee joins, HR creates their profile, uploads documents, and assigns roles. Any changes such as promotions, transfers, or performance updates are added continuously, giving managers access to 
+    updated data.
+
+Benefits
+    Centralized workforce records, Reduced errors and paperwork, Increased transparency, Faster role assignment, Data-driven decision-making.
+    - Leave Module Introduction:
+        The Leave Module digitizes and streamlines the entire leave process, making it easier for both employees and managers to handle requests without relying on paperwork. Employees can apply for leave 
+        through an online system that is accessible anytime, while managers can immediately view these requests, check departmental schedules, and respond quickly. This reduces delays, prevents communication
+        gaps, and ensures that work continuity is maintained even when multiple employees take leave. By integrating with company policies and official holiday calendars, the module ensures fairness, compliance,
+        and effective planning for both short-term and long-term staffing needs.
+        
+Objectives
+    The primary objective is to create a transparent, fair, and efficient leave process that minimizes confusion and errors. Employees gain real-time visibility into their available leave balances, while
+    managers can make informed decisions based on staffing requirements. Another key goal is to provide HR with reliable data to analyze leave trends, monitor absenteeism, and ensure adherence to organizational
+    and labor policies.
+    Overall, the objective is to build trust and accountability by making leave tracking structured and accessible.
+
+Core Features
+- Leave Application – Employees request casual, medical, or earned leave
+- Approval Workflow – Managers approve or reject requests
+-  Leave Balance Tracking – Updates automatically
+-  Holiday Calendar Integration
+
 5. Leave Reporting
-Workflows:
-An employee submits a leave request through the system, selecting the type and dates. The request is routed to the reporting manager, who reviews team availability and approves or rejects. Once approved, the system updates leave balances automatically and records the transaction for HR tracking.
-Benefits:
-Easy leave tracking, Conflict-free approvals, Real-time balance visibility, Compliance with leave policies, Improved transparency, Reliable records for HR analysis
+Workflows
+    An employee submits a leave request through the system, selecting the type and dates. The request is routed to the reporting manager, who reviews team availability and approves or rejects. Once approved, the     system updates leave balances automatically and records the transaction for HR tracking.
+
+Benefits
+    Easy leave tracking, Conflict-free approvals, Real-time balance visibility, Compliance with leave policies, Improved transparency, Reliable records for HR analysis
+
 4. Payroll Module Introduction:
-The Payroll Module is one of the most essential components of the Smart Workforce Hub because it directly impacts employee satisfaction and organizational credibility. It automates the complete salary cycle by integrating attendance, overtime, and leave data, ensuring that every employee is compensated accurately according to their work. The system manages gross and net pay calculations, applies deductions for taxes, insurance, or provident funds, and adds allowances where applicable. Payslips are generated instantly and can be accessed online, reducing paperwork and delays. By removing manual intervention, the module not only saves HR time but also minimizes payroll errors, builds employee trust, and ensures financial compliance.
-Objectives:
+    The Payroll Module is one of the most essential components of the Smart Workforce Hub because it directly impacts employee satisfaction and organizational credibility. It automates the complete salary cycle
+    by integrating attendance, overtime, and leave data, ensuring that every employee is compensated accurately according to their work. The system manages gross and net pay calculations, applies deductions for      taxes, insurance, or provident funds, and adds allowances where applicable. Payslips are generated instantly and can be accessed online, reducing paperwork and delays. By removing manual intervention, the        module not only saves HR time but also minimizes payroll errors, builds employee trust, and ensures financial compliance.
+
+Objectives
 The main objective is to provide a fast, accurate, and fully automated payroll process that reduces human error and saves valuable time for HR teams. It ensures timely salary disbursement by linking with attendance and leave modules, preventing calculation mismatches. Another important goal is to give employees transparency in how their salaries are structured, including deductions and benefits, so they can access payslips easily and resolve doubts without lengthy inquiries. This promotes fairness, accountability, and confidence in the system.
 Core Features:
 1. Salary Calculation
