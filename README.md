@@ -5,36 +5,43 @@ My college team members:
 DIVYA DEVENBHAI SHAH, VIVEK MAHESHKUMAR WADHWANI
 
 Front-end Technology: React.js with Tailwind CSS (Frontend)
-Back-end Technology: Python (Flask or Django) REST APIs with MySQL (Database), integrated with the OpenAI API for AI-driven features
+
+Back-end Technology: Python (Flask or Django) REST APIs with MySQL 
+(Database), integrated with the OpenAI API for AI-driven features
 
 Project Description :
+
 The AI-Powered Talent & Workforce Hub is a full-stack web application that digitizes and intelligently automates core Human Resource operations while embedding advanced artificial intelligence through the OpenAI API. The platform centralizes employee management—covering attendance, leave requests, payroll, training, and performance tracking—while introducing a next-generation AI-driven recruitment pipeline.
 Using OpenAI’s language models in combination with custom Natural Language Processing (NLP) workflows, the system automatically parses, analyzes, and ranks candidate resumes according to job requirements and skill sets. Shortlisted applicants receive a secure, proctored mock test that includes both aptitude and coding assessments. The testing environment enforces strict integrity with a configurable exam time limit, live webcam monitoring, screen recording, and browser-lock features. High-scoring candidates are automatically scheduled for a one-to-one interview, and successful interviewees are seamlessly added to the employee database.
 The application is developed with React.js and Tailwind CSS for the responsive front end, and a Python back end (Flask/Django) with MySQL for robust data management and AI model integration. The OpenAI API powers resume understanding, automated question generation for the mock test, and intelligent evaluation of candidate responses.
 By combining automation, real-time analytics, and the capabilities of the OpenAI API, the AI-Powered Talent & Workforce Hub reduces manual HR effort, accelerates hiring, and delivers a scalable, future-ready solution for enterprise workforce management.
-Technology Stack
- Front-end: React.js with Tailwind CSS for a responsive, modern UI.
- Back-end: Python (Flask or Django) REST APIs with MySQL as the database.
- AI/ML: Python libraries (scikit-learn, spaCy, TensorFlow/PyTorch) integrated with the OpenAI API for advanced language understanding, question generation, and candidate evaluation
-Proctoring & Browser Lock: WebRTC for camera streaming, custom JavaScript hooks for tab-switch detection, and Python services for screen recording storage.
+
+Technology Stack:
+    Front-end: React.js with Tailwind CSS for a responsive, modern UI.
+    Back-end: Python (Flask or Django) REST APIs with MySQL as the database.
+    AI/ML: Python libraries (scikit-learn, spaCy, TensorFlow/PyTorch) 
+    integrated with the OpenAI API for advanced language understanding, question generation, and candidate evaluation
+    Proctoring & Browser Lock: WebRTC for camera streaming, custom JavaScript hooks for tab-switch detection, and Python services for screen recording storage.
+
 Modules:
 1. AI-Powered Recruitment Module
 Introduction The Recruitment Module streamlines the hiring pipeline—from resume screening to final onboarding—using artificial intelligence and the OpenAI API. It automatically analyzes resumes, conducts online assessments, schedules interviews, and updates the employee database once a candidate is hired.
-Objectives
- Reduce manual effort in shortlisting candidates.
- Ensure unbiased, data-driven hiring decisions.
- Provide secure, monitored mock tests with proctoring features.
- Seamlessly transition successful candidates into the Employee database.
+    Objectives:
+    Reduce manual effort in shortlisting candidates.
+    Ensure unbiased, data-driven hiring decisions.
+    Provide secure, monitored mock tests with proctoring features.
+    Seamlessly transition successful candidates into the Employee database.
 Core Features
 1. AI Resume Sorting
 o Natural Language Processing (NLP) models combined with the OpenAI API parse and rank resumes based on job requirements, skills, and experience.
 o Generates a shortlist for HR review.
+
 2. AI-Conducted Mock Test
 o Exam Time Limit – Configurable duration for each section.
 o Webcam & Screen Proctoring – Real-time camera access plus continuous screen recording.
 o Browser Lockdown – Restricts new tabs and blocks Chrome navigation.
 o Sections –
- Aptitude Test: Logical reasoning and quantitative ability.
+Aptitude Test: Logical reasoning and quantitative ability.
  Coding Test: Algorithmic or language-specific coding challenges.
 o The OpenAI API assists in generating dynamic aptitude and coding questions, evaluating free-text answers, and providing intelligent feedback.
 3. Automated Interview Scheduling
