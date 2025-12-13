@@ -6,8 +6,7 @@ DIVYA DEVENBHAI SHAH, VIVEK MAHESHKUMAR WADHWANI
 
 Front-end Technology: React.js with Tailwind CSS (Frontend)
 
-Back-end Technology: Python (Flask or Django) REST APIs with MySQL 
-(Database), integrated with the OpenAI API for AI-driven features
+Back-end Technology: Python (Flask or Django) REST APIs with MySQL (Database), integrated with the OpenAI API for AI-driven features
 
 Project Description :
 
@@ -26,37 +25,45 @@ Technology Stack:
 Modules:
 1. AI-Powered Recruitment Module
 Introduction The Recruitment Module streamlines the hiring pipeline—from resume screening to final onboarding—using artificial intelligence and the OpenAI API. It automatically analyzes resumes, conducts online assessments, schedules interviews, and updates the employee database once a candidate is hired.
-    Objectives:
+
+Objectives
     Reduce manual effort in shortlisting candidates.
     Ensure unbiased, data-driven hiring decisions.
     Provide secure, monitored mock tests with proctoring features.
     Seamlessly transition successful candidates into the Employee database.
+    
 Core Features
 1. AI Resume Sorting
-o Natural Language Processing (NLP) models combined with the OpenAI API parse and rank resumes based on job requirements, skills, and experience.
-o Generates a shortlist for HR review.
+- Natural Language Processing (NLP) models combined with the OpenAI API parse and rank resumes based on job requirements, skills, and experience.
+- Generates a shortlist for HR review.
 
 2. AI-Conducted Mock Test
-o Exam Time Limit – Configurable duration for each section.
-o Webcam & Screen Proctoring – Real-time camera access plus continuous screen recording.
-o Browser Lockdown – Restricts new tabs and blocks Chrome navigation.
-o Sections –
-Aptitude Test: Logical reasoning and quantitative ability.
- Coding Test: Algorithmic or language-specific coding challenges.
-o The OpenAI API assists in generating dynamic aptitude and coding questions, evaluating free-text answers, and providing intelligent feedback.
+- Exam Time Limit – Configurable duration for each section.
+- Webcam & Screen Proctoring – Real-time camera access plus continuous screen recording.
+- Browser Lockdown – Restricts new tabs and blocks Chrome navigation.
+- Sections
+    Aptitude Test: Logical reasoning and quantitative ability.
+    Coding Test: Algorithmic or language-specific coding challenges.
+- The OpenAI API assists in generating dynamic aptitude and coding questions, evaluating free-text answers, and providing intelligent feedback.
+  
 3. Automated Interview Scheduling
-o Candidates with good scores get invited to a live video interview.
-o Integrated calendar for selecting available time slots.
-o OpenAI-powered chat/assistant can suggest suitable time slots based on participant availability.
+- Candidates with good scores get invited to a live video interview.
+- Integrated calendar for selecting available time slots.
+- OpenAI-powered chat/assistant can suggest suitable time slots based on participant availability.
+  
 4. Final Onboarding
-o Successful candidates’ profiles are automatically pushed into the Employee Module database with their resumes and test/interview records.
+- Successful candidates’ profiles are automatically pushed into the Employee Module database with their resumes and test/interview records.
+
 Workflow
-Candidate uploads resume → AI (with OpenAI API) shortlists → Secure test link sent → AI proctor monitors aptitude & coding tests and evaluates answers → High scorers receive automated 1:1 interview invitations → Upon HR approval, candidate data flows into the Employee Module.
+
+-Candidate uploads resume → AI (with OpenAI API) shortlists → Secure test link sent → AI proctor monitors aptitude & coding tests and evaluates answers → High scorers receive automated 1:1 interview invitations → Upon HR approval, candidate data flows into the Employee Module.
+
 Benefits
- Faster, bias-free candidate selection powered by OpenAI’s advanced language models.
- End-to-end digital hiring pipeline with automated question generation and answer evaluation.
- Enhanced security and compliance through proctored testing.
- Seamless integration with existing employee records.
+- Faster, bias-free candidate selection powered by OpenAI’s advanced language models.
+- End-to-end digital hiring pipeline with automated question generation and answer evaluation.
+- Enhanced security and compliance through proctored testing.
+- Seamless integration with existing employee records.
+
 2. Employee Module
 Introduction:
 The Employee Module serves as the backbone of the Smart Workforce Hub, as it holds and organizes all employee-related data in one place. It goes beyond storing basic details by capturing employment history, job roles, assigned responsibilities, and career progress. This structured digital profile enables HR teams to track employee growth, allocate resources effectively, and ensure fair practices across departments. By centralizing the information, the module eliminates redundancy, reduces paperwork, and strengthens communication between employees and decision-makers.
