@@ -103,8 +103,8 @@ Core Features
 - Approval Workflow – Managers approve or reject requests
 -  Leave Balance Tracking – Updates automatically
 -  Holiday Calendar Integration
-
-5. Leave Reporting
+-  Leave Reporting
+  
 Workflows
     An employee submits a leave request through the system, selecting the type and dates. The request is routed to the reporting manager, who reviews team availability and approves or rejects. Once approved, the     system updates leave balances automatically and records the transaction for HR tracking.
 
@@ -114,45 +114,62 @@ Benefits
 4. Payroll Module Introduction:
     The Payroll Module is one of the most essential components of the Smart Workforce Hub because it directly impacts employee satisfaction and organizational credibility. It automates the complete salary cycle
     by integrating attendance, overtime, and leave data, ensuring that every employee is compensated accurately according to their work. The system manages gross and net pay calculations, applies deductions for      taxes, insurance, or provident funds, and adds allowances where applicable. Payslips are generated instantly and can be accessed online, reducing paperwork and delays. By removing manual intervention, the        module not only saves HR time but also minimizes payroll errors, builds employee trust, and ensures financial compliance.
-
+   
 Objectives
-The main objective is to provide a fast, accurate, and fully automated payroll process that reduces human error and saves valuable time for HR teams. It ensures timely salary disbursement by linking with attendance and leave modules, preventing calculation mismatches. Another important goal is to give employees transparency in how their salaries are structured, including deductions and benefits, so they can access payslips easily and resolve doubts without lengthy inquiries. This promotes fairness, accountability, and confidence in the system.
+    The main objective is to provide a fast, accurate, and fully automated payroll process that reduces human error and saves valuable time for HR teams. It ensures timely salary disbursement by linking with
+    attendance and leave modules, preventing calculation mismatches. Another important goal is to give employees transparency in how their salaries are structured, including deductions and benefits, so they can
+    access payslips easily and resolve doubts without lengthy inquiries. This promotes fairness, accountability, and confidence in the system.
+
 Core Features:
-1. Salary Calculation
-2. Tax and Deductions
-3. Payslip Generation
-4. Bank Integration
-5. Payroll Reports
-Workflows:
-The payroll system pulls data from attendance and leave modules, calculates salaries, applies necessary deductions, and generates payslips for each employee. Once verified, it processes salary transfers automatically through linked bank accounts.
+- Salary Calculation
+- Tax and Deductions
+- Payslip Generation
+- Bank Integration
+- Payroll Reports
+   
+Workflows
+    The payroll system pulls data from attendance and leave modules, calculates salaries, applies necessary deductions, and generates payslips for each employee. Once verified, it processes salary transfers          automatically through linked bank accounts.
+
 Benefits:
-Accurate salary processing, Compliance with tax rules, Reduced HR workload, Transparent deductions, Timely payments, Greater employee satisfaction.
+    Accurate salary processing, Compliance with tax rules, Reduced HR workload, Transparent deductions, Timely payments, Greater employee satisfaction.
+
+    
 5. Training and Development Module Introduction:
-The Training and Development Module focuses on empowering employees through structured learning and continuous skill enhancement. It provides HR teams with the tools to organize training programs, assign online learning materials, and monitor participation and certifications in a single system. By offering a combination of classroom sessions, e-learning, and feedback-driven courses, the module ensures that employees are not only prepared for their current roles but also for future responsibilities. This contributes directly to organizational growth, as a skilled workforce can adapt to changes faster and deliver better results. Additionally, it creates a culture of learning that motivates employees, improves retention, and demonstrates the company’s commitment to their career development.
+
+    The Training and Development Module focuses on empowering employees through structured learning and continuous skill enhancement. It provides HR teams with the tools to organize training programs, assign         online learning materials, and monitor participation and certifications in a single system. By offering a combination of classroom sessions, e-learning, and feedback-driven courses, the module ensures that       employees are not only prepared for their current roles but also for future responsibilities. This contributes directly to organizational growth, as a skilled workforce can adapt to changes faster and            deliver better results. Additionally, it creates a culture of learning that motivates employees, improves retention, and demonstrates the company’s commitment to their career development.
+
 Objectives:
-The primary objective is to create a structured and transparent learning environment that aligns employee development with organizational needs. It ensures employees complete essential compliance training while also gaining access to career-focused programs that enhance their professional growth. Another objective is to capture training feedback, evaluate effectiveness, and use progress reports to improve future programs, making training more measurable and impactful.
+    The primary objective is to create a structured and transparent learning environment that aligns employee development with organizational needs. It ensures employees complete essential compliance training        while also gaining access to career-focused programs that enhance their professional growth. Another objective is to capture training feedback, evaluate effectiveness, and use progress reports to improve         future programs, making training more measurable and impactful.
+    
 Core Features:
-1. Training Programs
-2. E-learning Access
-3. Certification Tracking
-4. Feedback Collection
-5. Progress Reports
-Workflows:
-HR schedules training programs, assigns eligible employees, and notifies them through the system. Employees complete sessions or online courses, provide feedback, and records are updated to reflect their progress and certifications.
-Benefits:
-Skill improvement, Career growth support, Higher employee retention, Workforce readiness, better compliance monitoring.
+- Training Programs
+- E-learning Access
+- Certification Tracking
+- Feedback Collection
+- Progress Reports
+  
+Workflows
+    HR schedules training programs, assigns eligible employees, and notifies them through the system. Employees complete sessions or online courses, provide feedback, and records are updated to reflect their         progress and certifications.
+
+Benefits
+    Skill improvement, Career growth support, Higher employee retention, Workforce readiness, better compliance monitoring.
+
+
 6. Attendance Module
-Introduction:
-The Attendance Module automates the daily tracking of employee presence, replacing outdated manual registers. It records working hours, clock-in/clock-out times, and overtime with the help of biometric systems or digital portals. This ensures not only accuracy but also fairness in attendance monitoring. By feeding data directly into payroll and performance tracking, the module ensures that employee contributions are properly recognized and compensated.
-Objectives:
-The key objective is to maintain accurate attendance data that supports payroll processing and workforce analysis. It also aims to reduce disputes about working hours, increase accountability, and give managers better insight into absenteeism trends. Furthermore, it helps organizations plan shifts and schedules more effectively.
+    Introduction:
+        The Attendance Module automates the daily tracking of employee presence, replacing outdated manual registers. It records working hours, clock-in/clock-out times, and overtime with the help of biometric           systems or digital portals. This ensures not only accuracy but also fairness in attendance monitoring. By feeding data directly into payroll and performance tracking, the module ensures that employee             contributions are properly recognized and compensated.
+   
+    Objectives
+        The key objective is to maintain accurate attendance data that supports payroll processing and workforce analysis. It also aims to reduce disputes about working hours, increase accountability, and give             managers better insight into absenteeism trends. Furthermore, it helps organizations plan shifts and schedules more effectively.
+   
     Core Features:
-1. Clock-in/Clock-out Logging
-2. Biometric or ID Integration
-3. Shift Scheduling
-4. Overtime Recording
-5. Absence Reports
-    Workflows:
-Employees mark attendance through biometric devices or an online portal. The system records daily hours and overtime, generating attendance reports for HR.
-    Benefits:
-Accurate payroll inputs, Reduced attendance disputes, Transparent tracking, Shift planning support, better productivity monitoring.
+- Clock-in/Clock-out Logging
+- Biometric or ID Integration
+- Shift Scheduling
+- Overtime Recording
+- Absence Reports
+  
+    Workflows
+        Employees mark attendance through biometric devices or an online portal. The system records daily hours and overtime, generating attendance reports for HR.
+    Benefits
+        Accurate payroll inputs, Reduced attendance disputes, Transparent tracking, Shift planning support, better productivity monitoring.
