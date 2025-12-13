@@ -1,16 +1,12 @@
 # WorkforceHub
 AI-Powered Talent &amp; Workforce Hub (College project SEM 5,6)
-Project Title:
-AI-Powered Talent & Workforce Hub
 
 My college team members:
-DIVYA DEVENBHAI SHAH
-VIVEK MAHESHKUMAR WADHWANI
+DIVYA DEVENBHAI SHAH, VIVEK MAHESHKUMAR WADHWANI
 
-Front-end Technology:
-React.js with Tailwind CSS (Frontend)
-Back-end Technology:
-Python (Flask or Django) REST APIs with MySQL (Database), integrated with the OpenAI API for AI-driven features
+Front-end Technology: React.js with Tailwind CSS (Frontend)
+Back-end Technology: Python (Flask or Django) REST APIs with MySQL (Database), integrated with the OpenAI API for AI-driven features
+
 Project Description :
 The AI-Powered Talent & Workforce Hub is a full-stack web application that digitizes and intelligently automates core Human Resource operations while embedding advanced artificial intelligence through the OpenAI API. The platform centralizes employee management—covering attendance, leave requests, payroll, training, and performance tracking—while introducing a next-generation AI-driven recruitment pipeline.
 Using OpenAI’s language models in combination with custom Natural Language Processing (NLP) workflows, the system automatically parses, analyzes, and ranks candidate resumes according to job requirements and skill sets. Shortlisted applicants receive a secure, proctored mock test that includes both aptitude and coding assessments. The testing environment enforces strict integrity with a configurable exam time limit, live webcam monitoring, screen recording, and browser-lock features. High-scoring candidates are automatically scheduled for a one-to-one interview, and successful interviewees are seamlessly added to the employee database.
