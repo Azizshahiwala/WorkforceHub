@@ -1,0 +1,80 @@
+/* Reset basic body so navbar works well */
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+/* Fixed top navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #1f2933;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 1000;
+}
+
+.nav-links span {
+  margin-left: 16px;
+  cursor: pointer;
+}
+
+/* Main container under navbar */
+.parent {
+  display: grid;
+  grid-template-columns: 1fr 240px 1fr; /* div1 | sidebar(div2) | content(div3) */
+  height: calc(100vh - 60px); /* full height minus navbar */
+  margin-top: 60px;           /* push below navbar */
+}
+
+/* Example styling for columns */
+.div1 {
+  background: #f3f4f6;
+}
+
+.div2 {
+  background: #e5e7eb;
+}
+
+.div3 {
+  background: #ffffff;
+  padding: 16px;
+  overflow-y: auto; /* scroll only content */
+}
+
+/* Sidebar inside div2 */
+.sidebar {
+  position: sticky;
+  top: 0;              /* stay visible when content scrolls */
+  height: 100vh;
+  padding: 16px;
+  box-sizing: border-box;
+  background-color: #111827;
+  color: #e5e7eb;
+}
+
+.sidebar h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.sidebar li:hover {
+  color: #60a5fa;
+}
