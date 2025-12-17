@@ -7,7 +7,7 @@ function Sidebar() {
       <ul>
         <li>
           <NavLink
-                to="/dashboard"
+                to="/"
                 className={({ isActive }) =>
                     "sidebar-item" + (isActive ? " active" : "")
                 }
@@ -21,7 +21,7 @@ function Sidebar() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/leave-requests" className="sidebar-item">
+          <NavLink to="/leave" className="sidebar-item">
             Leave Manager
           </NavLink>
         </li>
