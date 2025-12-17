@@ -1,0 +1,141 @@
+/* Page header */
+.leave-page {
+  padding: 0 24px 24px 24px;
+}
+
+.leave-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.leave-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.leave-breadcrumb {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Card */
+.leave-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.leave-card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.leave-card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Table */
+.leave-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.leave-table thead {
+  background: #f9fafb;
+}
+
+.leave-table th,
+.leave-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  color: #4b5563;
+}
+
+.leave-table th {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+/* Employee cell */
+.emp-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.emp-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #e5f4ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Buttons */
+.btn {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-primary {
+  background: #16a34a;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #15803d;
+}
+
+.btn-approve {
+  background: #22c55e;
+  color: white;
+  margin-right: 6px;
+}
+
+.btn-approve:hover {
+  background: #16a34a;
+}
+
+.btn-reject {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.btn-reject:hover {
+  background: #fecaca;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .leave-page {
+    padding: 12px;
+  }
+
+  .leave-table {
+    font-size: 12px;
+  }
+
+  .leave-table th,
+  .leave-table td {
+    padding: 8px 10px;
+  }
+}
