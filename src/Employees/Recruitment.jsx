@@ -1,5 +1,5 @@
 // src/Employees/Recruitment.jsx
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./Recruitment.css";
 
 const initialApplications = [
@@ -63,10 +63,11 @@ const initialApplications = [
 function Recruitment() {
   const [applications, setApplications] = useState(initialApplications);
 
+  return (<>
+  <div>
 
-
-
-  return (
-  );
+    <table></table>
+  </div>
+  </>);
 }
 export default Recruitment;
