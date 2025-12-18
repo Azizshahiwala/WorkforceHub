@@ -1,85 +1,45 @@
 /* ===============================
-   Page Layout
+   Card Wrapper (Optional)
 ================================ */
-.leave-page {
-  padding: 24px;
-  background-color: #f9fafb;
-  min-height: 100vh;
-}
-
-.leave-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.leave-header h2 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.leave-breadcrumb {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-/* ===============================
-   Card
-================================ */
-.leave-card {
+.company-card {
   background: #ffffff;
   border-radius: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   overflow: hidden;
 }
 
-.leave-card-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.leave-card-header h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-}
-
 /* ===============================
    Table
 ================================ */
-.leave-table {
+.company-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
 }
 
-.leave-table thead {
+.company-table thead {
   background-color: #f3f4f6;
 }
 
-.leave-table th,
-.leave-table td {
+.company-table th,
+.company-table td {
   padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
 }
 
-.leave-table th {
+.company-table th {
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   color: #6b7280;
 }
 
-.leave-table td {
+.company-table td {
   color: #374151;
 }
 
-.leave-table tbody tr:hover {
+.company-table tbody tr:hover {
   background-color: #f9fafb;
 }
 
@@ -103,47 +63,76 @@
   justify-content: center;
   font-size: 14px;
   font-weight: 600;
+  text-transform: uppercase;
 }
 
+/* Search Button */
+.search-input {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 240px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* Mail Button */
 /* ===============================
-   Buttons
+   Action Buttons
 ================================ */
-.btn {
+.action-group {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
   padding: 6px 10px;
   border-radius: 6px;
   border: none;
   font-size: 13px;
   cursor: pointer;
-  transition: background 0.15s ease-in-out;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
 }
 
-.btn-approve {
-  background-color: #22c55e;
+/* Mail Button */
+.btn-mail {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.btn-mail:hover {
+  background-color: #22c55e; /* green */
   color: #ffffff;
-  margin-right: 6px;
 }
 
-.btn-approve:hover {
-  background-color: #16a34a;
-}
-
-.btn-reject {
+/* Delete Button */
+.btn-delete {
   background-color: #fee2e2;
   color: #b91c1c;
 }
 
-.btn-reject:hover {
-  background-color: #fecaca;
+.btn-delete:hover {
+  background-color: #ef4444; /* red */
+  color: #ffffff;
 }
 
 /* ===============================
-   Empty State
+   Alert Message
 ================================ */
-.leave-empty {
-  text-align: center;
-  padding: 20px;
-  color: #6b7280;
+.alert-box {
+  background-color: #dcfce7;
+  color: #166534;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin: 10px 16px;
   font-size: 14px;
+  border: 1px solid #86efac;
 }
 
 
@@ -152,20 +141,12 @@
    Responsive
 ================================ */
 @media (max-width: 900px) {
-  .leave-page {
-    padding: 12px;
-  }
-
-  .leave-table {
+  .company-table {
     font-size: 12px;
   }
 
-  .leave-table th,
-  .leave-table td {
+  .company-table th,
+  .company-table td {
     padding: 8px 10px;
-  }
-
-  .leave-header h2 {
-    font-size: 18px;
   }
 }

@@ -1,9 +1,10 @@
 // components/Sidebar.jsx
 import { NavLink } from "react-router-dom";
 
-function Sidebar() {
+function Sidebar({ darkMode }) {
   return (
-    <div className="sidebar">
+    
+    <div className={`sidebar ${darkMode ? "dark" : ""}`}>
       <ul>
         <li>
           <NavLink
