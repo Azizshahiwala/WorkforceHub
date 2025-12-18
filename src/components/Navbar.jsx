@@ -1,5 +1,5 @@
 // components/Navbar.jsx
-import logo from '../Image/logo.jpeg';
+import logo from '../images/logo.jpeg';
 function Navbar() {
   return (
     <div className="navbar">
