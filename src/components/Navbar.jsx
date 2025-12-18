@@ -1,6 +1,6 @@
 // components/Navbar.jsx
-import logo from '../Image/logo.jpeg';
-function Navbar({ darkMode, setDarkMode }) {
+import logo from '../images/logo.jpeg';
+function Navbar() {
   return (
     <div className="navbar">
       <img src={logo} alt="HRMS Logo" className="logo"  />

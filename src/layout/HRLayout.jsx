@@ -1,7 +1,7 @@
 // layout/HRLayout.jsx
 import { Outlet } from "react-router-dom";
-import Navbar from "../HR/Navbar";
-import Sidebar from "../HR/Sidebar";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 import "./HRLayout.css";
 import { useState,useEffect, Children } from "react";
 function HRLayout() {

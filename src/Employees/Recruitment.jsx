@@ -1,3 +1,5 @@
+@ -1,208 +1,72 @@
+// src/Employees/Recruitment.jsx
 import React, { useState } from "react";
 import "./Recruitment.css";
 
