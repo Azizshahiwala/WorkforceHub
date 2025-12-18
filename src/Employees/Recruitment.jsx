@@ -66,7 +66,19 @@ function Recruitment() {
   return (<>
   <div>
 
-    <table></table>
+    <table>
+    <tr>
+      <th>Name</th>
+      <th>Position</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Experience</th>
+      <th>Status</th>
+      <th>Applied Date</th>
+      <th>Interview Date</th>
+    </tr>
+
+    </table>
   </div>
   </>);
 }
