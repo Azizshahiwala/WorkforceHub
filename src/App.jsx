@@ -3,7 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HRLayout from "./layout/HRLayout";
 import Dashboard from "./pages/Dashboard";
 import LeaveManager from "./pages/LeaveManager";
-
+import CompanyUser from "./pages/CompanyUser";
+import Payroll from "./pages/PayRoll";
 
 function App() {
   return (
@@ -13,8 +14,8 @@ function App() {
         <Route path="/" element={<HRLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="leave" element={<LeaveManager />} />
-          {/* <Route path="attendance" element={<EmployeeAttendance />} /> */}
-          {/* <Route path="payroll" element={<Payroll />} /> */}
+          <Route path="users" element={<CompanyUser />} />
+          <Route path="payroll" element={<Payroll />} />
           {/* etc */}
         </Route>
 

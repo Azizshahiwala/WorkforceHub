@@ -1,8 +1,9 @@
 // src/pages/LeaveManager.jsx
 import React from "react";
 import "./LeaveManager.css";
+import { useState } from "react";
 
-const leaveRequests = [
+const data = [
   {
     id: 1,
     name: "Marshall Nichols",
@@ -38,12 +39,10 @@ const leaveRequests = [
 ];
 
 function LeaveManager() {
-  const handleApprove = (id) => {
-    alert(`Leave request ${id} approved`);
-  };
+  const [leaveRequests, setLeaveRequests] = useState(data);
 
-  const handleReject = (id) => {
-    alert(`Leave request ${id} rejected`);
+  const removeRow = (id) => {
+    setLeaveRequests(leaveRequests.filter(item => item.id !== id));
   };
 
   return (
@@ -51,9 +50,7 @@ function LeaveManager() {
       <div className="leave-header">
         <div>
           <h2>Leave Request</h2>
-          <p className="leave-breadcrumb">Lucid / Employee / Leave Request</p>
         </div>
-        <button className="btn btn-primary">Add New</button>
       </div>
 
       <div className="card leave-card">
@@ -92,13 +89,13 @@ function LeaveManager() {
                 <td>
                   <button
                     className="btn btn-approve"
-                    onClick={() => handleApprove(req.id)}
+                    onClick={() => removeRow(req.id)}
                   >
                     ✓
                   </button>
                   <button
                     className="btn btn-reject"
-                    onClick={() => handleReject(req.id)}
+                    onClick={() => removeRow(req.id)}
                   >
                     ✕
                   </button>
