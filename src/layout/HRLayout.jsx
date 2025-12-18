@@ -6,9 +6,9 @@ import "./HRLayout.css";
 import { useState,useEffect, Children } from "react";
 function HRLayout() {
 
-  const [darkMode, setDarkMode] = useState(
+  const [darkMode, setDarkMode] = useState(()=>{
     localStorage.getItem("theme") === "dark"
-  );
+  });
 
   useEffect(() => {
     if (darkMode) {
