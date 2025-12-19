@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import "./Recruitment.css";
+impRole: Shared layout for all HR pages
+How it works:
+ort "./Recruitment.css";
 
 const initialApplications = [
   {
@@ -12,51 +14,10 @@ const initialApplications = [
     status: "Interview Scheduled",
     appliedDate: "15 Dec, 2025",
     interviewDate: "22 Dec, 2025",
+    ReportView : <button>[Show report]</button>,
+    Status : [<button>Send Mail</button>,<button>Reject</button>]
   },
-  {
-    id: 2,
-    name: "Michael Chen",
-    position: "Frontend Developer",
-    email: "michael.c@email.com",
-    phone: "+1 234-567-8901",
-    experience: "3 years",
-    status: "Under Review",
-    appliedDate: "14 Dec, 2025",
-    interviewDate: "-",
-  },
-  {
-    id: 3,
-    name: "Emily Rodriguez",
-    position: "HR Manager",
-    email: "emily.r@email.com",
-    phone: "+1 234-567-8902",
-    experience: "7 years",
-    status: "Hired",
-    appliedDate: "10 Dec, 2025",
-    interviewDate: "18 Dec, 2025",
-  },
-  {
-    id: 4,
-    name: "David Park",
-    position: "Full Stack Developer",
-    email: "david.p@email.com",
-    phone: "+1 234-567-8903",
-    experience: "4 years",
-    status: "Rejected",
-    appliedDate: "12 Dec, 2025",
-    interviewDate: "19 Dec, 2025",
-  },
-  {
-    id: 5,
-    name: "Lisa Thompson",
-    position: "UI/UX Designer",
-    email: "lisa.t@email.com",
-    phone: "+1 234-567-8904",
-    experience: "2 years",
-    status: "Pending",
-    appliedDate: "16 Dec, 2025",
-    interviewDate: "-",
-  },
+  
 ];
 
 function Recruitment() {
@@ -64,8 +25,7 @@ function Recruitment() {
 
   return (<>
   <div>
-
-    <table>
+    <table className="Inner-table" border={1} cellPadding={20} cellSpacing={0}>
     <tr>
       <th>Name</th>
       <th>Position</th>
@@ -75,8 +35,23 @@ function Recruitment() {
       <th>Status</th>
       <th>Applied Date</th>
       <th>Interview Date</th>
+      <th>Report View</th>
+      <th>Accept / Reject</th>
     </tr>
-
+    {applications.map((Submission, key) => (
+      <tr key={key}>
+        <td>{Submission.name}</td>
+        <td>{Submission.position}</td>
+        <td>{Submission.email}</td>
+        <td>{Submission.phone}</td>
+        <td>{Submission.experience}</td>
+        <td>{Submission.status}</td>
+        <td>{Submission.appliedDate}</td>
+        <td>{Submission.interviewDate}</td>
+        <td>{Submission.ReportView}</td>
+        <td>{Submission.Status}</td>
+      </tr>
+    ))}
     </table>
   </div>
   </>);

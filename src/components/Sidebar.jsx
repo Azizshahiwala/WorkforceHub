@@ -22,6 +22,11 @@ function Sidebar({ darkMode }) {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/Applications" className="sidebar-item">
+            Applications
+          </NavLink>
+        </li>
+        <li>
           <NavLink to="/leave" className="sidebar-item">
             Leave Manager
           </NavLink>
