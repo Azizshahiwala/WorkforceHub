@@ -30,3 +30,11 @@
     font-size: 1em;
     width:90px;
 }
+.Nested_table_row {
+    display: table-row;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    border: 0;
+    border-collapse: collapse;
+}
