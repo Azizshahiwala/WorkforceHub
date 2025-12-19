@@ -5,7 +5,7 @@ import Dashboard from "./Pages/Dashboard";
 import LeaveManager from "./Pages/LeaveManager";
 import CompanyUser from "./Pages/CompanyUser";
 import Payroll from "./Pages/PayRoll";
-import Recruitment from "./Employees/Recruitment";
+import Recruitment from "./Pages/Recruitment";
 function App() {
   return (
     <BrowserRouter>
@@ -16,7 +16,7 @@ function App() {
           <Route path="leave" element={<LeaveManager />} />
           <Route path="users" element={<CompanyUser />} />
           <Route path="payroll" element={<Payroll />} />
-          <Route path="Applications" element={<Recruitment />} />
+          <Route path="applications" element={<Recruitment />} />
           {/* etc */}
         </Route>
 

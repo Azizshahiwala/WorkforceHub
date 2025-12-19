@@ -1,0 +1,1 @@
+This folder contains pages for HRLayout.jsx ONLY

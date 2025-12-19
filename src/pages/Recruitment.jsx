@@ -1,8 +1,4 @@
 import React, { useState } from "react";
-impRole: Shared layout for all HR pages
-How it works:
-ort "./Recruitment.css";
-
 const initialApplications = [
   {
     id: 1,
@@ -15,7 +11,8 @@ const initialApplications = [
     appliedDate: "15 Dec, 2025",
     interviewDate: "22 Dec, 2025",
     ReportView : <button>[Show report]</button>,
-    Status : [<button>Send Mail</button>,<button>Reject</button>]
+    Acceptbtn : <button>Send Mail</button>,
+    Rejectbtn : <button>Reject</button>
   },
   
 ];
@@ -49,7 +46,7 @@ function Recruitment() {
         <td>{Submission.appliedDate}</td>
         <td>{Submission.interviewDate}</td>
         <td>{Submission.ReportView}</td>
-        <td>{Submission.Status}</td>
+        <td>{Submission.Acceptbtn} {Submission.Rejectbtn}</td>
       </tr>
     ))}
     </table>
