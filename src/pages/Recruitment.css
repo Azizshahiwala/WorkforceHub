@@ -1,0 +1,32 @@
+.Inner-table {
+    width:140%;
+    font-family: 'Cascadia Code', monospace;
+    font-size: small; 
+    border-collapse: collapse;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    table-layout: fixed;
+    white-space: wrap;
+    text-align: center;
+}
+.Repbtn{
+    background-color: blue;
+    border: 0px;
+    color:whitesmoke;
+    padding:6px 10px;
+}
+.Accbtn{
+    background-color: green;
+    border: 0px;
+    color:whitesmoke;
+    padding:6px 10px;
+    font-size: 1em;
+    width:90px;
+}
+.Rejbtn{
+    background-color: crimson;
+    border: 0px;
+    color:whitesmoke;
+    padding:6px 10px;
+    font-size: 1em;
+    width:90px;
+}
