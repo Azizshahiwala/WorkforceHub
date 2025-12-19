@@ -36,7 +36,7 @@ function Recruitment() {
       <th>Accept / Reject</th>
     </tr>
     {applications.map((Submission, key) => (
-      <tr key={key}>
+      <tr key={key} id="application_table_content">
         <td>{Submission.name}</td>
         <td>{Submission.position}</td>
         <td>{Submission.email}</td>
