@@ -1,5 +1,5 @@
 .Inner-table {
-    width:140%;
+    width:110%;
     font-family: 'Cascadia Code', monospace;
     font-size: small; 
     border-collapse: collapse;
@@ -30,11 +30,13 @@
     font-size: 1em;
     width:90px;
 }
-.Nested_table_row {
+.Table_row_email, .Table_row_phone {
     display: table-row;
-    width: 100%;
+    width: auto;
     text-align: center;
     position: relative;
-    border: 0;
     border-collapse: collapse;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

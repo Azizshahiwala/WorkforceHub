@@ -12,21 +12,60 @@ function Recruitment() {
     phone: "+1 2345678900",
     experience: "5 years",
     appliedDate: new Date().toLocaleDateString(),
-    ReportView : <button className="Repbtn" >Show report</button>,
-    Acceptbtn : <button className="Accbtn">Send Mail</button>,
-    Rejectbtn : <button className="Rejbtn" onClick={() =>Reject()}>Reject</button>
   },
   {
-    id: 2,
-    name: "John Doe",
-    position: "Junior Developer",
-    email: "john.d@email.com",
-    phone: "+1 2345678901",
+    id: 3,
+    name: "Michael Chen",
+    position: "UI/UX Designer",
+    email: "m.chen@email.com",
+    phone: "+1 2345678902",
+    experience: "4 years",
+    appliedDate: new Date().toLocaleDateString(),
+  },
+  {
+    id: 4,
+    name: "Emily Rodriguez",
+    position: "QA Engineer",
+    email: "emily.r@email.com",
+    phone: "+1 2345678903",
+    experience: "3 years",
+    appliedDate: new Date().toLocaleDateString(),
+  },
+  {
+    id: 5,
+    name: "David Smith",
+    position: "Product Manager",
+    email: "d.smith@email.com",
+    phone: "+1 2345678904",
+    experience: "7 years",
+    appliedDate: new Date().toLocaleDateString(),
+  },
+  {
+    id: 6,
+    name: "Aria Gupta",
+    position: "Backend Developer",
+    email: "aria.g@email.com",
+    phone: "+1 2345678905",
     experience: "2 years",
     appliedDate: new Date().toLocaleDateString(),
-    ReportView : <button className="Repbtn" >Show report</button>,
-    Acceptbtn : <button className="Accbtn">Send Mail</button>,
-    Rejectbtn : <button className="Rejbtn" onClick={(id) =>Reject(id)}>Reject</button>
+  },
+  {
+    id: 7,
+    name: "James Wilson",
+    position: "DevOps Engineer",
+    email: "j.wilson@email.com",
+    phone: "+1 2345678906",
+    experience: "6 years",
+    appliedDate: new Date().toLocaleDateString(),
+  },
+  {
+    id: 8,
+    name: "Sophia Martinez",
+    position: "HR Specialist",
+    email: "s.martinez@email.com",
+    phone: "+1 2345678907",
+    experience: "5 years",
+    appliedDate: new Date().toLocaleDateString(),
   }
 ];
   function Reject(id){
@@ -44,12 +83,12 @@ function Recruitment() {
 
   return (<>
   <div>
-    <table border={1} cellPadding={10} cellSpacing={0}>
-    <tr className="Inner-table">
+    <table className="Inner-table"border={1} cellPadding={10} cellSpacing={0}>
+    <tr>
       <th>Name</th>
       <th>Position for</th>
       <th>
-      <tr className="Nested_table_row">
+      <tr>
         <th>Email and Phone</th>
       </tr>
       </th>
@@ -59,19 +98,20 @@ function Recruitment() {
       <th>Accept / Reject</th>
     </tr>
     {applications.map((Submission, key) => (
-      <tr className="Inner-table" key={key}>
+      <tr key={key}>
         <td>{Submission.name}</td>
         <td>{Submission.position}</td>
         <td>
-          <tr className="Nested_table_row">
-          <tr>{Submission.email}</tr>
-          <tr>{Submission.phone}</tr>
+          <tr>
+          <tr className="Table_row_email">{Submission.email}</tr>
+          <tr className="Table_row_phone">{Submission.phone}</tr>
           </tr>
         </td> 
         <td>{Submission.experience}</td>   
         <td>{Submission.appliedDate}</td>
-        <td>{Submission.ReportView}</td>
-        <td>{Submission.Acceptbtn} {Submission.Rejectbtn}</td>
+        <td><button className="Repbtn" >Show report</button></td>
+        <td><button className="Accbtn">Send Mail</button>
+         <button className="Rejbtn" onClick={() =>Reject(Submission.id)}>Reject</button></td>
       </tr>
     ))}
     </table>
