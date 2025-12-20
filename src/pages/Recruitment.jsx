@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./Recruitment.css";
 
-
 function Recruitment() {
   const initialApplications = [
   {
@@ -68,6 +67,8 @@ function Recruitment() {
     appliedDate: new Date().toLocaleDateString(),
   }
 ];
+const [applications, setApplications] = useState(initialApplications);
+
   function Reject(id){
     
     //initialApplications -> array of objects. So i need to create a copy of it to modify.
@@ -79,8 +80,7 @@ function Recruitment() {
     setApplications(UpdatedList);
     //This re-renders the component with updated list.
    }
-  const [applications, setApplications] = useState(initialApplications);
-
+  
   return (<>
   <div>
     <table className="Inner-table"border={1} cellPadding={10} cellSpacing={0}>

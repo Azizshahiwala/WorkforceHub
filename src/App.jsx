@@ -1,11 +1,14 @@
 // App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HRLayout from "./Layout/HRLayout";
-import Dashboard from "./Pages/Dashboard";
-import LeaveManager from "./Pages/LeaveManager";
-import CompanyUser from "./Pages/CompanyUser";
-import Payroll from "./Pages/PayRoll";
-import Recruitment from "./Pages/Recruitment";
+
+import HRLayout from "./layout/HRLayout";
+import Dashboard from "./pages/Dashboard";
+import LeaveManager from "./pages/LeaveManager";
+import CompanyUser from "./pages/CompanyUser";
+import Payroll from "./pages/PayRoll";
+import Feedback from "./pages/FeedbackEmployees";
+import Recruitment from "./pages/Recruitment";
+import Activity from "./pages/Activity";
 function App() {
   return (
     <BrowserRouter>
@@ -16,7 +19,9 @@ function App() {
           <Route path="leave" element={<LeaveManager />} />
           <Route path="users" element={<CompanyUser />} />
           <Route path="payroll" element={<Payroll />} />
-          <Route path="applications" element={<Recruitment />} />
+          <Route path="feedback" element={<Feedback />} />
+          <Route path="Applications" element={<Recruitment />} />
+          <Route path="activity" element={<Activity />} />
           {/* etc */}
         </Route>
 

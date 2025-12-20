@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import './PayRoll.css';
 
 const data = [
   {
     id: 1,
     name: "Marshall Nichols",
-    employeeId: "LA-0012",
+    employeeId: "LA-0011",
     phone: "+91 9876543210",
     joinDate: "2022-03-15",
     role: "Senior Developer",
@@ -14,7 +14,7 @@ const data = [
   {
     id: 2,
     name: "Maryam Amiri",
-    employeeId: "LA-0011",
+    employeeId: "LA-0012",
     phone: "+91 9876543211",
     joinDate: "2021-07-10",
     role: "Sales Executive",
@@ -102,12 +102,26 @@ function PayRoll() {
 
   // search Employee
   const [search,setSearch]= useState("");
+  
+    // useEffect(() => {
+    //     const saved = localStorage.getItem("employees");
+    //     if (saved) {
+    //       setEmployee(JSON.parse(saved));
+    //     }
+    //   }, []);
 
+// Remove Employee
+const removeRow = (id) => {
+  if (window.confirm("Are you sure you want to remove this employee?")) {
+    const updated = Employee.filter(emp => emp.id !== id);
+    setEmployee(updated);
+  }
+};
 
-  // Remove and Display the name   
-  const removeRow = (id) => {
-    setEmployee(Employee.filter(item => item.id !== id));
-    };
+// (Optional) Mail handler
+const displayRow = (id) => {
+  alert("Mail sent to employee ID: " + id);
+};
 
   return (
     <div className="leave-page">
@@ -128,56 +142,68 @@ function PayRoll() {
         </div>
 
         <table className="leave-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Employee</th>
-              <th>Employee ID</th>
-              <th>Phone</th>
-              <th>Join - Date</th>
-              <th>Role</th>
-              <th>Salary</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
           <tbody>
 
             {/* filter => Loop through all employees and show only those whose name contains the 
             searched text, ignoring case. */}
 
-            {Employee.filter(emp => emp.name.toLowerCase().includes(search.toLowerCase()))
-              .map((req, index) => (
-              <tr key={req.id}>
-                <td>{index + 1}</td>
+            <div className="emp-grid">
+              {Employee
+                .filter(emp =>
+                  emp.name.toLowerCase().includes(search.toLowerCase())
+                )
+                .map((emp) => (
+                  <div className="emp-card" key={emp.id}>
+                    {/* Top-right remove button */}
+                    <button
+                      className="remove-icon-btn"
+                      onClick={() => removeRow(emp.id)}
+                      title="Remove Employee"
+                    >
+                      ✕
+                    </button>
 
-                <td>
-                  <div className="emp-cell">
-                    <div className="emp-avatar">
-                      {req.name.charAt(0)}
+                    <div className="emp-card-row">
+                      <span>Employee ID:</span>
+                      <strong>{emp.employeeId}</strong>
                     </div>
-                    <span>{req.name}</span>
+
+                    <div className="emp-card-row">
+                      <span>Name:</span>
+                      <strong>{emp.name}</strong>
+                    </div>
+
+                    <div className="emp-card-row">
+                      <span>Phone:</span>
+                      <strong>{emp.phone}</strong>
+                    </div>
+
+                    <div className="emp-card-row">
+                      <span>Join Date:</span>
+                      <strong>{emp.joinDate}</strong>
+                    </div>
+
+                    <div className="emp-card-row">
+                      <span>Role:</span>
+                      <strong>{emp.role}</strong>
+                    </div>
+
+                    <div className="emp-card-row">
+                      <span>Salary:</span>
+                      <strong>₹ {emp.salary}</strong>
+                    </div>
+
+                    <div style={{ marginTop: "12px", textAlign: "right" }}>
+                      <button
+                        onClick={() => displayRow(emp.id)}
+                        className="action-btn btn-mail"
+                      >
+                        ✉️ Mail
+                      </button>
+                    </div>
                   </div>
-                </td>
-
-                <td>{req.employeeId}</td>
-                <td>{req.phone}</td>
-                <td>{req.joinDate}</td>
-                <td>{req.role}</td>
-                <td>{req.salary}</td>
-                <td>
-                    <div className="action-group">
-                        <button onClick={()=> removeRow(req.id)}
-                        className="action-btn btn-mail">
-                        ✉️ Mail</button>
-
-                        <button onClick={()=> removeRow(req.id)}
-                        className="action-btn btn-delete">
-                        🗑️ Delete</button>
-                    </div>
-                </td>
-              </tr>
-            ))}
+                ))}
+            </div>
           </tbody>
         </table>
       </div>

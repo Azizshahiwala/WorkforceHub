@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './CompanyUser.css';
-
-const data = [
+//This file is also called Users.
+const Employees = [
   {
     id: 1,
     name: "Marshall Nichols",
@@ -9,7 +9,7 @@ const data = [
     department: "Developer"
   },
   {
-    id: 2,
+    id: 2,  
     name: "Maryam Amiri",
     employeeId: "LA-0011",
     department: "Sales"
@@ -63,11 +63,8 @@ const data = [
     department: "Sales"
   }
 ];
-
-
 function CompanyUser() {
-  const [Employee, setEmployee] = useState(data);
-
+  const [Employee, setEmployee] = useState(Employees);
   return (
     <div className="leave-page">
       <div className="leave-header">
@@ -113,5 +110,24 @@ function CompanyUser() {
     </div>
   );
 }
+export function FetchEmployeeData(){
+  return Employees.length;
+}
+export function GetStaffData(){
+  var RawNonStaffs = ["Intern","Support"];
+  var StaffList = Employees.filter((emp)=>{
 
+    // 1. Create a boolean variable to check if they are "Non-Staff"
+  //This returns true if emp is Non-Staff
+  var NonStaffs = RawNonStaffs.includes(emp.department);
+
+  // 2. Return the opposite (the actual Staff)
+  // true false means its Staff
+  var Staffs = !NonStaffs;
+
+  // 3. If value is True, put it in StaffList
+  return Staffs;
+  })
+  return StaffList.length;
+}
 export default CompanyUser;
