@@ -1,45 +1,91 @@
 /* ===============================
-   Card Wrapper (Optional)
+   Page Layout
 ================================ */
-.company-card {
+.leave-page {
+  padding: 24px;
+  background-color: #f9fafb;
+  min-height: 100vh;
+}
+
+.leave-header h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ===============================
+   Card
+================================ */
+.leave-card {
   background: #ffffff;
   border-radius: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  max-width: none; 
+}
+
+.leave-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.leave-card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.leave-card-header button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.leave-card-header button:hover {
+  background: #1d4ed8;
 }
 
 /* ===============================
    Table
 ================================ */
-.company-table {
+.leave-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
 }
 
-.company-table thead {
+.leave-table thead {
   background-color: #f3f4f6;
 }
 
-.company-table th,
-.company-table td {
+.leave-table th,
+.leave-table td {
   padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
 }
 
-.company-table th {
+.leave-table th {
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   color: #6b7280;
 }
 
-.company-table td {
+.leave-table td {
   color: #374151;
 }
 
-.company-table tbody tr:hover {
+.leave-table tbody tr:hover {
   background-color: #f9fafb;
 }
 
@@ -67,15 +113,251 @@
 }
 
 /* ===============================
+   Modal
+================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: #fff;
+  padding: 20px;
+  width: 360px;
+  max-width: 90%;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-box h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.modal-box input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.modal-box input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* ===============================
+   Modal Actions
+================================ */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-actions button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.modal-actions button:first-child {
+  background: #22c55e;
+  color: #fff;
+}
+
+.modal-actions button:first-child:hover {
+  background: #16a34a;
+}
+
+.modal-actions button:last-child {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.modal-actions button:last-child:hover {
+  background: #d1d5db;
+}
+
+/* ================================
+    Remove Button
+   =========================== */
+
+   .remove-icon-btn {
+  flex-shrink: 0;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 4px;   /* 👈 pushes button down */
+  margin-bottom: 4px;
+
+  transition: all 0.2s ease;
+}
+
+
+.remove-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-1px);
+}
+
+.remove-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Cards */
+.emp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;              /* more space between cards */
+  margin-top: 30px;
+}
+
+/* Bigger, cleaner cards */
+.emp-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 26px 24px;     /* more inner space */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.emp-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.15);
+}
+
+/* Each row */
+.emp-card-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;   /* more spacing */
+  font-size: 15px;      /* bigger base text */
+  color: #555;
+}
+
+/* Labels */
+.emp-card-row span {
+  font-size: 14px;
+  color: #888;
+}
+
+/* Values */
+.emp-card-row strong {
+  font-size: 16px;
+  color: #222;
+  font-weight: 600;
+}
+
+/* Actions */
+.emp-card {
+  position: relative;  /* needed for absolute button */
+}
+
+.emp-card-top {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.emp-card-top .remove-btn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+}
+
+.emp-card-top .remove-btn:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}
+
+.emp-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* Small, subtle remove icon */
+.remove-icon-btn {
+  background: #fee2e2;        /* light red */
+  color: #dc2626;             /* red text */
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.remove-icon-btn:hover {
+  background: #dc2626;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+
+
+
+/* ===============================
    Responsive
 ================================ */
 @media (max-width: 900px) {
-  .company-table {
+  .leave-table {
     font-size: 12px;
   }
 
-  .company-table th,
-  .company-table td {
+  .leave-table th,
+  .leave-table td {
     padding: 8px 10px;
+  }
+}
+
+
+@media (max-width: 900px) {
+  .emp-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .emp-grid {
+    grid-template-columns: 1fr;
   }
 }

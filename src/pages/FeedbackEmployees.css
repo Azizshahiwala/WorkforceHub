@@ -1,0 +1,215 @@
+/* ===============================
+   Page Layout
+================================ */
+.leave-page {
+  padding: 24px;
+  background-color: #f9fafb;
+  min-height: 100vh;
+}
+
+.leave-header h2 {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ===============================
+   Main Card
+================================ */
+.leave-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.leave-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.leave-card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ===============================
+   Search
+================================ */
+.search-input {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 240px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+}
+
+/* ===============================
+   Table
+================================ */
+.leave-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.leave-table thead {
+  background: #f3f4f6;
+}
+
+.leave-table th,
+.leave-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.leave-table th {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.leave-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+/* ===============================
+   Employee Cell
+================================ */
+.emp-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.emp-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e0f2fe;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* ===============================
+   Give Feedback Button
+================================ */
+.give-feedback-btn {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  background: linear-gradient(135deg, #28a745, #34ce57);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(40,167,69,0.3);
+}
+
+.give-feedback-btn:hover {
+  background: linear-gradient(135deg, #218838, #28a745);
+  transform: translateY(-1px);
+}
+
+/* ===============================
+   Modal
+================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.modal-box h3 {
+  margin-top: 0;
+}
+
+.modal-box textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  margin-top: 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1.5px solid #ddd;
+  resize: vertical;
+}
+
+.modal-box textarea:focus {
+  outline: none;
+  border-color: #28a745;
+  box-shadow: 0 0 0 3px rgba(40,167,69,0.15);
+}
+
+/* Modal Actions */
+.modal-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-actions button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-actions button:first-child {
+  background: #28a745;
+  color: #fff;
+}
+
+.modal-actions button:last-child {
+  background: #e5e7eb;
+  color: #333;
+}
+
+/* ===============================
+   Responsive
+================================ */
+@media (max-width: 900px) {
+  .leave-table {
+    font-size: 12px;
+  }
+
+  .leave-table th,
+  .leave-table td {
+    padding: 8px 10px;
+  }
+
+  .search-input {
+    width: 180px;
+  }
+}

@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import LeaveManager from "./pages/LeaveManager";
 import CompanyUser from "./pages/CompanyUser";
 import Payroll from "./pages/PayRoll";
+import Feedback from "./pages/FeedbackEmployees";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="leave" element={<LeaveManager />} />
           <Route path="users" element={<CompanyUser />} />
           <Route path="payroll" element={<Payroll />} />
+          <Route path="feedback" element={<Feedback />} />
           {/* etc */}
         </Route>
 
