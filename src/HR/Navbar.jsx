@@ -1,12 +1,13 @@
-// components/Navbar.jsx
-import logo from '../Image/logo.jpeg';
+import logo from "../images/logo.jpeg";
+
 function Navbar({ darkMode, setDarkMode }) {
   return (
     <div className="navbar">
-      <img src={logo} alt="HRMS Logo" className="logo"  />
+      <img src={logo} alt="HRMS Logo" className="logo" />
+
       <button
-          className="theme-toggle"
-          onClick={() => setDarkMode(!darkMode)}
+        className="theme-toggle"
+        onClick={() => setDarkMode(prev => !prev)}
       >
         <span className="icon">
           {darkMode ? "🌙" : "☀️"}
@@ -15,7 +16,6 @@ function Navbar({ darkMode, setDarkMode }) {
           {darkMode ? "Dark" : "Light"}
         </span>
       </button>
-      {/* nav links, profile, etc */}
     </div>
   );
 }
