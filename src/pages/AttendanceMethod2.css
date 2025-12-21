@@ -39,3 +39,145 @@
     width: 350px;
     border: 1px solid #e2e8f0;
 }
+.EventWindow button, .AttendanceWindow button {
+    padding: 20px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+/* "Close" and "Back" Buttons - Neutral/Danger */
+.EventWindow button:nth-child(3), 
+.AttendanceWindow button {
+    background-color: #fee2e2;
+    color: #dc2626;
+    margin-top: 10px;
+}
+
+.EventWindow button:nth-child(3):hover, 
+.AttendanceWindow button:hover {
+    background-color: #dc2626;
+    color: white;
+}
+
+/* 1. Expand the main window to fit two columns */
+.AttendanceWindow {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000; /* Ensure it stays above the calendar */
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.2);
+    width: 800px; /* Increased width for side-by-side tables */
+    max-width: 95vw;
+    border: 1px solid #e2e8f0;
+}
+
+/* 2. Layout for the tables container */
+.tables-container {
+    display: flex;
+    gap: 30px;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.table-section {
+    flex: 1; /* Both sections take equal width */
+}
+
+/* 3. General Table Styling */
+.AttendanceWindow table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 13px;
+    background: #fff;
+}
+
+.AttendanceWindow th {
+    padding: 10px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+.AttendanceWindow td {
+    padding: 10px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* 4. Color Combinations */
+
+/* ABSENT - Soft Red Theme */
+.Absent-section h4 {
+    color: #dc2626;
+    border-bottom: 2px solid #fee2e2;
+    padding-bottom: 5px;
+}
+
+.Absent thead {
+    background-color: #fef2f2;
+    color: #991b1b;
+}
+
+.Absent tr:hover {
+    background-color: #fff1f1;
+}
+
+/* PRESENT - Soft Green Theme */
+.Present-section h4 {
+    color: #16a34a;
+    border-bottom: 2px solid #dcfce7;
+    padding-bottom: 5px;
+}
+
+.Present thead {
+    background-color: #f0fdf4;
+    color: #166534;
+}
+
+.Present tr:hover {
+    background-color: #f0fff4;
+}
+
+/* 5. Back Button Alignment */
+.AttendanceWindow .back-btn {
+    margin-top: 25px;
+    width: auto;
+    padding: 10px 30px;
+    display: block;
+    margin-left: auto;
+    background-color: #64748b;
+    color: white;
+}
+/* 1. Show Attendance - Primary Indigo Hover */
+.EventWindow button:nth-child(1) {
+    background-color: #6366f1;
+    color: white;
+}
+
+.EventWindow button:nth-child(1):hover {
+    background-color: #4338ca; /* Deep Indigo */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3);
+}
+/* 2. Mark as Holiday - Success Green Hover */
+.EventWindow button:nth-child(2) {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.EventWindow button:nth-child(2):hover {
+    background-color: #16a34a; /* Solid Success Green */
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(22, 163, 74, 0.2);
+}

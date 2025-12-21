@@ -3,8 +3,10 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from '@fullcalendar/interaction'; // Necessary for selectable
+import { Employees ,UserInfo} from "./CompanyUser";
 import './AttendanceMethod2.css';
 import {useState,useEffect} from 'react';
+
 
 export function AttendanceMethod2() {
     
@@ -43,8 +45,8 @@ export function AttendanceMethod2() {
         addEvent(template);
         isWindowVisible(false);  
     }
-    //When event runs, This function from eventClick is triggered instead of
-    //dateClick
+    //When event runs, This function from eventClick is triggered instead of DateClick
+    
     const handleEventClick = (info) =>{
         const clickedId = info.event.id;
         const updatedEvents = myEvents.filter(item => {
@@ -53,6 +55,17 @@ export function AttendanceMethod2() {
         });
         setMyEvents(updatedEvents);
     }
+    
+
+    //Check for Absent and Present using ClickedDate state.
+    const PresentList = Employees.filter(emp => emp.status === "Logged In" && emp.lastLogin.includes(ClickedDate));
+    
+    //backup real time date
+    const RealToday = new Date();
+
+    //Check IF (Last login date is bigger than today) -> False if True
+    //Check IF (Last login includes diff clicked date) -> False if True
+    const AbsentList = Employees.filter(emp => !(new Date(emp.lastLogin) > RealToday) && !(emp.lastLogin.includes(ClickedDate)));
     return (<>
     <div className="attendance-page">
         <p>Attendance</p>
@@ -69,7 +82,29 @@ export function AttendanceMethod2() {
             }
             {Window && AttendanceWindow && (
                 <div className="AttendanceWindow">
+                    <h4>Absent (No Login Today)</h4>
                     <span>
+                    <table border={1} className="Absent">
+                            <thead>
+                                <tr><th>ID</th><th>Name</th><th>Last Seen</th></tr>
+                            </thead>
+                            <tbody>
+                                {AbsentList.map(emp => 
+                                    UserInfo(emp.employeeId, emp.name, emp.lastLogin)
+                                )}
+                            </tbody>
+                    </table>
+                    <h4>Present (Logged in {ClickedDate})</h4>
+                    <table border={1} className="Present">
+                            <thead>
+                                <tr><th>ID</th><th>Name</th><th>Login Time</th></tr>
+                            </thead>
+                            <tbody>
+                                {PresentList.map(emp => 
+                                    UserInfo(emp.employeeId, emp.name, emp.lastLogin)
+                                )}
+                            </tbody>
+                    </table>
                     <button onClick={() => isAttendanceVisible(false)}>Back</button>
                     </span>
                 </div> 
@@ -84,6 +119,7 @@ export function AttendanceMethod2() {
             dateClick={handleClick}
             eventClick={handleEventClick}
         />
+        <button>Download CSV Report</button>
     </div>
     </>);
 }
