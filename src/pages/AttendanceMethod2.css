@@ -1,0 +1,41 @@
+.attendance-page{
+    position: relative;
+    border-radius: 8px;
+    min-height: 100vh;
+    background: #f8fafc;
+    padding: 24px 32px;
+}
+.EventWindow{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* 2. Layering */
+    z-index: 1000; 
+    /* APPEARANCE */
+    background-color: white;
+    padding: 30px;
+    
+    border-radius: 12px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.4); 
+    /* Stronger shadow to make it pop */
+    width: 350px;
+    border: 1px solid #e2e8f0;
+}
+.AttendanceWindow{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* 2. Layering */
+    z-index: 1000; 
+    /* APPEARANCE */
+    background-color: white;
+    padding: 30px;
+    
+    border-radius: 12px;
+    box-shadow: 0px 10px 30px rgba(130, 235, 128, 0.176); 
+    /* Stronger shadow to make it pop */
+    width: 350px;
+    border: 1px solid #e2e8f0;
+}
