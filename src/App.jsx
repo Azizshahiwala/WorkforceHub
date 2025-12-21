@@ -9,6 +9,7 @@ import Payroll from "./pages/PayRoll";
 import Feedback from "./pages/FeedbackEmployees";
 import Recruitment from "./pages/Recruitment";
 import Activity from "./pages/Activity";
+import AttendanceDashboard from "./pages/AttendanceDashboard";
 function App() {
   return (
     <BrowserRouter>
@@ -22,6 +23,7 @@ function App() {
           <Route path="feedback" element={<Feedback />} />
           <Route path="Applications" element={<Recruitment />} />
           <Route path="activity" element={<Activity />} />
+          <Route path="attendance" element={<AttendanceDashboard />} />
           {/* etc */}
         </Route>
 

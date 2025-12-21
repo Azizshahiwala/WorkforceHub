@@ -122,7 +122,7 @@ export function GetStaffData(){
   var NonStaffs = RawNonStaffs.includes(emp.department);
 
   // 2. Return the opposite (the actual Staff)
-  // true false means its Staff
+  // true means its Staff
   var Staffs = !NonStaffs;
 
   // 3. If value is True, put it in StaffList
