@@ -1,2 +1,1 @@
-Things needed:
-Recruitement.jsx
+This folder contains Employee Related Dashboard
