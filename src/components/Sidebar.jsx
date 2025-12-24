@@ -37,12 +37,6 @@ function Sidebar({ darkMode }) {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/attendance2" className="sidebar-item">
-            Attendance 2
-          </NavLink>
-        </li>
-        
-        <li>
           <NavLink to="/payroll" className="sidebar-item">
             PayRoll
           </NavLink>

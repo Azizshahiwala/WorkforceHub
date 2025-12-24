@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "./AttendanceDashboard.css";
+import {Link} from "react-router-dom";
 
 // 👉 Dummy employee list
 const employees = [
@@ -272,10 +273,53 @@ const attendanceData = {
 
 function AttendanceDashboard() {
   const [selectedEmp, setSelectedEmp] = useState(employees[0].id);
+  const [Myevent, setMyEvents] = useState([]);
+    //Since code is mutating useEffect, we do the following:
+    useEffect(() => {
+    // Fetch indian holidays from open source API
+    const fetchHoliday = async () => {
+        try {
+            // get response
+            const response = await fetch("https://date.nager.at/api/v3/PublicHolidays/2025/IN");
+            
+            //get response text
+            const text = await response.text();
 
-  // 👉 Convert attendance to FullCalendar events
-  const events =
+            //Now parse text to json
+            const data = JSON.parse(text);
+
+            // To map, we create a blue box (or orange as specified), same as entry:
+            const PreDefinedHolidays = data.map((holiday) => ({
+            id: `holiday-${holiday.date}`,
+            title: holiday.name,
+            date: holiday.date,
+            backgroundColor: "orange",
+            textColor: "black",   // ✅ FORCE text
+            allDay: true,
+            editable: false
+}));
+
+            // Since FullCalendar takes single event param, we append this
+            // We use a functional update to prevent duplicates if the component re-renders
+            setMyEvents(oldData => {
+                // Optional: filter out existing holidays to prevent duplicates on re-mount
+                const existingDates = new Set(oldData.map(e => e.date));
+                const uniqueNewHolidays = PreDefinedHolidays.filter(h => !existingDates.has(h.date));
+                return [...oldData, ...uniqueNewHolidays];
+            });
+
+        } catch (error) {
+            console.error("Error fetching holidays:", error);
+        }
+    };
+
+    fetchHoliday();
+}, []);
+
+  useEffect(()=>{
+    const AttendanceEvents =
     attendanceData[selectedEmp]?.map((item) => ({
+      id: `att-${selectedEmp}-${item.date}`,
       title: item.status,
       date: item.date,
       color:
@@ -285,6 +329,15 @@ function AttendanceDashboard() {
           ? "#ef4444"
           : "#3b82f6",
     })) || [];
+    setMyEvents(prev=>{
+
+      // keep holidays, remove old attendance
+    const nonAttendance = prev.filter(
+      e => !e.id?.startsWith("att-")
+    );
+      return [...nonAttendance, ...AttendanceEvents];
+    });
+  },[selectedEmp]);
 
   return (
     <div className="attendance-page">
@@ -312,13 +365,15 @@ function AttendanceDashboard() {
         <div><span className="dot absent"></span> Absent</div>
         <div><span className="dot leave"></span> Leave</div>
       </div>
-
+      <div>
+        <Link to="/AttendanceOverview" className="OverviewBtn">Click here to get overview</Link>
+      </div>
       {/* Calendar */}
       <div className="calendar-card">
         <FullCalendar
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
-          events={events}
+          events={Myevent}
           height="auto"
           headerToolbar={{
             left: "prev,next today",

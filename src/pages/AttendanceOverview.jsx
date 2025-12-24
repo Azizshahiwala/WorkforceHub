@@ -4,11 +4,9 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from '@fullcalendar/interaction'; // Necessary for selectable
 import { Employees ,UserInfo} from "./CompanyUser";
-import './AttendanceMethod2.css';
+import './AttendanceOverview.css';
 import {useState,useEffect} from 'react';
-
-
-export function AttendanceMethod2() {
+export function AttendanceOverview() {
     
     //Track if window is open
     const [Window,isWindowVisible] = useState(false);
@@ -68,7 +66,8 @@ export function AttendanceMethod2() {
     const AbsentList = Employees.filter(emp => !(new Date(emp.lastLogin) > RealToday) && !(emp.lastLogin.includes(ClickedDate)));
     return (<>
     <div className="attendance-page">
-        <p>Attendance</p>
+        <h2>Attendance Dashboard</h2>
+        <h4>Click on a date for more info</h4>
         {/*Check if window is true with &&*/}
         {Window && (
                 <div className="EventWindow">
@@ -123,4 +122,4 @@ export function AttendanceMethod2() {
     </div>
     </>);
 }
-export default AttendanceMethod2;
+export default AttendanceOverview;
