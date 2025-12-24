@@ -190,8 +190,7 @@ function CompanyUser() {
                 <td>{req.lastLogin}</td>
               </tr>
             ))}
-        </div>
-          </>
+            </tbody>
         </table>
 
         {showModal && (
