@@ -16,11 +16,6 @@ import Login from "./Login/LoginPage";
 import Interviewer from "./Login/InterviewerPage";
 import InterviewStart from "./Login/InterviewStart";
 import InterviewEnd from "./Login/InterviewEnd";
-
-import Login from "./Login/LoginPage";
-import Interviewer from "./Login/InterviewerPage";
-import InterviewStart from "./Login/InterviewStart";
-import InterviewEnd from "./Login/InterviewEnd";
 function App() {
   return (
     <BrowserRouter>
