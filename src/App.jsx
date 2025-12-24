@@ -11,6 +11,10 @@ import Recruitment from "./pages/Recruitment";
 import Activity from "./pages/Activity";
 import AttendanceDashboard from "./pages/AttendanceDashboard";
 import AttendanceOverview from "./pages/AttendanceOverview";
+import Login from "./Login/LoginPage";
+import Interviewer from "./Login/InterviewerPage";
+import InterviewStart from "./Login/InterviewStart";
+import InterviewEnd from "./Login/InterviewEnd";
 function App() {
   return (
     <BrowserRouter>

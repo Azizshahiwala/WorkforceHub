@@ -3,7 +3,7 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from '@fullcalendar/interaction'; // Necessary for selectable
-import { Employees ,UserInfo} from "./CompanyUser";
+import {Employees ,UserInfo} from "./CompanyUser";
 import './AttendanceOverview.css';
 import {useState,useEffect} from 'react';
 export function AttendanceOverview() {
