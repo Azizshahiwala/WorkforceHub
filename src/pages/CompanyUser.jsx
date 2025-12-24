@@ -1,17 +1,28 @@
 import React, { useState } from "react";
 import "./CompanyUser.css";
+import { Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const data = [
-  { id: 1, name: "Marshall Nichols", employeeId: "LA-11", department: "Developer" },
-  { id: 2, name: "Maryam Amiri", employeeId: "LA-12", department: "Sales" },
-  { id: 3, name: "Gary Camara", employeeId: "LA-13", department: "Marketing" },
-  { id: 4, name: "Frank Camly", employeeId: "LA-14", department: "Testers" },
-  { id: 5, name: "Aarav Mehta", employeeId: "LA-15", department: "Intern" },
-  { id: 6, name: "Sophia Turner", employeeId: "LA-16", department: "Finance" },
-  { id: 7, name: "Daniel Roberts", employeeId: "LA-17", department: "Developer" },
-  { id: 8, name: "Priya Sharma", employeeId: "LA-18", department: "Support" },
-  { id: 9, name: "Michael Chen", employeeId: "LA-19", department: "Marketing" },
-  { id: 10, name: "Olivia Brown", employeeId: "LA-20", department: "Sales" }
+   { id: 1, name: "Marshall Nichols", employeeId: "LA-11", department: "Developer", gender: "Male" },
+  { id: 2, name: "Maryam Amiri", employeeId: "LA-12", department: "Sales", gender: "Female" },
+  { id: 3, name: "Gary Camara", employeeId: "LA-13", department: "Marketing", gender: "Male" },
+  { id: 4, name: "Frank Camly", employeeId: "LA-14", department: "Testers", gender: "Male" },
+  { id: 5, name: "Aarav Mehta", employeeId: "LA-15", department: "Intern", gender: "Male" },
+  { id: 6, name: "Sophia Turner", employeeId: "LA-16", department: "Finance", gender: "Female" },
+  { id: 7, name: "Daniel Roberts", employeeId: "LA-17", department: "Developer", gender: "Male" },
+  { id: 8, name: "Priya Sharma", employeeId: "LA-18", department: "Support", gender: "Female" },
+  { id: 9, name: "Michael Chen", employeeId: "LA-19", department: "Marketing", gender: "Male" },
+  { id: 10, name: "Olivia Brown", employeeId: "LA-20", department: "Sales", gender: "Female" },
+  { id: 11, name: "Robert Williams", employeeId: "LA-21", department: "Admin", gender: "Male" },
+  { id: 12, name: "Ananya Kapoor", employeeId: "LA-22", department: "CEO", gender: "Female" }
 ];
 
 function CompanyUser() {
@@ -90,6 +101,30 @@ function CompanyUser() {
   //   setEmployees(data);
   // };
 
+  // ===============================
+  // 📊 Pie Chart Logic
+  // Staff = all except Admin & CEO
+  // Non-Staff = Admin + CEO
+  // ===============================
+  const staffCount = employees.filter(
+    emp => emp.department !== "Admin" && emp.department !== "CEO"
+  ).length;
+
+  const nonStaffCount = employees.filter(
+    emp => emp.department === "Admin" || emp.department === "CEO"
+  ).length;
+
+  const pieData = {
+    labels: ["Staff", "Non-Staff"],
+    datasets: [
+      {
+        data: [staffCount, nonStaffCount],
+        backgroundColor: ["#47B39C", "#EC6B56"], // green & red
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
     
     <div className="leave-page">
@@ -107,6 +142,40 @@ function CompanyUser() {
             onChange={(e) => setSearch(e.target.value)}
             />
       </div>
+
+       {/* ================= Pie Chart ================= */}
+      {/* <div className="pie-wrapper">
+        <Pie data={pieData} />
+        <div className="pie-center-text">
+          <div>Total</div>
+          <strong>{employees.length}</strong>
+        </div>
+      </div> */}
+      {/* ================= Employee Summary ================= */}
+<div className="emp-summary">
+  <div className="pie-wrapper">
+    <Pie data={pieData} />
+    <div className="pie-center-text">
+      <span>Total</span>
+      <strong>{employees.length}</strong>
+    </div>
+  </div>
+
+  {/* 👇 Staff / Non-Staff Info */}
+  <div className="emp-legend">
+    <div className="legend-item">
+      <span className="dot staff"></span>
+      <span>Staff</span>
+      <strong>{staffCount}</strong>
+    </div>
+    <div className="legend-item">
+      <span className="dot nonstaff"></span>
+      <span>Non-Staff</span>
+      <strong>{nonStaffCount}</strong>
+    </div>
+  </div>
+</div>
+
 
       <div className="leave-card">
         <div className="leave-card-header">
@@ -146,7 +215,11 @@ function CompanyUser() {
                 </div>
                 <div className="emp-card-row">
                   <span>Status:</span>
-                  <strong>Active</strong>
+                  <strong className="status-active">Active</strong>
+                </div>
+                <div className="emp-card-row">
+                  <span>Gender:</span>
+                  <strong>{emp.gender}</strong>
                 </div>
               </div>
             ))}

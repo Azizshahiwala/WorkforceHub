@@ -334,6 +334,90 @@
 }
 
 
+.status-active {
+  color: #00ff5e;          /* green text */
+  background: #00ff59;    /* light green bg */
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+/* Summary container */
+.emp-summary {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin: 30px 0;
+  padding: 20px 24px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  max-width: 520px;
+}
+
+/* Pie wrapper */
+.pie-wrapper {
+  position: relative;
+  width: 220px;
+}
+
+/* Center text */
+.pie-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.pie-center-text span {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.pie-center-text strong {
+  display: block;
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Legend */
+.emp-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.legend-item strong {
+  margin-left: auto;
+  font-size: 16px;
+  color: #111827;
+}
+
+/* Colored dots */
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot.staff {
+  background: #47B39C;   /* blue */
+}
+
+.dot.nonstaff {
+  background: #EC6B56;  /* red */
+}
+
 
 
 /* ===============================
