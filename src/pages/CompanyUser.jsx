@@ -15,7 +15,6 @@ export const Employees = [
     id: 1,
     name: "Marshall Nichols",
     employeeId: "LA-0012",
-    employeeId: "LA-0012",
     department: "Developer",
     status: "Logged In",
     lastLogin: "2025-12-21 09:15 AM",
@@ -24,7 +23,6 @@ export const Employees = [
   {
     id: 2,
     name: "Maryam Amiri",
-    employeeId: "LA-0011",
     employeeId: "LA-0011",
     department: "Sales",
     status: "Logged In",
@@ -125,7 +123,6 @@ export const Employees = [
 ];
 
 
-
 export function UserInfo(empID, name, lastLogin) {
     return (
         <tr key={empID}>
@@ -221,12 +218,6 @@ function CompanyUser() {
   localStorage.removeItem("employees");   // 👈 this line (you add)
   setEmployees(Employees);
 };
-  };
-
-  const resetEmployees = () => {
-  localStorage.removeItem("employees");   // 👈 this line (you add)
-  setEmployees(Employees);
-};
 
   return (
     <div className="leave-page">
@@ -239,7 +230,6 @@ function CompanyUser() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button onClick={resetEmployees}>Reset Data</button>
         <button onClick={resetEmployees}>Reset Data</button>
       </div>
 
@@ -295,10 +285,6 @@ function CompanyUser() {
                 <div className="emp-card-row">
                   <span>Gender:</span>
                   <strong>{emp.Gender}</strong>
-                </div>
-                <div className="emp-card-row">
-                  <span>Last Login:</span>
-                  <strong>{emp.lastLogin}</strong>
                 </div>
                 <div className="emp-card-row">
                   <span>Last Login:</span>
