@@ -11,6 +11,12 @@ import Recruitment from "./pages/Recruitment";
 import Activity from "./pages/Activity";
 import AttendanceDashboard from "./pages/AttendanceDashboard";
 import AttendanceOverview from "./pages/AttendanceOverview";
+import EmployeePerformance from "./pages/EmployeePerformance";
+import Login from "./Login/LoginPage";
+import Interviewer from "./Login/InterviewerPage";
+import InterviewStart from "./Login/InterviewStart";
+import InterviewEnd from "./Login/InterviewEnd";
+
 import Login from "./Login/LoginPage";
 import Interviewer from "./Login/InterviewerPage";
 import InterviewStart from "./Login/InterviewStart";
@@ -31,6 +37,7 @@ function App() {
           <Route path="activity" element={<Activity />} />
           <Route path="attendance" element={<AttendanceDashboard />} />
           <Route path="AttendanceOverview" element={<AttendanceOverview/>} />
+          <Route path="performance" element={<EmployeePerformance />} />
           {/* etc */}
         </Route>
 
