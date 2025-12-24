@@ -1,22 +1,16 @@
 // App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./Login/LoginPage";
+
 import HRLayout from "./layout/HRLayout";
 import Dashboard from "./pages/Dashboard";
-import CompanyUser from "./pages/CompanyUser";
 import LeaveManager from "./pages/LeaveManager";
-import AttendanceDashboard from "./pages/AttendanceDashboard";
+import CompanyUser from "./pages/CompanyUser";
 import Payroll from "./pages/PayRoll";
-import Activity from "./pages/Activity";
 import Feedback from "./pages/FeedbackEmployees";
-import EmployeePerformance from "./pages/EmployeePerformance";
-import Recruitment  from "./Employees/Recruitment";
-
-import Interviewer from "./Login/InterviewerPage";
-import InterviewStart from "./Login/InterviewStart";
-import InterviewEnd from "./Login/InterviewEnd";
-
-
+import Recruitment from "./pages/Recruitment";
+import Activity from "./pages/Activity";
+import AttendanceDashboard from "./pages/AttendanceDashboard";
+import AttendanceOverview from "./pages/AttendanceOverview";
 function App() {
   return (
     <BrowserRouter>
@@ -28,11 +22,11 @@ function App() {
           <Route path="leave" element={<LeaveManager />} />
           <Route path="attendance" element={<AttendanceDashboard />} />
           <Route path="payroll" element={<Payroll />} />
-          <Route path="activity" element={<Activity />} />
           <Route path="feedback" element={<Feedback />} />
-          <Route path="performance" element={<EmployeePerformance />} />
-
-          <Route path="Recruitment" element={<Recruitment />} />
+          <Route path="Applications" element={<Recruitment />} />
+          <Route path="activity" element={<Activity />} />
+          <Route path="attendance" element={<AttendanceDashboard />} />
+          <Route path="AttendanceOverview" element={<AttendanceOverview/>} />
           {/* etc */}
         </Route>
 
