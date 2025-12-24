@@ -14,7 +14,7 @@ export const Employees = [
   {
     id: 1,
     name: "Marshall Nichols",
-    employeeId: "LA-0011",
+    employeeId: "LA-0012",
     department: "Developer",
     status: "Logged In",
     lastLogin: "2025-12-21 09:15 AM",
@@ -23,7 +23,7 @@ export const Employees = [
   {
     id: 2,
     name: "Maryam Amiri",
-    employeeId: "LA-0012",
+    employeeId: "LA-0011",
     department: "Sales",
     status: "Logged In",
     lastLogin: "2025-12-21 08:45 AM",
@@ -56,7 +56,53 @@ export const Employees = [
     lastLogin: "2025-12-21 11:45 AM",
     Gender: "Male",
   },
+  {
+    id: 6,
+    name: "Sophia Turner",
+    employeeId: "LA-0016",
+    department: "Finance",
+    status: "Logged Out",
+    lastLogin: "2025-12-21 02:30 PM",
+    Gender: "Female",
+  },
+  {
+    id: 7,
+    name: "Daniel Roberts",
+    employeeId: "LA-0017",
+    department: "Developer",
+    status: "Logged Out",
+    lastLogin: "2025-12-20 05:00 PM",
+    Gender: "Male",
+  },
+  {
+    id: 8,
+    name: "Priya Sharma",
+    employeeId: "LA-0018",
+    department: "Support",
+    status: "Logged In",
+    lastLogin: "2025-12-20 09:00 AM",
+    Gender: "Female",
+  },
+  {
+    id: 9,
+    name: "Michael Chen",
+    employeeId: "LA-0019",
+    department: "Marketing",
+    status: "Logged Out",
+    lastLogin: "2025-12-19 06:10 PM",
+    Gender: "Male",
+  },
+  {
+    id: 10,
+    name: "Olivia Brown",
+    employeeId: "LA-0020",
+    department: "Sales",
+    status: "Logged In",
+    lastLogin: "2025-12-25 09:00 AM",
+    Gender: "Female",
+  },
 ];
+
 
 export function UserInfo(empID, name, lastLogin) {
     return (
@@ -149,6 +195,11 @@ function CompanyUser() {
     ],
   };
 
+  const resetEmployees = () => {
+  localStorage.removeItem("employees");   // 👈 this line (you add)
+  setEmployees(Employees);
+};
+
   return (
     <div className="leave-page">
       <div className="leave-header">
@@ -160,6 +211,7 @@ function CompanyUser() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        <button onClick={resetEmployees}>Reset Data</button>
       </div>
 
       <div className="emp-summary">
@@ -214,6 +266,10 @@ function CompanyUser() {
                 <div className="emp-card-row">
                   <span>Gender:</span>
                   <strong>{emp.Gender}</strong>
+                </div>
+                <div className="emp-card-row">
+                  <span>Last Login:</span>
+                  <strong>{emp.lastLogin}</strong>
                 </div>
               </div>
             ))}
