@@ -1,23 +1,33 @@
-import React, { useEffect, useState } from 'react'
-import './CompanyUser.css';
-//This file is also called Users.
+import React, { useState } from "react";
+import "./CompanyUser.css";
+import { Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 export const Employees = [
-  // --- 5 PRESENT: Logged in today (Dec 21) & Status is Logged In ---
   {
     id: 1,
     name: "Marshall Nichols",
     employeeId: "LA-0011",
     department: "Developer",
     status: "Logged In",
-    lastLogin: "2025-12-21 09:15 AM"
+    lastLogin: "2025-12-21 09:15 AM",
+    Gender: "Male",
   },
   {
-    id: 2,  
+    id: 2,
     name: "Maryam Amiri",
     employeeId: "LA-0012",
     department: "Sales",
     status: "Logged In",
-    lastLogin: "2025-12-21 08:45 AM"
+    lastLogin: "2025-12-21 08:45 AM",
+    Gender: "Female",
   },
   {
     id: 3,
@@ -25,7 +35,8 @@ export const Employees = [
     employeeId: "LA-0013",
     department: "Marketing",
     status: "Logged In",
-    lastLogin: "2025-12-21 10:20 AM"
+    lastLogin: "2025-12-21 10:20 AM",
+    Gender: "Male",
   },
   {
     id: 4,
@@ -33,7 +44,8 @@ export const Employees = [
     employeeId: "LA-0014",
     department: "Testers",
     status: "Logged In",
-    lastLogin: "2025-12-21 09:00 AM"
+    lastLogin: "2025-12-21 09:00 AM",
+    Gender: "Male",
   },
   {
     id: 5,
@@ -41,54 +53,11 @@ export const Employees = [
     employeeId: "LA-0015",
     department: "Intern",
     status: "Logged In",
-    lastLogin: "2025-12-21 11:45 AM"
+    lastLogin: "2025-12-21 11:45 AM",
+    Gender: "Male",
   },
-
-  // --- 4 ABSENT: Logged out today OR logged in on a past date ---
-  {
-    id: 6,
-    name: "Sophia Turner",
-    employeeId: "LA-0016",
-    department: "Finance",
-    status: "Logged Out", // Absent: Active today but already logged out
-    lastLogin: "2025-12-21 02:30 PM"
-  },
-  {
-    id: 7,
-    name: "Daniel Roberts",
-    employeeId: "LA-0017",
-    department: "Developer",
-    status: "Logged Out", // Absent: Last seen yesterday
-    lastLogin: "2025-12-20 05:00 PM"
-  },
-  {
-    id: 8,
-    name: "Priya Sharma",
-    employeeId: "LA-0018",
-    department: "Support",
-    status: "Logged In", 
-    lastLogin: "2025-12-20 09:00 AM" // Absent: Logged in yesterday but NOT today
-  },
-  {
-    id: 9,
-    name: "Michael Chen",
-    employeeId: "LA-0019",
-    department: "Marketing",
-    status: "Logged Out", // Absent: No login today
-    lastLogin: "2025-12-19 06:10 PM"
-  },
-
-  // --- 1 INVALID: Future date relative to "Today" (Dec 21) ---
-  {
-    id: 10,
-    name: "Olivia Brown",
-    employeeId: "LA-0020",
-    department: "Sales",
-    status: "Logged In",
-    lastLogin: "2025-12-25 09:00 AM" // Invalid: Should not appear in current attendance lists
-  }
 ];
-//This function exports User info to AttendanceMethod2
+
 export function UserInfo(empID, name, lastLogin) {
     return (
         <tr key={empID}>
@@ -98,59 +67,110 @@ export function UserInfo(empID, name, lastLogin) {
         </tr>
     );
 }
+
 function CompanyUser() {
-  const [Employee, setEmployee] = useState(Employees);
+  const [employees, setEmployees] = useState(() => {
+    const saved = localStorage.getItem("employees");
+    return saved ? JSON.parse(saved) : Employees;
+  });
+
+  const [showModal, setShowModal] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const [newEmployee, setNewEmployee] = useState({
+    name: "",
+    department: "",
+    Gender: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewEmployee((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const generateEmployeeId = () => {
+    const lastEmp = employees[employees.length - 1];
+    const lastNum = lastEmp
+      ? Number(lastEmp.employeeId.split("-")[1])
+      : 10;
+    return `LA-${String(lastNum + 1).padStart(4, "0")}`;
+  };
+
+  const submitEmployee = () => {
+    const { name, department, Gender } = newEmployee;
+    if (!name || !department || !Gender) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    const newEmp = {
+      id: employees.length + 1,
+      name,
+      department,
+      Gender,
+      employeeId: generateEmployeeId(),
+      status: "Logged In",
+      lastLogin: new Date().toLocaleString(),
+    };
+
+    const updated = [...employees, newEmp];
+    setEmployees(updated);
+    localStorage.setItem("employees", JSON.stringify(updated));
+
+    setNewEmployee({ name: "", department: "", Gender: "" });
+    setShowModal(false);
+  };
+
+  const removeEmployee = (id) => {
+    if (window.confirm("Are you sure you want to remove this employee?")) {
+      const updated = employees.filter((emp) => emp.id !== id);
+      setEmployees(updated);
+      localStorage.setItem("employees", JSON.stringify(updated));
+    }
+  };
+
+  const staffCount = employees.filter(
+    (emp) => emp.department !== "Admin" && emp.department !== "CEO"
+  ).length;
+
+  const nonStaffCount = employees.length - staffCount;
+
+  const pieData = {
+    labels: ["Staff", "Non-Staff"],
+    datasets: [
+      {
+        data: [staffCount, nonStaffCount],
+        backgroundColor: ["#47B39C", "#EC6B56"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
-    
     <div className="leave-page">
       <div className="leave-header">
         <h2>Users</h2>
-        {/* Reset the data if deleted */}
-        {/* <button type="button" onClick={resetEmployees}>
-          Reset
-        </button> */}
         <input
-            type="text"
-            placeholder="Search by name...🔍"
-            className="search-input"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            />
+          type="text"
+          placeholder="Search by name... 🔍"
+          className="search-input"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
-       {/* ================= Pie Chart ================= */}
-      {/* <div className="pie-wrapper">
-        <Pie data={pieData} />
-        <div className="pie-center-text">
-          <div>Total</div>
-          <strong>{employees.length}</strong>
+      <div className="emp-summary">
+        <div className="pie-wrapper">
+          <Pie data={pieData} />
+          <div className="pie-center-text">
+            <span>Total</span>
+            <strong>{employees.length}</strong>
+          </div>
         </div>
-      </div> */}
-      {/* ================= Employee Summary ================= */}
-<div className="emp-summary">
-  <div className="pie-wrapper">
-    <Pie data={pieData} />
-    <div className="pie-center-text">
-      <span>Total</span>
-      <strong>{employees.length}</strong>
-    </div>
-  </div>
-
-  {/* 👇 Staff / Non-Staff Info */}
-  <div className="emp-legend">
-    <div className="legend-item">
-      <span className="dot staff"></span>
-      <span>Staff</span>
-      <strong>{staffCount}</strong>
-    </div>
-    <div className="legend-item">
-      <span className="dot nonstaff"></span>
-      <span>Non-Staff</span>
-      <strong>{nonStaffCount}</strong>
-    </div>
-  </div>
-</div>
-
+      </div>
 
       <div className="leave-card">
         <div className="leave-card-header">
@@ -160,38 +180,44 @@ function CompanyUser() {
           </button>
         </div>
 
-        <table className="leave-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Employee</th>
-              <th>Employee ID</th>
-              <th>Department</th>
-              <th>Last Login</th>
-            </tr>
-          </thead>
+        {/* ✅ Grid instead of invalid table */}
+        <div className="emp-grid">
+          {employees
+            .filter((emp) =>
+              emp.name.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((emp) => (
+              <div className="emp-card" key={emp.id}>
+                <button
+                  className="remove-icon-btn"
+                  onClick={() => removeEmployee(emp.id)}
+                >
+                  ✖
+                </button>
 
-          <tbody>
-            {Employee.map((req, index) => (
-              <tr key={req.id}>
-                <td>{index + 1}</td>
-
-                <td>
-                  <div className="emp-cell">
-                    <div className="emp-avatar">
-                      {req.name.charAt(0)}
-                    </div>
-                    <span>{req.name}</span>
-                  </div>
-                </td>
-
-                <td>{req.employeeId}</td>
-                <td>{req.department}</td>
-                <td>{req.lastLogin}</td>
-              </tr>
+                <div className="emp-card-row">
+                  <span>Employee ID:</span>
+                  <strong>{emp.employeeId}</strong>
+                </div>
+                <div className="emp-card-row">
+                  <span>Name:</span>
+                  <strong>{emp.name}</strong>
+                </div>
+                <div className="emp-card-row">
+                  <span>Department:</span>
+                  <strong>{emp.department}</strong>
+                </div>
+                <div className="emp-card-row">
+                  <span>Status:</span>
+                  <strong className="status-active">Active</strong>
+                </div>
+                <div className="emp-card-row">
+                  <span>Gender:</span>
+                  <strong>{emp.Gender}</strong>
+                </div>
+              </div>
             ))}
-            </tbody>
-        </table>
+        </div>
 
         {showModal && (
           <div className="modal-overlay">
@@ -214,6 +240,14 @@ function CompanyUser() {
                 onChange={handleChange}
               />
 
+              <input
+                type="text"
+                name="Gender"
+                placeholder="Gender"
+                value={newEmployee.Gender}
+                onChange={handleChange}
+              />
+
               <div className="modal-actions">
                 <button type="button" onClick={submitEmployee}>
                   Add
@@ -228,26 +262,6 @@ function CompanyUser() {
       </div>
     </div>
   );
-}
-export function FetchEmployeeData(){
-  return Employees.length;
-}
-export function GetStaffData(){
-  var RawNonStaffs = ["Intern","Support"];
-  var StaffList = Employees.filter((emp)=>{
-
-    // 1. Create a boolean variable to check if they are "Non-Staff"
-  //This returns true if emp is Non-Staff
-  var NonStaffs = RawNonStaffs.includes(emp.department);
-
-  // 2. Return the opposite (the actual Staff)
-  // true means its Staff
-  var Staffs = !NonStaffs;
-
-  // 3. If value is True, put it in StaffList
-  return Staffs;
-  })
-  return StaffList.length;
 }
 
 export default CompanyUser;
