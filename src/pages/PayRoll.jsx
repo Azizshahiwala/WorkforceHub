@@ -155,13 +155,13 @@ const displayRow = (id) => {
                 .map((emp) => (
                   <div className="emp-card" key={emp.id}>
                     {/* Top-right remove button */}
-                    <button
+                    {/* <button
                       className="remove-icon-btn"
                       onClick={() => removeRow(emp.id)}
                       title="Remove Employee"
                     >
                       ✕
-                    </button>
+                    </button> */}
 
                     <div className="emp-card-row">
                       <span>Employee ID:</span>
