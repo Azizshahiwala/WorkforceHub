@@ -5,6 +5,7 @@ function Navbar({ darkMode, setDarkMode }) {
     <div className="navbar">
       <img src={logo} alt="HRMS Logo" className="logo" />
 
+  
       <button
         className="theme-toggle"
         onClick={() => setDarkMode(prev => !prev)}
