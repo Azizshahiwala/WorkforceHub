@@ -20,13 +20,28 @@ export default function AccountLogin() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-        if (selectedRole === "interviewer") {
-            navigate("/interviewer");
-        }else {
-        navigate("/"); // HR/Admin/Employees dashboard
+    try{
+      const response = await fetch("http://localhost:5000/api/Login",
+      {method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+     });
+
+     //Convert received data objects to json string. First let it web send data. so we use await
+     const data = await response.json();
+
+     if(data.success){
+        if(data.role === "interviewer" ) navigate("/interviewer");
+        else navigate("/dashboard"); // HR/Admin/Employees dashboard
+     }
+     else alert(data.message);
+     
+    }
+    catch(error){
+      console.log("Error from LoginPage.jsx",error)
     }
   };
 
@@ -40,14 +55,10 @@ export default function AccountLogin() {
             <div
               key={role.id}
               className={`role-card ${
-                selectedRole === role.id ? "active" : ""
+                selectedRole === role.id ? "active" : "inactive"
               }`}
               onClick={() => {
-                setSelectedRole(role.id);
-                if (role.id === "interviewer") {
-                navigate("/interviewer");
-                }
-            }}
+                setSelectedRole(role.id);}}
             >
               <img src={role.img} alt={role.label} className="role-img" />
               <p>{role.label}</p>
@@ -58,6 +69,7 @@ export default function AccountLogin() {
         <form onSubmit={handleSubmit} className="form">
           <input
             type="email"
+            name="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -65,6 +77,7 @@ export default function AccountLogin() {
           />
           <input
             type="password"
+            name="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

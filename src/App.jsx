@@ -39,8 +39,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* All HR pages use same layout */}
-        <Route path="/" element={<HRLayout />}>
+        {/* 1. Login is now the index page */}
+        <Route path="/" element={<Login />} />
+
+        {/* 2. Move HR Layout to /dashboard */}
+        <Route path="/dashboard" element={<HRLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="users" element={<CompanyUser />} />
           <Route path="leave" element={<LeaveManager />} />
@@ -49,16 +52,11 @@ function App() {
           <Route path="feedback" element={<Feedback />} />
           <Route path="Applications" element={<Recruitment />} />
           <Route path="activity" element={<Activity />} />
-          <Route path="attendance" element={<AttendanceDashboard />} />
           <Route path="AttendanceOverview" element={<AttendanceOverview/>} />
           <Route path="performance" element={<EmployeePerformance />} />
-          {/* etc */}
         </Route>
 
-        {/* Example: login page without navbar/sidebar */}
-        <Route path="/login" element={<Login />} />
-
-        {/* Interviewer only */}
+        {/* Interviewer routes remain the same or adjust as needed */}
         <Route path="/interviewer" element={<Interviewer />} />
         <Route path="/interview/start" element={<InterviewStart />} />
         <Route path="/end" element={<InterviewEnd />} />
