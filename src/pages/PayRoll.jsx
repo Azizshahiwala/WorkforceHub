@@ -94,6 +94,8 @@ const data = [
   }
 ];
 
+
+
 function PayRoll() {
 
   const [Employee, setEmployee] = useState(data);
@@ -107,6 +109,14 @@ function PayRoll() {
     //       setEmployee(JSON.parse(saved));
     //     }
     //   }, []);
+
+// Remove Employee
+const removeRow = (id) => {
+  if (window.confirm("Are you sure you want to remove this employee?")) {
+    const updated = Employee.filter(emp => emp.id !== id);
+    setEmployee(updated);
+  }
+};
 
 // (Optional) Mail handler
 const displayRow = (id) => {
@@ -144,6 +154,15 @@ const displayRow = (id) => {
                 )
                 .map((emp) => (
                   <div className="emp-card" key={emp.id}>
+                    {/* Top-right remove button */}
+                    {/* <button
+                      className="remove-icon-btn"
+                      onClick={() => removeRow(emp.id)}
+                      title="Remove Employee"
+                    >
+                      ✕
+                    </button> */}
+
                     <div className="emp-card-row">
                       <span>Employee ID:</span>
                       <strong>{emp.employeeId}</strong>
