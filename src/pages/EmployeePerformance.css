@@ -1,0 +1,45 @@
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.feedback-card {
+  background: #fff;
+  padding: 15px;
+  width: 250px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+
+.remove-icon-btn {
+  flex-shrink: 0;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 4px;   /* 👈 pushes button down */
+  margin-bottom: 4px;
+
+  transition: all 0.2s ease;
+}
+
+
+.remove-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-1px);
+}
+
+.remove-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}

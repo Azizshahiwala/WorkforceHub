@@ -196,6 +196,11 @@
   color: #333;
 }
 
+/* Star */
+.fa-star { color: #ccc; }
+.checked { color: orange; }
+
+
 /* ===============================
    Responsive
 ================================ */

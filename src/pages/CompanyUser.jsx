@@ -101,6 +101,25 @@ export const Employees = [
     lastLogin: "2025-12-25 09:00 AM",
     Gender: "Female",
   },
+   {
+    id: 11,
+    name: "Robert King",
+    employeeId: "LA-0021",
+    department: "Admin",
+    status: "Logged In",
+    lastLogin: "2025-12-21 08:00 AM",
+    Gender: "Male",
+  },
+
+  {
+    id: 12,
+    name: "Emily Watson",
+    employeeId: "LA-0022",
+    department: "CEO",
+    status: "Logged In",
+    lastLogin: "2025-12-21 07:45 AM",
+    Gender: "Female",
+  },
 ];
 
 
