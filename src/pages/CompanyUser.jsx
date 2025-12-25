@@ -223,13 +223,6 @@ function CompanyUser() {
     <div className="leave-page">
       <div className="leave-header">
         <h2>Users</h2>
-        <input
-          type="text"
-          placeholder="Search by name... 🔍"
-          className="search-input"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
         <button onClick={resetEmployees}>Reset Data</button>
       </div>
 
@@ -242,6 +235,14 @@ function CompanyUser() {
           </div>
         </div>
       </div>
+
+      <input
+          type="text"
+          placeholder="Search by name... 🔍"
+          className="search-input"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
       <div className="leave-card">
         <div className="leave-card-header">
