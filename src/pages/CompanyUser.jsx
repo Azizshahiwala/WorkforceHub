@@ -223,7 +223,7 @@ function CompanyUser() {
     <div className="leave-page">
       <div className="leave-header">
         <h2>Users</h2>
-        <button onClick={resetEmployees}>Reset Data</button>
+        <button type="button" className="reset-btn " onClick={resetEmployees}>Reset Data</button>
       </div>
 
       <div className="emp-summary">
