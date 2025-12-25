@@ -1,3 +1,10 @@
+.performance-page{
+    padding: 24px;
+    background-color: #f9fafb;
+    min-height: 100vh;
+    color: #111827;
+}
+
 .card-container {
   display: flex;
   flex-wrap: wrap;

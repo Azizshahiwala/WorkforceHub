@@ -1,3 +1,22 @@
+/* Page background for HR Dashboard */
+.activity-page {
+  padding: 24px 32px 32px;
+  background-color: #f9fafb;   /* light background like Users page */
+  min-height: 100vh;
+  color: #111827;              /* dark text color */
+}
+
+/* In dark mode, KEEP it light */
+body.dark .activity-page {
+  background-color: #f9fafb;
+}
+
+
+
+
+/* ===============================
+   Activity Card Container
+================================ */
 .activity-container {
   background: linear-gradient(180deg, #ffffff, #f8fafc);
   padding: 22px;
@@ -5,6 +24,21 @@
   max-width: 450px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   border: 1px solid #e5e7eb;
+}
+
+/* Keep container light in dark mode */
+body.dark .activity-container {
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  border-color: #e5e7eb;
+}
+
+/* ===============================
+   Header
+================================ */
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .activity-title {
@@ -15,6 +49,30 @@
   letter-spacing: 0.3px;
 }
 
+/* Title stays dark in dark mode */
+body.dark .activity-title {
+  color: #0f172a;
+}
+
+/* +New Button */
+.activity-btn {
+  background: linear-gradient(135deg, #4f46e5, #3b82f6);
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.activity-btn:hover {
+  opacity: 0.9;
+}
+
+/* ===============================
+   Timeline List
+================================ */
 .activity-list {
   position: relative;
 }
@@ -32,6 +90,7 @@
   transform: translateX(4px);
 }
 
+/* Dot on the timeline */
 .activity-dot {
   position: absolute;
   left: 10px;
@@ -44,6 +103,7 @@
   z-index: 2;
 }
 
+/* Line between events */
 .activity-line {
   position: absolute;
   left: 16px;
@@ -54,6 +114,7 @@
   border-radius: 2px;
 }
 
+/* Content card for each event */
 .activity-content {
   background: #ffffff;
   padding: 12px 16px;
@@ -63,6 +124,13 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
 }
 
+/* Keep per-item cards light in dark mode */
+body.dark .activity-content {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+
+/* Time label */
 .activity-time {
   font-size: 12px;
   font-weight: 600;
@@ -73,6 +141,7 @@
   letter-spacing: 0.4px;
 }
 
+/* Description text */
 .activity-text {
   font-size: 14.5px;
   color: #334155;
@@ -80,33 +149,22 @@
   line-height: 1.5;
 }
 
-
-/* +New Button */
-.activity-btn {
-  background: linear-gradient(135deg, #4f46e5, #3b82f6);
-  color: #fff;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: 0.2s ease;
+/* Keep text colors dark in dark mode */
+body.dark .activity-time {
+  color: #4f46e5;
 }
 
-.activity-btn:hover {
-  opacity: 0.9;
-}
-.activity-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+body.dark .activity-text {
+  color: #334155;
 }
 
-/* Modal styles */
+/* ===============================
+   Modal styles
+================================ */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.6); /* dark dim layer */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -137,6 +195,7 @@
   margin-bottom: 10px;
   font-size: 16px;
   font-weight: 600;
+  color: #111827;
 }
 
 .modal-textarea {
@@ -167,6 +226,7 @@
   padding: 6px 14px;
   border-radius: 6px;
   cursor: pointer;
+  color: #374151;
 }
 
 .modal-add {
@@ -176,4 +236,16 @@
   padding: 6px 14px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+/* Keep modal content light in dark mode */
+body.dark .modal-box {
+  background: #ffffff;
+}
+
+body.dark .modal-box h4,
+body.dark .modal-box,
+body.dark .modal-textarea,
+body.dark .modal-cancel {
+  color: #111827;
 }

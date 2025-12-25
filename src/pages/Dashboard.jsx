@@ -75,7 +75,7 @@ const reviewsCount = JSON.parse(localStorage.getItem("feedback") || "[]").length
 
   return (
     <div className="dashboard">
-      
+      <h2>HR Dashboard</h2>
 
       {/* Staff Pie */}
       <div className="emp-summary">
