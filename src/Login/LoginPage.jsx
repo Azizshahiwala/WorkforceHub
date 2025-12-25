@@ -35,7 +35,7 @@ export default function AccountLogin() {
 
      if(data.success){
         console.log("Credentials matched: "+data.role)
-        if(toString(data.role) === "interviewer" ) navigate("/dashboard/interviewer");
+        if(data.role === "interviewer" ) navigate("/interviewer");
         else navigate("/dashboard"); // HR/Admin/Employees dashboard
      }
      else alert(data.message);

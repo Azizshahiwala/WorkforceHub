@@ -27,7 +27,7 @@ function Sidebar({ darkMode }) {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/dashboard/applications" className="sidebar-item">
+          <NavLink to="/dashboard/Applications" className="sidebar-item">
             Applications
           </NavLink>
         </li>
