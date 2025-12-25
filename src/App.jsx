@@ -1,6 +1,6 @@
 // App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { useEffect } from "react";
 import HRLayout from "./layout/HRLayout";
 import Dashboard from "./pages/Dashboard";
 import LeaveManager from "./pages/LeaveManager";
@@ -17,6 +17,25 @@ import Interviewer from "./Login/InterviewerPage";
 import InterviewStart from "./Login/InterviewStart";
 import InterviewEnd from "./Login/InterviewEnd";
 function App() {
+  //This hook sends API request to the python flask end point: localhost/api/init-db
+  //Which the flask uses CORS to validate the response. THEN, flask will run the database.py
+  useEffect(() => {
+    const initDB = async () => {
+      try {
+        //Get response into 'response'
+        const response = await fetch("http://localhost:5000/api/init-db");
+        //convert response to json
+        const data = await response.json();
+        //temporary message
+        console.log("Backend response:", data.message);
+      } catch (error) {
+        console.error("Failed to initialize database on startup:", error);
+      }
+    };
+
+    initDB();
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>

@@ -10,4 +10,4 @@ Employee attendance (Who logged in with the account at which time) - Done
 PayRoll (Salary related info)- Done
 Activity (What activity HR staff is doing. Logs) - Done
 Feedback to employees (HR gives reply to anonymous feedback.) - Done
-Employees performance (last priority after backend) - Left
+Employees performance (last priority) - Done
