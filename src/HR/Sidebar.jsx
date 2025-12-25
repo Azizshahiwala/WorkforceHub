@@ -8,7 +8,7 @@ function Sidebar({ darkMode }) {
       <ul>
         <li>
           <NavLink
-                to="/"
+                to="/dashboard"
                 className={({ isActive }) =>
                     "sidebar-item" + (isActive ? " active" : "")
                 }
@@ -17,42 +17,42 @@ function Sidebar({ darkMode }) {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/users" className="sidebar-item">
+          <NavLink to="/dashboard/users" className="sidebar-item">
             Users
           </NavLink>
         </li>
         <li>
-          <NavLink to="/leave" className="sidebar-item">
+          <NavLink to="/dashboard/leave" className="sidebar-item">
             Leave Manager
           </NavLink>
         </li>
         <li>
-          <NavLink to="/applications" className="sidebar-item">
+          <NavLink to="/dashboard/applications" className="sidebar-item">
             Applications
           </NavLink>
         </li>
         <li>
-          <NavLink to="/attendance" className="sidebar-item">
+          <NavLink to="/dashboard/attendance" className="sidebar-item">
             Employee Attendance
           </NavLink>
         </li>
         <li>
-          <NavLink to="/payroll" className="sidebar-item">
+          <NavLink to="/dashboard/payroll" className="sidebar-item">
             PayRoll
           </NavLink>
         </li>
         <li>
-          <NavLink to="/activity" className="sidebar-item">
+          <NavLink to="/dashboard/activity" className="sidebar-item">
             Activity
           </NavLink>
         </li>
         <li>
-          <NavLink to="/feedback" className="sidebar-item">
+          <NavLink to="/dashboard/feedback" className="sidebar-item">
             Feedback to Employees
           </NavLink>
         </li>
         <li>
-          <NavLink to="/performance" className="sidebar-item">
+          <NavLink to="/dashboard/performance" className="sidebar-item">
             Employee Performance
           </NavLink>
         </li>

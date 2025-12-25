@@ -63,9 +63,9 @@ def createCredentials():
         #A temporary block of code which should be removed later.
         message=""
         if not databaseFileExists:
-            sampleData = [("demo111@gmail.com","vivek","CEO","Male"),
-                      ("demo000@gmail.com","aziz","CEO","Male"),
-                      ("demo999@gmail.com","divya","CEO","Male")]
+            sampleData = [("demo111@gmail.com","vivek","Support","Male"),
+                      ("demo000@gmail.com","aziz","Marketing","Male"),
+                      ("demo999@gmail.com","divya","interviewer","Male")]
             cursor.executemany(template,sampleData)
             conn.commit()
             message = "Database values recovered."
