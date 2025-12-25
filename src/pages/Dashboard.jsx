@@ -79,7 +79,7 @@ const reviewsCount = JSON.parse(localStorage.getItem("feedback") || "[]").length
 
       {/* Staff Pie */}
       <div className="emp-summary">
-        <h1>Staff Distribution</h1>
+        <h1 className="card-title">Staff Distribution</h1>
         <div className="pie-wrapper">
           <Pie data={staffData} />
           <div className="pie-center-text">
@@ -91,7 +91,7 @@ const reviewsCount = JSON.parse(localStorage.getItem("feedback") || "[]").length
 
       {/* Gender Pie */}
       <div className="emp-summary">
-        <h1>Gender Distribution</h1>
+        <h1 className="card-title">Gender Distribution</h1>
         <div className="pie-wrapper">
           <Pie data={genderData} />
           <div className="pie-center-text">
@@ -101,15 +101,13 @@ const reviewsCount = JSON.parse(localStorage.getItem("feedback") || "[]").length
         </div>
       </div>
 
-      <div className="emp-summary">
-      <div className="performance-wrapper">
-        <div className="performance-center-text">
-          <span>Avg</span>
-          <strong>&nbsp; {getAvgPerformance()}</strong>
-          <div className="review-count">({reviewsCount} reviews)</div>
+      <div className="emp-summary performance-card"> {/* CHANGED: small card */}
+        <div className="avg-score">
+          <span>Avg Performance</span>
+          <strong>{getAvgPerformance()}</strong>
+          <small>({reviewsCount} reviews)</small>
         </div>
       </div>
-    </div>
 
 
       {/* Department Bar */}
