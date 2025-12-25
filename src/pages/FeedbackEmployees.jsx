@@ -19,6 +19,7 @@ function FeedbackEmployees() {
   const [search, setSearch] = useState("");
   const [selectedEmp, setSelectedEmp] = useState(null);
   const [feedback, setFeedback] = useState("");
+  const [rate,setRate]=useState(0);
 
   const giveFeedback = (emp) => {
     setSelectedEmp(emp);
@@ -26,7 +27,15 @@ function FeedbackEmployees() {
   };
 
   const submitFeedback = () => {
-    alert(`Feedback submitted for ${selectedEmp.name}`);
+    const data={
+    empId: selectedEmp.id,
+    name: selectedEmp.name,
+    rating: rate,
+    comment: feedback,
+    };
+    const old = JSON.parse(localStorage.getItem("feedback"))|| [];
+    const updated=[...old,data];
+    localStorage.setItem("feedback",JSON.stringify(updated));
     setSelectedEmp(null);
   };
 
@@ -95,7 +104,16 @@ function FeedbackEmployees() {
             <div className="modal-box">
               <h3>HR Feedback</h3>
               <p>For: <strong>{selectedEmp.name}</strong></p>
-
+                <div>
+                  {[1,2,3,4,5].map(i=>(
+                    <span
+                      key={i}
+                      className={`fa fa-star ${i <= rate ? "checked" : ""}`}
+                      onClick={()=>setRate(i)}
+                      style={{ cursor: "pointer", fontSize: 24 }}
+                    />
+                   ))}
+                </div>
               <textarea
                 rows="5"
                 placeholder="Write feedback here..."
