@@ -1,4 +1,4 @@
-import {React,useState} from 'react';
+import {React,useEffect,useState} from 'react';
 import { Pie, Bar } from "react-chartjs-2";
 import { 
   Chart as ChartJS, 
@@ -70,19 +70,32 @@ export default function Dashboard() {
     return 0;
   }
   return 0;
-
-  // TO-DO List State and Handler
-  const [task, setTask] = useState("");
-  const addTask = () => {
-    if(!task.trim()) return;
-    setStore((old)=>[...old,task]);
-    setTask("");
-};
-  const removeTask=(index)=>{
-    setTask((old)=>old.filter((_,i)=>i!==index));
-  }
+}
 const reviewsCount = JSON.parse(localStorage.getItem("feedback") || "[]").length;
 
+  // TO-DO List State and Handler
+
+  const [task, setTask] = useState("");
+  const [store, setStore] = useState(() => {
+  // runs once on first render
+  const saved = localStorage.getItem("tasks");
+  return saved ? JSON.parse(saved) : [];
+});
+
+// Save to localStorage whenever list changes
+useEffect(() => {
+  localStorage.setItem("tasks", JSON.stringify(store));
+}, [store]);
+
+const addTask = () => {
+  if (!task.trim()) return;
+  setStore(old => [...old, task.trim()]);
+  setTask("");
+};
+
+const removeTask = (index) => {
+  setStore(old => old.filter((_, i) => i !== index));
+};
   return (
     <div className="dashboard">
       <h2>HR Dashboard</h2>
@@ -119,30 +132,38 @@ const reviewsCount = JSON.parse(localStorage.getItem("feedback") || "[]").length
         </div>
       </div>
 
-      {/* TODO LIST */}
-      <div className="emp-summary">
-        <h1 className="card-title">TO-DO List</h1>
-        <div>
-          <label>Enter task:- </label>
-          <input type="text" value={task}
-          onChange={(e)=>setTask(e.target.value)} />
-          <button type="button"
-          onClick={addTask}>Add</button>
-        </div>
-        <ul>
-          {store.map((t,index)=>(
-            <li key={index}>
-              {t}
-              <button onClick={()=>removeTask()}>X</button>
-          </li>
-          ))}
-        </ul>
-      </div>
+{/* TO-DO list */}
+<div className="emp-summary todo-card">
+  <h1 className="card-title">TO-DO List</h1>
 
+  <div className="todo-input-row">
+    <label>Enter task:</label>
+    <input
+      type="text"
+      value={task}
+      onChange={(e) => setTask(e.target.value)}
+    />
+    <button type="button" onClick={addTask}>Add</button>
+  </div>
 
-      {/* Department Bar */}
+  <ul className="todo-list">
+    {store.map((t, index) => (
+      <li key={index} className="todo-item">
+        <span>{t}</span>
+        <button
+          type="button"
+          className="todo-remove-btn"
+          onClick={() => removeTask(index)}
+        >
+          X
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>
+
+     {/* Department Bar */}
       <Bar data={deptData} />
     </div>
   );
-}
 }

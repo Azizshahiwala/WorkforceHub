@@ -127,6 +127,125 @@ body.dark .pie-center-text strong {
 }
 
 /* ===============================
+    TO DO LIST
+  ================================ */
+ /* Card */
+.emp-summary.todo-card {
+  max-width: 520px;
+}
+
+/* Input row */
+.todo-input-row {
+  display: flex;
+  gap: 12px;
+  margin: 18px 0 10px;
+  align-items: center;
+}
+
+.todo-input-row label {
+  font-size: 16px;
+  color: #111827;
+  min-width: 80px;
+}
+
+.todo-input-row input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+.todo-input-row input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #bfdbfe;
+}
+
+.todo-input-row button {
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.todo-input-row button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* List */
+.todo-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+/* Single task row */
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  background: #f9fafb;
+  font-size: 14px;
+  color: #111827;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* Task text */
+.todo-item span {
+  flex: 1;
+  margin-right: 10px;
+  word-break: break-word;
+}
+
+/* Remove button */
+.todo-remove-btn {
+  border: none;
+  background: #fee2e2;
+  color: #dc2626;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.todo-remove-btn:hover {
+  background: #dc2626;
+  color: #fff;
+  transform: scale(1.05);
+}
+.emp-summary.todo-card {
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;   /* stack children: title, input row, list */
+}
+
+/* Ensure list takes full width inside card */
+.todo-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  width: 100%;              /* full card width */
+}
+
+
+
+
+/* ===============================
    Bar Chart
 ================================ */
 .bar-wrapper {
