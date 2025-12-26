@@ -10,7 +10,7 @@ import {
   Legend 
 } from "chart.js";
 import { Employees } from './CompanyUser';
-import "./Dashboard.css";
+import "./AdminDashboard.css";
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -98,7 +98,7 @@ const removeTask = (index) => {
 };
   return (
     <div className="dashboard">
-      <h2>HR Dashboard</h2>
+      <h3>Admin Dashboard</h3>
 
       {/* Staff Pie */}
       <div className="emp-summary">

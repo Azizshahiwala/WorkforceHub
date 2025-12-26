@@ -6,6 +6,15 @@ function Sidebar({ darkMode }) {
     
     <div className={`sidebar ${darkMode ? "dark" : ""}`}>
       <ul>
+        <h2
+        style={
+          {
+            
+          color: darkMode ? "#ffffff" : "#000000"
+        }}
+      >
+        Hello HR
+      </h2>
         <li>
           <NavLink
                 to="/dashboard"
