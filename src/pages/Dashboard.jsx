@@ -1,4 +1,4 @@
-import React from 'react';
+import {React,useState} from 'react';
 import { Pie, Bar } from "react-chartjs-2";
 import { 
   Chart as ChartJS, 
@@ -70,7 +70,17 @@ export default function Dashboard() {
     return 0;
   }
   return 0;
+
+  // TO-DO List State and Handler
+  const [task, setTask] = useState("");
+  const addTask = () => {
+    if(!task.trim()) return;
+    setStore((old)=>[...old,task]);
+    setTask("");
 };
+  const removeTask=(index)=>{
+    setTask((old)=>old.filter((_,i)=>i!==index));
+  }
 const reviewsCount = JSON.parse(localStorage.getItem("feedback") || "[]").length;
 
   return (
@@ -109,9 +119,30 @@ const reviewsCount = JSON.parse(localStorage.getItem("feedback") || "[]").length
         </div>
       </div>
 
+      {/* TODO LIST */}
+      <div className="emp-summary">
+        <h1 className="card-title">TO-DO List</h1>
+        <div>
+          <label>Enter task:- </label>
+          <input type="text" value={task}
+          onChange={(e)=>setTask(e.target.value)} />
+          <button type="button"
+          onClick={addTask}>Add</button>
+        </div>
+        <ul>
+          {store.map((t,index)=>(
+            <li key={index}>
+              {t}
+              <button onClick={()=>removeTask()}>X</button>
+          </li>
+          ))}
+        </ul>
+      </div>
+
 
       {/* Department Bar */}
       <Bar data={deptData} />
     </div>
   );
+}
 }
