@@ -134,7 +134,7 @@ const removeTask = (index) => {
 
 {/* TO-DO list */}
 <div className="emp-summary todo-card">
-  <h1 className="card-title">TO-DO List</h1>
+  <h1 className="card-title">TO-DO List 📃</h1>
 
   <div className="todo-input-row">
     <label>Enter task:</label>
