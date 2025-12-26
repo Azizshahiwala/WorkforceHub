@@ -6,6 +6,15 @@ function AdminSidebar({ darkMode }) {
     
     <div className={`sidebar ${darkMode ? "dark" : ""}`}>
       <ul>
+        <h2
+        style={
+          {
+            
+          color: darkMode ? "#ffffff" : "#000000"
+        }}
+      >
+        Hello Admin
+      </h2>
         <li>
           <NavLink
                 to="/dashboardAdmin"

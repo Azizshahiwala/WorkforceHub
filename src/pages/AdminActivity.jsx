@@ -81,4 +81,3 @@ function Activity() {
 }
 
 export default Activity;
-    AdminEmployeePerformance
