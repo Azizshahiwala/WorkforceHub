@@ -33,11 +33,16 @@ export default function AccountLogin() {
      //Convert received data objects to json string. First let it web send data. so we use await
      const data = await response.json();
 
-     if(data.success){
-        console.log("Credentials matched: "+data.role)
-        if(data.role === "interviewer" ) navigate("/interviewer");
-        else navigate("/dashboard"); // HR/Admin/Employees dashboard
-     }
+     if (data.Permission === 1) {
+        // Admin or HR
+        if (data.role.toLowerCase() === "admin") navigate("/dashboardAdmin");
+        else if (data.role.toLowerCase() === "interviewer") navigate("/interviewer");
+        else navigate("/dashboard"); 
+    } 
+    else if (data.Permission === 2) {
+        // Staff
+        navigate("/dashboard/employee"); // Or your specific staff dashboard path
+    }
      else alert(data.message);
      
     }
@@ -45,7 +50,21 @@ export default function AccountLogin() {
       console.log("Error from LoginPage.jsx",error)
     }
   };
-
+  const sampleData = [
+            ["admin@workforce.com", "admin123", "Admin", "Male"],
+            ["ceo@workforce.com", "ceo999", "CEO", "Female"],
+            ["hr@workforce.com", "hr_secure", "HR", "Male"],
+            ["interview@workforce.com", "test456", "interviewer", "Female"],
+            ["sales@workforce.com", "sales789", "Sales manager", "Male"],
+            ["intern@workforce.com", "internship", "Intern", "Female"],
+            ["design@workforce.com", "creative01", "Designer", "Male"],
+            ["dev@workforce.com", "coder99", "Developer", "Female"],
+            ["marketing@workforce.com", "promo2025", "Marketing", "Male"],
+            ["qa@workforce.com", "bugfree", "Tester", "Female"],
+            ["finance@workforce.com", "money123", "Finance", "Male"],
+            ["support@workforce.com", "helpdesk", "Support", "Female"]]
+    
+  console.log(sampleData)
   return (
     <div className="login-wrapper">
       <div className="login-card">
@@ -89,4 +108,5 @@ export default function AccountLogin() {
       </div>
     </div>
   );
+  
 }

@@ -2,7 +2,7 @@ This folder contains pages for HRLayout.jsx ONLY
 
 Pages to create:
 
-HR Dashboard (last priority after backend) - Left
+HR Dashboard (last priority after backend) - Partially done
 Users (How many accounts logged in / out with time) - Done
 Applications (Apply through Client dashboard)- Done
 Leave manager (Who wants to take a leave) - Done

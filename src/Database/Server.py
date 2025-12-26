@@ -7,14 +7,11 @@
 import os 
 #sqlite lib
 import sqlite3 as sq
-
-#For error msg
 from tkinter import messagebox as mb
 from flask import Flask,render_template,redirect,session,make_response,jsonify
-from flask import request as rq
-from flask import url_for
 from flask_cors import CORS
-
+#Get blueprint
+from AuthLogin import authlogin
 #render_template -> imports function which is used to load html
 #redirect -> used to redirect browser to a path
 #session -> processing of Sessions
@@ -22,9 +19,13 @@ from flask_cors import CORS
 #request -> to use GET and POST methods
 #url_for -> generates automatic path for file.html
 #jsonify -> react cannot read direct python objects. we need json
+#blueprint -> Divide one massive file to different files. increases modularity
 
 #Create flask application
 app = Flask(__name__)
+
+#Register blueprint 
+app.register_blueprint(authlogin)
 
 # Enables communication between your React app and this Flask server
 CORS(app)  
@@ -34,6 +35,24 @@ databaseDir = os.path.join(os.getcwd(),"src","Database")
 #Returns: HOME/src/Database/
 databasePath = os.path.join(databaseDir,"Credentials.db")
 #Returns: HOME/src/Database/Credentials.db
+
+def insertSampleCredentials(conn,cursor,template):
+    sampleData = [
+            ("admin@workforce.com", "admin123", "Admin", "Male"),
+            ("ceo@workforce.com", "ceo999", "CEO", "Female"),
+            ("hr@workforce.com", "hr_secure", "HR", "Male"),
+            ("interview@workforce.com", "test456", "interviewer", "Female"),
+            ("sales@workforce.com", "sales789", "Sales manager", "Male"),
+            ("intern@workforce.com", "internship", "Intern", "Female"),
+            ("design@workforce.com", "creative01", "Designer", "Male"),
+            ("dev@workforce.com", "coder99", "Developer", "Female"),
+            ("marketing@workforce.com", "promo2025", "Marketing", "Male"),
+            ("qa@workforce.com", "bugfree", "Tester", "Female"),
+            ("finance@workforce.com", "money123", "Finance", "Male"),
+            ("support@workforce.com", "helpdesk", "Support", "Female")]
+    cursor.executemany(template,sampleData)
+    conn.commit()
+    return "Database values recovered."
 
 @app.route("/api/init-db",methods=['GET'])
 def createCredentials():
@@ -62,12 +81,7 @@ def createCredentials():
         #A temporary block of code which should be removed later.
         message=""
         if not databaseFileExists:
-            sampleData = [("demo111@gmail.com","vivek","Support","Male"),
-                      ("demo000@gmail.com","aziz","Marketing","Male"),
-                      ("demo999@gmail.com","divya","interviewer","Male")]
-            cursor.executemany(template,sampleData)
-            conn.commit()
-            message = "Database values recovered."
+            message = insertSampleCredentials(conn=conn,cursor=cursor,template=template)
         else:
             message = "Database created. "
             #This json code will be sent to react useeffect
@@ -76,38 +90,6 @@ def createCredentials():
     except Exception as e:
         mb.showerror(message=e)
 
-@app.route("/api/Login",methods=['POST'])
-def login():
-    role=None
-    try:
-        #This function will fetch email and password from react website when form button is clicked. It will wait for response
-        data = rq.json
-        email = data.get("email")
-        password = data.get("password")
-
-        #Connect to database
-        conn = sq.connect(databasePath)
-        #Create cursor
-        cursor = conn.cursor()
-
-        #To grant access according to user role, and to check if pass and mail exists, we fetch role using both param. 
-        cursor.execute("SELECT role FROM users WHERE email = ? AND password = ?", (email, password))
-        
-        #Fetch just one field output 
-        role = cursor.fetchone()
-        conn.close()
-        if role:
-            return jsonify({"success":True,"role":role[0],"message":"Successful match"}),200   
-        else:
-            return jsonify({"success":False,"role":"","message":"Invalid email or password"}),200  
-        #Returning True / False after successful fetch is more reliable. 
-    
-    except sq.OperationalError as e:
-        mb.showwarning(e)
-        return jsonify({"success":False,"role":"","message":"User not registered."}),500
-    except Exception as e:
-        mb.showwarning(e)
-        return jsonify({"success":False,"role":"","message":"Un-identified error"}),500
 #Run app
 if __name__ == '__main__':
     app.run(port=5000,debug=True)
