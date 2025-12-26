@@ -34,6 +34,7 @@ export default function AccountLogin() {
      const data = await response.json();
 
      if(data.success){
+        console.log("Credentials matched: "+data.role)
         if(data.role === "interviewer" ) navigate("/interviewer");
         else navigate("/dashboard"); // HR/Admin/Employees dashboard
      }
