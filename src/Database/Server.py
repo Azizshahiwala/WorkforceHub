@@ -55,11 +55,10 @@ def createCredentials():
         #Create template (used when multiple queries to be ran later.)
         template = """
         insert into users(email,password,role,gender) values(?,?,?,?)
-"""
+        """
         cursor.execute(query)
         conn.commit()
 
-        
         #A temporary block of code which should be removed later.
         message=""
         if not databaseFileExists:
