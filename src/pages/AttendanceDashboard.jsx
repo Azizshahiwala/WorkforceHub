@@ -366,7 +366,7 @@ function AttendanceDashboard() {
         <div><span className="dot leave"></span> Leave</div>
       </div>
       <div>
-        <Link to="/AttendanceOverview" className="OverviewBtn">Click here to get overview</Link>
+        <Link to="./AttendanceOverview" className="OverviewBtn">Click here to get overview</Link>
       </div>
       {/* Calendar */}
       <div className="calendar-card">
