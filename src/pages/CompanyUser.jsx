@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./CompanyUser.css";
 import { Pie } from "react-chartjs-2";
 import {
@@ -22,7 +22,7 @@ export function UserInfo(empID, name, lastLogin) {
 function CompanyUser() {
   const [employees, setEmployees] = useState(() => {
     const saved = localStorage.getItem("employees");
-    return saved ? JSON.parse(saved) : employees;
+    return saved ? JSON.parse(saved) : [];
   });
 
   useEffect(() => {
@@ -160,7 +160,7 @@ function CompanyUser() {
               emp.name.toLowerCase().includes(search.toLowerCase())
             )
             .map((emp) => (
-              <div className="emp-card" key={emp.id}>
+              <div className="emp-card" key={emp.employeeId}>
                 <button
                   className="remove-icon-btn"
                   onClick={() => removeEmployee(emp.id)}
@@ -186,7 +186,7 @@ function CompanyUser() {
                 </div>
                 <div className="emp-card-row">
                   <span>Gender:</span>
-                  <strong>{emp.Gender}</strong>
+                  <strong>{emp.gender}</strong>
                 </div>
                 <div className="emp-card-row">
                   <span>Last Login:</span>
