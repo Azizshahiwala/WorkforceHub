@@ -9,120 +9,6 @@ import {
 } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-
-export const Employees = [
-  {
-    id: 1,
-    name: "Marshall Nichols",
-    employeeId: "LA-0012",
-    department: "Developer",
-    status: "Logged In",
-    lastLogin: "2025-12-21 09:15 AM",
-    Gender: "Male",
-  },
-  {
-    id: 2,
-    name: "Maryam Amiri",
-    employeeId: "LA-0011",
-    department: "Sales",
-    status: "Logged In",
-    lastLogin: "2025-12-21 08:45 AM",
-    Gender: "Female",
-  },
-  {
-    id: 3,
-    name: "Gary Camara",
-    employeeId: "LA-0013",
-    department: "Marketing",
-    status: "Logged In",
-    lastLogin: "2025-12-21 10:20 AM",
-    Gender: "Male",
-  },
-  {
-    id: 4,
-    name: "Frank Camly",
-    employeeId: "LA-0014",
-    department: "Testers",
-    status: "Logged In",
-    lastLogin: "2025-12-21 09:00 AM",
-    Gender: "Male",
-  },
-  {
-    id: 5,
-    name: "Aarav Mehta",
-    employeeId: "LA-0015",
-    department: "Intern",
-    status: "Logged In",
-    lastLogin: "2025-12-21 11:45 AM",
-    Gender: "Male",
-  },
-  {
-    id: 6,
-    name: "Sophia Turner",
-    employeeId: "LA-0016",
-    department: "Finance",
-    status: "Logged Out",
-    lastLogin: "2025-12-21 02:30 PM",
-    Gender: "Female",
-  },
-  {
-    id: 7,
-    name: "Daniel Roberts",
-    employeeId: "LA-0017",
-    department: "Developer",
-    status: "Logged Out",
-    lastLogin: "2025-12-20 05:00 PM",
-    Gender: "Male",
-  },
-  {
-    id: 8,
-    name: "Priya Sharma",
-    employeeId: "LA-0018",
-    department: "Support",
-    status: "Logged In",
-    lastLogin: "2025-12-20 09:00 AM",
-    Gender: "Female",
-  },
-  {
-    id: 9,
-    name: "Michael Chen",
-    employeeId: "LA-0019",
-    department: "Marketing",
-    status: "Logged Out",
-    lastLogin: "2025-12-19 06:10 PM",
-    Gender: "Male",
-  },
-  {
-    id: 10,
-    name: "Olivia Brown",
-    employeeId: "LA-0020",
-    department: "Sales",
-    status: "Logged In",
-    lastLogin: "2025-12-25 09:00 AM",
-    Gender: "Female",
-  },
-   {
-    id: 11,
-    name: "Robert King",
-    employeeId: "LA-0021",
-    department: "Admin",
-    status: "Logged In",
-    lastLogin: "2025-12-21 08:00 AM",
-    Gender: "Male",
-  },
-
-  {
-    id: 12,
-    name: "Emily Watson",
-    employeeId: "LA-0022",
-    department: "CEO",
-    status: "Logged In",
-    lastLogin: "2025-12-21 07:45 AM",
-    Gender: "Female",
-  },
-];
-
-
 export function UserInfo(empID, name, lastLogin) {
     return (
         <tr key={empID}>
@@ -136,9 +22,24 @@ export function UserInfo(empID, name, lastLogin) {
 function CompanyUser() {
   const [employees, setEmployees] = useState(() => {
     const saved = localStorage.getItem("employees");
-    return saved ? JSON.parse(saved) : Employees;
+    return saved ? JSON.parse(saved) : employees;
   });
 
+  useEffect(() => {
+    //This useEffect loads Users from database CompanyUser once
+    const loadUser = async () => {
+      try {
+        //Get response into 'response'
+        const response = await fetch("http://localhost:5000/api/getCompanyUsers");
+        //convert response to json
+        const data = await response.json();
+        setEmployees(data)
+      } catch (error) {
+        console.error("Error from CompanyUser.jsx:", error);
+      }
+    };
+    loadUser(); }, []);
+  
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -216,7 +117,7 @@ function CompanyUser() {
 
   const resetEmployees = () => {
   localStorage.removeItem("employees");   // 👈 this line (you add)
-  setEmployees(Employees);
+  setEmployees(employees);
 };
 
   return (

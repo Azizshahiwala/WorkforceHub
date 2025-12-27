@@ -9,22 +9,31 @@ import {
   Tooltip, 
   Legend 
 } from "chart.js";
-import { Employees } from './CompanyUser';
 import "./AdminDashboard.css";
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Dashboard() {
-  const employees = Employees;
+  const [employees,setEmployees] = useState([])
+    
+    useEffect(() => {
+      fetch("http://localhost:5000/api/getCompanyUsers")
+        .then(res => res.json())
+        .then(data => setEmployees(data))
+        .catch(err => console.error("Dashboard load error:", err));
+    }, []);
   
-  // Gender data
-  const genderData = {
-    labels: ["Male", "Female"],
-    datasets: [{ 
-      data: [employees.filter(e => e.Gender === "Male").length, employees.filter(e => e.Gender === "Female").length], 
-      backgroundColor: ["#36A2EB", "#FF6384"] 
-    }]
-  };
+    // Gender data
+    const genderData = {
+      labels: ["Male", "Female"],
+      datasets: [{ 
+        data: [
+          employees.filter(e => e.gender === "Male").length, 
+          employees.filter(e => e.gender === "Female").length
+        ], 
+        backgroundColor: ["#36A2EB", "#FF6384"] 
+      }]
+    };
   
   // Staff data  
   const staffCount = employees.filter(e => !["Admin", "CEO"].includes(e.department)).length;

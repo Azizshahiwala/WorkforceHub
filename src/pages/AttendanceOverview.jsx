@@ -3,11 +3,19 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from '@fullcalendar/interaction'; // Necessary for selectable
-import {Employees ,UserInfo} from "./CompanyUser";
+import {UserInfo} from "./CompanyUser";
 import './AttendanceOverview.css';
 import {useState,useEffect} from 'react';
 export function AttendanceOverview() {
-    
+    const [employees, setEmployees] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:5000/api/getCompanyUsers")
+          .then(res => res.json())
+          .then(data => setEmployees(data))
+          .catch(err => console.error("data from dashboard load error:", err));
+      }, []);
+
     //Track if window is open
     const [Window,isWindowVisible] = useState(false);
 
@@ -53,17 +61,15 @@ export function AttendanceOverview() {
         });
         setMyEvents(updatedEvents);
     }
-    
-
     //Check for Absent and Present using ClickedDate state.
-    const PresentList = Employees.filter(emp => emp.status === "Logged In" && emp.lastLogin.includes(ClickedDate));
+    const PresentList = employees.filter(emp => emp.status === "Logged In" && emp.lastLogin.includes(ClickedDate));
     
     //backup real time date
     const RealToday = new Date();
 
     //Check IF (Last login date is bigger than today) -> False if True
     //Check IF (Last login includes diff clicked date) -> False if True
-    const AbsentList = Employees.filter(emp => !(new Date(emp.lastLogin) > RealToday) && !(emp.lastLogin.includes(ClickedDate)));
+    const AbsentList = employees.filter(emp => !(new Date(emp.lastLogin) > RealToday) && !(emp.lastLogin.includes(ClickedDate)));
     return (<>
     <div className="attendance-page">
         <h2>Attendance Dashboard</h2>

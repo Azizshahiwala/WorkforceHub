@@ -7,12 +7,39 @@
 
 #Staff -> Employee dashboard
 from flask import request as rq
-from flask import Blueprint
-from flask import render_template,redirect,session,make_response,jsonify
+from flask import Blueprint,jsonify
 import os 
 import sqlite3 as sq
 from tkinter import messagebox as mb
+def createCredentials():
+    try:
+        if not os.path.exists(databaseDir):
+            os.makedirs(databaseDir)
 
+        #Now I want to ensure database file exists. So:
+        databaseFileExists = os.path.exists(databasePath)
+
+        #Connect to database
+        conn = sq.connect(databasePath)
+        #Create cursor
+        cursor = conn.cursor()
+        #Run query:
+        query = '''
+        create table if not exists login(id integer primary key autoincrement,email text not null, password text not null, role text not null, gender text not null, phoneNumber text not null); 
+        ''' 
+        #Create template (used when multiple queries to be ran later.)
+        template = "insert into login(email,password,role,gender,phoneNumber) values(?,?,?,?,?)"
+        cursor.execute(query)
+        conn.commit()
+
+        #A temporary block of code which should be removed later.
+        message = "Database created. "
+        #This json code will be sent to react useeffect
+        return jsonify({"message":message}),200
+        
+    except Exception as e:
+        mb.showerror(message=e)
+        
 def isStaff(role):
     staff = ["Sales manager", "Intern", "Designer", "Developer", 
     "Marketing", "Tester", "Finance", "Support"]
@@ -59,7 +86,7 @@ def login():
         cursor = conn.cursor()
 
         #To grant access according to user role, and to check if pass and mail exists, we fetch role using both param. 
-        cursor.execute("SELECT role FROM users WHERE email = ? AND password = ?", (email, password))
+        cursor.execute("SELECT role FROM login WHERE email = ? AND password = ?", (email, password))
         
         #Fetch just one field output 
         role = cursor.fetchone()
