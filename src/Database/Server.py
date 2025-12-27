@@ -9,6 +9,7 @@ from flask_cors import CORS
 #Get blueprint
 from AuthLogin import authlogin,createCredentials
 from Users import users,createCompanyUsers
+from Attendance import attendance,createAttendance
 #render_template -> imports function which is used to load html
 #redirect -> used to redirect browser to a path
 #session -> processing of Sessions
@@ -24,6 +25,7 @@ app = Flask(__name__)
 #Register blueprint 
 app.register_blueprint(authlogin)
 app.register_blueprint(users)
+app.register_blueprint(attendance)
     
 # Enables communication between your React app and this Flask server
 CORS(app)  
@@ -36,6 +38,8 @@ def createDatabases():
 
         #For CompanyUsers.db
         createCompanyUsers()
+
+        createAttendance()
         return jsonify({"message": "Databases initialized successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

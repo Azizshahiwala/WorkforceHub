@@ -1,6 +1,6 @@
 import sqlite3 as sq
 import os
-
+from datetime import *
 # Database Paths
 databaseDir = os.path.join(os.getcwd(), "src", "Database")
 CredentialsPath = os.path.join(databaseDir, "Credentials.db")
@@ -55,6 +55,23 @@ company_user_data = [
     (19, "David Smith", "LA-0026", "Accounts", "Logged Out", "2025-12-20 04:45 PM"),
     (20, "Olivia Brown", "LA-0027", "Regional Sales", "Logged In", "2025-12-25 09:00 AM")
 ]
+# Sample Employee IDs (matching your previous sample data)
+attendance_data_to_insert = [
+        ("LA-11", "2025-12-01", "Present"), ("LA-11", "2025-12-02", "Present"),
+        ("LA-11", "2025-12-03", "Present"), ("LA-11", "2025-12-04", "Leave"),
+        ("LA-11", "2025-12-05", "Present"), ("LA-11", "2025-12-06", "Absent"),
+        ("LA-11", "2025-12-07", "Present"), ("LA-11", "2025-12-08", "Present"),
+        ("LA-11", "2025-12-09", "Present"), ("LA-11", "2025-12-10", "Leave"),
+        ("LA-11", "2025-12-11", "Present"), ("LA-11", "2025-12-12", "Present"),
+        ("LA-11", "2025-12-13", "Absent"), ("LA-11", "2025-12-14", "Present"),
+        ("LA-11", "2025-12-15", "Present"), ("LA-11", "2025-12-16", "Present"),
+        ("LA-11", "2025-12-17", "Leave"), ("LA-11", "2025-12-18", "Present"),
+        ("LA-11", "2025-12-19", "Present"), ("LA-11", "2025-12-20", "Absent"),
+    ]
+
+# Dates for data
+today = datetime.now().strftime("%Y-%m-%d")
+yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
 def populate_databases():
     # 1. Populating login table
@@ -64,16 +81,28 @@ def populate_databases():
     cur_c.executemany(template_c, login_data)
     conn_c.commit()
     conn_c.close()
-    print("Credentials.db populated.")
+    print("table login filled.")
 
     # 2. Populating user table
     conn_u = sq.connect(CompanyUserPath)
     cur_u = conn_u.cursor()
+    conn_u.execute("delete from user")
+    conn_u.commit()
     template_u = "INSERT INTO user(auth_id, name, employeeId, department, status, lastLogin) VALUES(?,?,?,?,?,?)"
     cur_u.executemany(template_u, company_user_data)
     conn_u.commit()
     conn_u.close()
-    print("CompanyUsers.db populated.")
+    print("Table user filled")
 
+    conn_u = sq.connect(CompanyUserPath)
+    cur_u = conn_u.cursor()
+    conn_u.execute("delete from attendance")
+    conn_u.commit()
+    cur_u.executemany("INSERT INTO attendance (empId, date, status) VALUES (?, ?, ?)", attendance_data_to_insert)
+    conn_u.commit()
+    #3. Populate attribute table
+    print("Table attendance filled.")
+    conn_u.commit()
+    conn_u.close()
 if __name__ == "__main__":
     populate_databases()

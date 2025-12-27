@@ -16,9 +16,6 @@ def createCredentials():
         if not os.path.exists(databaseDir):
             os.makedirs(databaseDir)
 
-        #Now I want to ensure database file exists. So:
-        databaseFileExists = os.path.exists(databasePath)
-
         #Connect to database
         conn = sq.connect(databasePath)
         #Create cursor
@@ -28,7 +25,6 @@ def createCredentials():
         create table if not exists login(id integer primary key autoincrement,email text not null, password text not null, role text not null, gender text not null, phoneNumber text not null); 
         ''' 
         #Create template (used when multiple queries to be ran later.)
-        template = "insert into login(email,password,role,gender,phoneNumber) values(?,?,?,?,?)"
         cursor.execute(query)
         conn.commit()
 
