@@ -57,27 +57,58 @@ company_user_data = [
 ]
 # Sample Employee IDs (matching your previous sample data)
 attendance_data_to_insert = [
-        ("LA-11", "2025-12-01", "Present"), ("LA-11", "2025-12-02", "Present"),
-        ("LA-11", "2025-12-03", "Present"), ("LA-11", "2025-12-04", "Leave"),
-        ("LA-11", "2025-12-05", "Present"), ("LA-11", "2025-12-06", "Absent"),
-        ("LA-11", "2025-12-07", "Present"), ("LA-11", "2025-12-08", "Present"),
-        ("LA-11", "2025-12-09", "Present"), ("LA-11", "2025-12-10", "Leave"),
-        ("LA-11", "2025-12-11", "Present"), ("LA-11", "2025-12-12", "Present"),
-        ("LA-11", "2025-12-13", "Absent"), ("LA-11", "2025-12-14", "Present"),
-        ("LA-11", "2025-12-15", "Present"), ("LA-11", "2025-12-16", "Present"),
-        ("LA-11", "2025-12-17", "Leave"), ("LA-11", "2025-12-18", "Present"),
-        ("LA-11", "2025-12-19", "Present"), ("LA-11", "2025-12-20", "Absent"),
+        ("LA-0011", "2025-12-01", "Present"), ("LA-0011", "2025-12-02", "Present"),
+        ("LA-0011", "2025-12-03", "Present"), ("LA-0011", "2025-12-04", "Leave"),
+        ("LA-0011", "2025-12-05", "Present"), ("LA-0011", "2025-12-06", "Absent"),
+        ("LA-0011", "2025-12-07", "Present"), ("LA-0011", "2025-12-08", "Present"),
+        ("LA-0011", "2025-12-09", "Present"), ("LA-0011", "2025-12-10", "Leave"),
+        ("LA-0011", "2025-12-11", "Present"), ("LA-0011", "2025-12-12", "Present"),
+        ("LA-0011", "2025-12-13", "Absent"), ("LA-0011", "2025-12-14", "Present"),
+        ("LA-0011", "2025-12-15", "Present"), ("LA-0011", "2025-12-16", "Present"),
+        ("LA-0011", "2025-12-17", "Leave"), ("LA-0011", "2025-12-18", "Present"),
+        ("LA-0011", "2025-12-19", "Present"), ("LA-0011", "2025-12-20", "Absent"),
     ]
 
 # Dates for data
 today = datetime.now().strftime("%Y-%m-%d")
 yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
+def ensure_tables_exist():
+    conn = sq.connect(CompanyUserPath)
+    cur = conn.cursor()
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS user (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        auth_id INTEGER NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        employeeId TEXT UNIQUE NOT NULL,
+        department TEXT,
+        status TEXT DEFAULT 'Logged Out',
+        lastLogin TEXT
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS Attendance (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        empId TEXT NOT NULL,
+        date TEXT NOT NULL,
+        status TEXT NOT NULL
+    );
+    """)
+
+    conn.commit()
+    conn.close()
+
 def populate_databases():
+    ensure_tables_exist()
     # 1. Populating login table
     conn_c = sq.connect(CredentialsPath)
     cur_c = conn_c.cursor()
-    template_c = "INSERT INTO login(email, password, role, gender, phoneNumber) VALUES(?,?,?,?,?)"
+    conn_c.execute("DELETE FROM login")
+    conn_c.commit()
+    template_c = "INSERT OR IGNORE INTO login(email, password, role, gender, phoneNumber) VALUES(?,?,?,?,?)"
     cur_c.executemany(template_c, login_data)
     conn_c.commit()
     conn_c.close()
@@ -86,8 +117,6 @@ def populate_databases():
     # 2. Populating user table
     conn_u = sq.connect(CompanyUserPath)
     cur_u = conn_u.cursor()
-    conn_u.execute("delete from user")
-    conn_u.commit()
     template_u = "INSERT INTO user(auth_id, name, employeeId, department, status, lastLogin) VALUES(?,?,?,?,?,?)"
     cur_u.executemany(template_u, company_user_data)
     conn_u.commit()

@@ -10,16 +10,32 @@ function AttendanceDashboard() {
   const [selectedEmp, setSelectedEmp] = useState("");
   const [Myevent, setMyEvents] = useState([]);
 
+  // 2. Load all attendance records from your backend
+  useEffect(() => {
+    const fetchAttendance = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/att-dashboard");
+        const attdata = await response.json();
+        const demo = attdata;
+        setAttendanceRecords(demo);
+        console.log("Request from fetchAttendance Query result:",attendanceRecords);
+      } catch (error) {
+        console.error("Error fetching attendance data:", error);
+      }
+    };
+    fetchAttendance();
+  }, []);
   // 1. Load Employees and set default selection
   useEffect(() => {
     const loadEmployees = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/getCompanyUsers");
-        const data = await response.json();
+        const empdata = await response.json();
 
-        if (Array.isArray(data) && data.length > 0) {
-          setEmployees(data); 
-          setSelectedEmp(data[0].employeeId); 
+        if (Array.isArray(empdata) && empdata.length > 0) {
+          setEmployees(empdata);
+          console.log("Request from loadEmployees Query result:", empdata);
+          setSelectedEmp(empdata[0].employeeId); 
         }
       } catch (error) {
         console.error("Error fetching employees:", error);
@@ -28,25 +44,11 @@ function AttendanceDashboard() {
     loadEmployees();
   }, []);
 
-  // 2. Load all attendance records from your backend
-  useEffect(() => {
-    const fetchAttendance = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/att-dashboard");
-        const data = await response.json();
-        setAttendanceRecords(data);
-      } catch (error) {
-        console.error("Error fetching attendance data:", error);
-      }
-    };
-    fetchAttendance();
-  }, []);
-
-  // 3. Map and Display attendance events for the selected employee
+  
+  //Map and Display attendance events for the selected employee
   useEffect(() => {
     if (!selectedEmp || attendanceRecords.length === 0) {
-      setMyEvents([]); // Clear events if no employee or data
-      return;
+    return;
     }
 
     const filteredRecords = attendanceRecords.filter(
@@ -66,6 +68,9 @@ function AttendanceDashboard() {
     // Directly set events as we no longer need to merge with holidays
     setMyEvents(mappedEvents);
   }, [selectedEmp, attendanceRecords]);
+
+
+  
 
   return (
     <div className="attendance-page">

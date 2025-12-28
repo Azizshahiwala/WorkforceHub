@@ -25,6 +25,7 @@ def createAttendance():
         if os.path.exists(CompanyUserPath):
             #Connect to database
             conn = sq.connect(CompanyUserPath)
+            conn.execute("PRAGMA foreign_keys = ON;")
             #Create cursor
             cursor = conn.cursor()
             
@@ -32,36 +33,37 @@ def createAttendance():
     create table if not exists Attendance(id integer primary key autoincrement,
     empId text not null,
     date text not null,
-    status text not null
-    )            
+    status text not null,
+    FOREIGN KEY (empId) references user(employeeId));            
 """
             cursor.execute(AttendanceTable)
             conn.commit()
             cursor.execute(f"ATTACH DATABASE '{CredentialsPath}' AS cred_db")
-
             # 3. Fetch: Last login, empId, name, date, role, and status
             # Joining 'user' (emp), 'attendance' (att), and 'login' (login)
             query = """
-            select emp.lastLogin, login.role, emp.employeeId,
-            att.date,att.status from user emp
-            join attendance att on emp.employeeId = att.empId
-            join cred_db.login login ON emp.auth_id = login.id
-            """
+    SELECT 
+        emp.lastLogin, 
+        emp.employeeId, 
+        emp.name, 
+        att.date, 
+        login.role, 
+        att.status 
+    FROM Attendance att
+    JOIN user as emp 
+    ON att.empId = emp.employeeId
+    JOIN cred_db.login as login 
+    ON emp.auth_id = login.id
+"""
             cursor.execute(query)
             conn.commit()
-            rows = cursor.fetchall()
-
+            attData = cursor.fetchall()
             JsonResult = []
-            for row in rows:
-                JsonResult.append({
-                    "lastLogin": row[0],
-                    "empId": row[1],
-                    "name": row[2],
-                    "date": row[3],
-                    "role": row[4],
-                    "status": row[5]
-                })
-            return jsonify(JsonResult)
+            for row in attData:
+                JsonResult.append({"lastLogin": row[0],"empId": row[1],"name": row[2],"date": row[3],"role": row[4],"status": row[5]})
+            
+            print("Create attendance: ",JsonResult)
+            return jsonify(JsonResult),200
         else:
             mb.showwarning(message="Warning: CompanyUser.db not found.") 
             return jsonify({"message":"Warning: CompanyUser.db not found"}),200

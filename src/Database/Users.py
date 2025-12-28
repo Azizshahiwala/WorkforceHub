@@ -12,18 +12,22 @@ CredentialsPath = os.path.join(databaseDir,"Credentials.db")
 
 def createCompanyUsers():
     conn = sq.connect(CompanyUserPath)
+    conn.execute("PRAGMA foreign_keys = ON;")
     cursor = conn.cursor()
+
+    # Use ATTACH to perform a cross-database JOIN
+    cursor.execute(f"ATTACH DATABASE '{CredentialsPath}' AS cred_db")
 
     companyTable = """
     create table if not exists user(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    auth_id INTEGER NOT NULL,
+    auth_id INTEGER NOT NULL unique,
     name TEXT NOT NULL,
     employeeId TEXT UNIQUE NOT NULL,
     department TEXT,
     status TEXT DEFAULT 'Logged Out',
-    lastLogin TEXT,
-    FOREIGN KEY (auth_id) REFERENCES login(id))
+    lastLogin TEXT
+    FOREIGN KEY (auth_id) REFERENCES cred_db.login(id)
     """
     cursor.execute(companyTable) 
     conn.commit()
@@ -31,6 +35,7 @@ def createCompanyUsers():
 
 def fetchCompanyUserValues():
     conn = sq.connect(CompanyUserPath)
+    conn.execute("PRAGMA foreign_keys = ON;")
     cursor = conn.cursor()
 
     # Use ATTACH to perform a cross-database JOIN
@@ -39,9 +44,8 @@ def fetchCompanyUserValues():
     query = """
     select emp.name, emp.employeeId, emp.department, emp.status, emp.lastLogin, 
     login.role, login.gender, login.phoneNumber 
-    from user emp 
+    from user as emp
     join cred_db.login as login ON emp.auth_id = login.id 
-
     """
     cursor.execute(query)
     conn.commit()
@@ -58,7 +62,8 @@ def getCompanyUserValues():
 
         for row in fetchedData:
             result.append({"name":row[0],"employeeId": row[1],"department": row[2],"status": row[3],"lastLogin": row[4],"role": row[5],"gender": row[6],"phoneNumber": row[7]})
-    
+
+        print("getCompanyUserValues:",result)
         return jsonify(result),200
     except sq.DataError as de:
         mb.showerror(de)

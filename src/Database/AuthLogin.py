@@ -18,11 +18,12 @@ def createCredentials():
 
         #Connect to database
         conn = sq.connect(databasePath)
+        conn.execute("PRAGMA foreign_keys = ON;")
         #Create cursor
         cursor = conn.cursor()
         #Run query:
         query = '''
-        create table if not exists login(id integer primary key autoincrement,email text not null, password text not null, role text not null, gender text not null, phoneNumber text not null); 
+        create table if not exists login(id integer primary key autoincrement,email text not null, password text not null, role text not null, gender text not null, phoneNumber text not null unique); 
         ''' 
         #Create template (used when multiple queries to be ran later.)
         cursor.execute(query)

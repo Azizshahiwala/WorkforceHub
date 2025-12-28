@@ -40,6 +40,7 @@ def createDatabases():
         createCompanyUsers()
 
         createAttendance()
+        
         return jsonify({"message": "Databases initialized successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
