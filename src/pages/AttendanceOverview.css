@@ -69,14 +69,18 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 2000; /* Ensure it stays above the calendar */
+    z-index: 2000;
     background-color: white;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.2);
-    width: 800px; /* Increased width for side-by-side tables */
+    width: 800px;
     max-width: 95vw;
     border: 1px solid #e2e8f0;
+
+    /* --- ADD THESE FOR SCROLLING --- */
+    max-height: 80vh;  /* Limits height to 80% of the screen */
+    overflow-y: auto;  /* Adds scrollbar if content is taller than max-height */
 }
 
 /* 2. Layout for the tables container */
