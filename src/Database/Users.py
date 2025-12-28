@@ -26,7 +26,7 @@ def createCompanyUsers():
     employeeId TEXT UNIQUE NOT NULL,
     department TEXT,
     status TEXT DEFAULT 'Logged Out',
-    lastLogin TEXT
+    lastLogin TEXT,
     FOREIGN KEY (auth_id) REFERENCES cred_db.login(id)
     """
     cursor.execute(companyTable) 
@@ -63,7 +63,7 @@ def getCompanyUserValues():
         for row in fetchedData:
             result.append({"name":row[0],"employeeId": row[1],"department": row[2],"status": row[3],"lastLogin": row[4],"role": row[5],"gender": row[6],"phoneNumber": row[7]})
 
-        print("getCompanyUserValues:",result)
+        print("getCompanyUserValues:",result[-1])
         return jsonify(result),200
     except sq.DataError as de:
         mb.showerror(de)

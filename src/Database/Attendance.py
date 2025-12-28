@@ -43,18 +43,16 @@ def createAttendance():
             # Joining 'user' (emp), 'attendance' (att), and 'login' (login)
             query = """
     SELECT 
-        emp.lastLogin, 
-        emp.employeeId, 
-        emp.name, 
-        att.date, 
-        login.role, 
-        att.status 
+        emp.lastLogin,    -- index 0
+        emp.employeeId,   -- index 1 (empId)
+        emp.name,         -- index 2
+        att.date,         -- index 3
+        login.role,       -- index 4 (role)
+        att.status        -- index 5
     FROM Attendance att
-    JOIN user as emp 
-    ON att.empId = emp.employeeId
-    JOIN cred_db.login as login 
-    ON emp.auth_id = login.id
-"""
+    JOIN user as emp ON att.empId = emp.employeeId
+    JOIN cred_db.login as login ON emp.auth_id = login.id
+    """
             cursor.execute(query)
             conn.commit()
             attData = cursor.fetchall()
@@ -62,7 +60,7 @@ def createAttendance():
             for row in attData:
                 JsonResult.append({"lastLogin": row[0],"empId": row[1],"name": row[2],"date": row[3],"role": row[4],"status": row[5]})
             
-            print("Create attendance: ",JsonResult)
+            print("Create attendance: ",JsonResult[-1])
             return jsonify(JsonResult),200
         else:
             mb.showwarning(message="Warning: CompanyUser.db not found.") 

@@ -117,6 +117,8 @@ def populate_databases():
     # 2. Populating user table
     conn_u = sq.connect(CompanyUserPath)
     cur_u = conn_u.cursor()
+    conn_u.execute("DELETE FROM user")
+    conn_u.commit()
     template_u = "INSERT INTO user(auth_id, name, employeeId, department, status, lastLogin) VALUES(?,?,?,?,?,?)"
     cur_u.executemany(template_u, company_user_data)
     conn_u.commit()
