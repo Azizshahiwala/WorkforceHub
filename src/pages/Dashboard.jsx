@@ -62,7 +62,7 @@ export default function Dashboard() {
   };
 
 
-// Add this function inside Dashboard component
+// feedback performance
   const getAvgPerformance = () => {
   try {
     const data = localStorage.getItem("feedback");

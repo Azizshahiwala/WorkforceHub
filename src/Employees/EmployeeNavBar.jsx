@@ -8,7 +8,7 @@ function Navbar({ darkMode, setDarkMode }) {
   useEffect(() => {
   const audio = new Audio("/notification.wav");
 
-  // show dot if already exists
+  // show dot if already exists 
   if (localStorage.getItem("hasNewNotification") === "true") {
     setHasNotification(true);
   }

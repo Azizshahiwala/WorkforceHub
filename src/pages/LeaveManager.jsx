@@ -3,46 +3,15 @@ import React from "react";
 import "./LeaveManager.css";
 import { useState } from "react";
 
-const data = [
-  {
-    id: 1,
-    name: "Marshall Nichols",
-    employeeId: "LA-0012",
-    type: "Casual Leave",
-    date: "24 July, 2025 to 26 July, 2025",
-    reason: "Going to Family Function",
-  },
-  {
-    id: 2,
-    name: "Maryam Amiri",
-    employeeId: "LA-0011",
-    type: "Casual Leave",
-    date: "21 July, 2025 to 26 July, 2025",
-    reason: "Attend Birthday party",
-  },
-  {
-    id: 3,
-    name: "Gary Camara",
-    employeeId: "LA-0013",
-    type: "Medical Leave",
-    date: "11 Aug, 2025 to 21 Aug, 2025",
-    reason: "Going to Development",
-  },
-  {
-    id: 4,
-    name: "Frank Camly",
-    employeeId: "LA-0014",
-    type: "Casual Leave",
-    date: "20 July, 2025 to 26 July, 2025",
-    reason: "Going to Holiday",
-  },
-];
+const data=JSON.parse(localStorage.getItem("leaveData")) || [];
 
 function LeaveManager() {
   const [leaveRequests, setLeaveRequests] = useState(data);
 
   const removeRow = (id) => {
-    setLeaveRequests(leaveRequests.filter(item => item.id !== id));
+    const updatedData = leaveRequests.filter(item => item.id !== id);
+    setLeaveRequests(updatedData);
+    localStorage.setItem("leaveData", JSON.stringify(updatedData));
   };
 
   return (
@@ -64,8 +33,8 @@ function LeaveManager() {
               <th>#</th>
               <th>NAME</th>
               <th>EMPLOYEE ID</th>
-              <th>LEAVE TYPE</th>
-              <th>DATE</th>
+              <th>Start DATE</th>
+              <th>End DATE</th>
               <th>REASON</th>
               <th>ACTION</th>
             </tr>
@@ -82,9 +51,9 @@ function LeaveManager() {
                     <span>{req.name}</span>
                   </div>
                 </td>
-                <td>{req.employeeId}</td>
-                <td>{req.type}</td>
-                <td>{req.date}</td>
+                <td>{req.empId}</td>
+                <td>{req.startDate}</td>
+                <td>{req.endDate}</td>
                 <td>{req.reason}</td>
                 <td>
                   <button
