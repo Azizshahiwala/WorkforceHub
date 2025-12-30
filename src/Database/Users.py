@@ -51,6 +51,10 @@ class UserDB:
     """
         cursor.execute(query)
         data = cursor.fetchall()
+        demo = "select role from cred_db.login;"
+        cursor.execute(demo)
+        roledata = cursor.fetchall()
+        print("Roles in cred_db.login:", roledata[5])
         conn.close()
         return data
 
@@ -64,7 +68,7 @@ def createCompanyUsers():
 def get_company_users():
     try:
         data = user_manager.fetch_all_with_credentials()
-        
+          # Accessing role from the first row
         result = [
             {
                 "name": r[0], "employeeId": r[1], "department": r[2], 
@@ -72,7 +76,8 @@ def get_company_users():
                 "gender": r[6], "phoneNumber": r[7],"BaseSalary": r[8]
             } for r in data
         ]
-        
+        print("RAW USERS ROW:", result[0])
+        print("ROW LENGTH:", len(result[0]))
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

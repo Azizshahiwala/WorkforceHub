@@ -78,7 +78,7 @@ def populate_databases():
             email TEXT, password TEXT, role TEXT, gender TEXT, phoneNumber TEXT UNIQUE
         )""")
     # Direct insert (no alias prefix needed when connected directly)
-    template_c = "INSERT INTO login(email, password, role, gender, phoneNumber) VALUES(?,?,?,?,?)"
+    template_c = "INSERT INTO login(email, password, role, gender, phoneNumber) VALUES(?,?,?,?,?);"
     cur_c.executemany(template_c, login_data)
     conn_c.commit()
     conn_c.close()
