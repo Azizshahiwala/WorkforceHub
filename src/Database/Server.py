@@ -38,9 +38,8 @@ def createDatabases():
         #Credentials.db
 
         #Creates main login table
-        if not createCredentials():
-            raise Exception("Failed to create Credentials database.")
-
+        createCredentials()
+        
         #CompanyUsers.db
 
         #Creates user table (profile)

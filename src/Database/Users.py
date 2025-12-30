@@ -46,8 +46,8 @@ class UserDB:
         query = """
    SELECT emp.name, emp.employeeId, emp.department, emp.status, emp.lastLogin, 
    login.role, login.gender, login.phoneNumber, emp.BaseSalary 
-   FROM user AS emp 
-   JOIN cred_db.login AS login ON emp.auth_id = login.id
+   FROM "user" AS emp 
+   LEFT JOIN cred_db.login AS login ON emp.auth_id = login.id
     """
         cursor.execute(query)
         data = cursor.fetchall()
@@ -64,6 +64,7 @@ def createCompanyUsers():
 def get_company_users():
     try:
         data = user_manager.fetch_all_with_credentials()
+        
         result = [
             {
                 "name": r[0], "employeeId": r[1], "department": r[2], 
@@ -71,6 +72,7 @@ def get_company_users():
                 "gender": r[6], "phoneNumber": r[7],"BaseSalary": r[8]
             } for r in data
         ]
+        
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

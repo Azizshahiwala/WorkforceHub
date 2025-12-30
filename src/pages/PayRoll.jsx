@@ -13,16 +13,17 @@ function PayRoll() {
     const month = String(now.getMonth() + 1).padStart(2, '0');
     return `${year}-${month}`;
   };
-
-  // FIXED: Removed if(Window) and made it async/await
   async function SalaryBreakupCard(empId) {
     const currentMonth = getCurrentMonthYear();
     try {
-      const response = await fetch(`http://localhost:5000/api/pay-Salarybreakup/${empId}/${currentMonth}`);
+      const response = await fetch(`http://localhost:5000/api/pay-Salarybreakup/${empId}/${currentMonth+"%"}`);
       const data = await response.json();
       
+      console.log("HTTP STATUS:", response.status);
+    console.log("RAW RESPONSE:", data);
       if (response.ok) {
-        setSalBreakup(data);
+        setSalBreakup(data[0]);
+        console.log("Salary Breakup Data:", salBreakup);
         setWindow(true); // Open window ONLY after data is received
       } else {
         alert("Error fetching breakup data");

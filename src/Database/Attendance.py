@@ -44,11 +44,16 @@ class AttendanceDB:
             emp.lastLogin, emp.employeeId, emp.name, 
             att.date, login.role, att.status 
         FROM Attendance att
-        JOIN user as emp ON att.empId = emp.employeeId
-        JOIN cred_db.login as login ON emp.auth_id = login.id
+        LEFT JOIN "user" as emp ON att.empId = emp.employeeId
+        LEFT JOIN cred_db.login as login ON emp.auth_id = login.id
         """
         cursor.execute(query)
         data = cursor.fetchall()
+        #print("Attendance.py: ",data)
+        if not data:
+            conn.close()
+            return jsonify({"Error":"Table view error. No data found."}), 404
+        
         conn.close()
         return data
 
@@ -68,6 +73,7 @@ def get_attendance_dashboard():
                 "date": r[3], "role": r[4], "status": r[5]
             } for r in data
         ]
+        print("Sample data from attendance.py: ",result)
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500

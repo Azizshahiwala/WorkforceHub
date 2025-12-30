@@ -40,7 +40,7 @@ class Payroll:
         ProfessionalTax real,
         GrossSalary real,
         NetSalary real,
-        foreign key (empId) references user(employeeId));
+        foreign key (empId) references "user"(employeeId));
         """
         cursor.execute(Payrolltable)
         conn.commit()
@@ -52,25 +52,29 @@ class Payroll:
         Keys = """
         SELECT login.phoneNumber, emp.employeeId
         FROM cred_db.login AS login
-        JOIN user AS emp ON login.id = emp.auth_id
+        LEFT JOIN "user" AS emp ON login.id = emp.auth_id
         WHERE emp.employeeId = ?;
         """
 
         cursor.execute(Keys,(empId,))
 
         keydata = cursor.fetchone()
-        
+        if not keydata:
+            conn.close()
+            return None, "Employee credentials not linked"
         #Get base salary
 
         fetchBaseSal = """
-        select BaseSalary from user where employeeId = ?;"""
+        select BaseSalary from "user" where employeeId = ?;"""
 
         cursor.execute(fetchBaseSal,(empId,))
-        row = cursor.fetchone()[0]
+        row = cursor.fetchone()
+        print("Payroll.py BaseSalary fetch:",row)
 
         if not row:
             conn.close()
-            return jsonify({"error": "Employee not found"}), 404
+            return None," Employee not found."
+        
         BaseSalary = row[0]
 
         #Now get total days for a single emp.
@@ -81,8 +85,8 @@ class Payroll:
             AND date LIKE ?;
         """
         cursor.execute(fetchEmpTotalDay,(empId,MonthYear+"%"))
-        conn.close()
         TotalDays = cursor.fetchone()[0]
+        print("Payroll.py TotalDays fetch:",TotalDays)
         
         taxamount = 0.0
         ProvidentFund = 0.0
@@ -104,23 +108,29 @@ class Payroll:
         NetSalary = GrossSalary - (taxamount + ProvidentFund + professionaltax + LossOfPay)
         conn.close()
         
-        return jsonify({
-                    "id":keydata[1],
-                    "phoneNumber":keydata[0],
-                   "empId":empId,
-                   "daysLoggedIn":TotalDays,
-                   "BaseSalary":BaseSalary,
-                   "TaxAmount":taxamount,
-                   "ProvidentFund":ProvidentFund,
-                   "ProfessionalTax":professionaltax,
-                   "GrossSalary":GrossSalary,
-                   "NetSalary":NetSalary}),200
+        result = [{
+        "empId": empId,
+        "phoneNumber": keydata[0],
+        "MonthYear": MonthYear,
+        "daysWorked": TotalDays,
+        "BaseSalary": BaseSalary,
+        "TaxAmount": taxamount,
+        "ProvidentFund": ProvidentFund,
+        "ProfessionalTax": professionaltax,
+        "LossOfPay": LossOfPay,
+        "GrossSalary": GrossSalary,
+        "NetSalary": NetSalary,
+        "generatedAt": MonthYear
+    }]
+        return result,None
+        #print(f"Salary Breakup Data for {empId}:",result)
+        
 
     def processAndSaveData(self,empId,MonthYear):
         conn,cursor = self._get_connection()
         #Get base salary
         fetchBaseSal = """
-        select BaseSalary from user where employeeId = ?;"""
+        select BaseSalary from "user" where employeeId = ?;"""
 
         cursor.execute(fetchBaseSal,(empId,))
         BaseEmpSal = cursor.fetchone()
@@ -187,7 +197,13 @@ def createPayroll():
 #Used to display salary breakup
 @payroll.route("/pay-Salarybreakup/<string:empId>/<string:MonthYear>",methods=['GET'])
 def returnSalBreakup(empId,MonthYear):
-    return Paymanager.SalaryBreakup(empId,MonthYear)
+    data,error = Paymanager.SalaryBreakup(empId,MonthYear)
+
+    if error:
+        return jsonify({"error": error}), 404
+    
+    print("Payroll raw data: ",data)
+    return jsonify(data),200
 
 #Data is sent to frontend
 #Used to store and process salary details
