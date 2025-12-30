@@ -7,14 +7,14 @@ CredentialsPath = os.path.join(databaseDir, "Credentials.db")
 CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
 
 # 20 Sample Entries for 'login' table in Credentials.db
-# Format: (email, password, role, gender, phoneNumber)
+# Format: (email, password, role, gender, BaseSalary, phoneNumber)
 login_data = [
     ("admin@workforce.com", "admin123", "Admin", "Male", "+912222222222"),
     ("ceo@workforce.com", "ceo999", "CEO", "Female", "+910000000000"),
     ("hr@workforce.com", "hr_secure", "HR", "Male", "+911234567890"),
     ("interview@workforce.com", "test456", "interviewer", "Female", "+919999999999"),
     ("marshall.n@workforce.com", "sales789", "Sales manager", "Male", "+912222222220"),
-    ("maryam.a@workforce.com", "internship", "Intern", "Female", "+912222222229"),
+    ("maryam.a@workforce.com", "internship", "Intern", "Female" , "+912222222229"),
     ("gary.c@workforce.com", "creative01", "Designer", "Male", "+912222222999"),
     ("frank.c@workforce.com", "coder99", "Developer", "Female", "+914567892304"),
     ("aarav.m@workforce.com", "promo2025", "Marketing", "Male", "+911555555555"),
@@ -34,26 +34,26 @@ login_data = [
 # 20 Corresponding Entries for 'user' table in CompanyUsers.db
 # Format: (auth_id, name, employeeId, department, status, lastLogin)
 company_user_data = [
-    (1, "System Admin", "LA-0001", "IT Management", "Logged Out", "2025-12-20 09:00 AM"),
-    (2, "Jane Executive", "LA-0002", "Executive Office", "Logged In", "2025-12-21 10:30 AM"),
-    (3, "John HR", "LA-0003", "Human Resources", "Logged In", "2025-12-21 08:45 AM"),
-    (4, "Alice Interviewer", "LA-0004", "Recruitment", "Logged Out", "2025-12-19 05:15 PM"),
-    (5, "Marshall Nichols", "LA-0012", "Sales", "Logged In", "2025-12-21 09:15 AM"),
-    (6, "Maryam Amiri", "LA-0011", "Sales", "Logged In", "2025-12-21 08:45 AM"),
-    (7, "Gary Camara", "LA-0013", "Product Design", "Logged In", "2025-12-21 10:20 AM"),
-    (8, "Frank Camly", "LA-0014", "Software Engineering", "Logged In", "2025-12-21 09:00 AM"),
-    (9, "Aarav Mehta", "LA-0015", "Marketing Strategy", "Logged In", "2025-12-21 11:45 AM"),
-    (10, "Sophia Turner", "LA-0016", "Quality Assurance", "Logged Out", "2025-12-21 02:30 PM"),
-    (11, "Daniel Roberts", "LA-0017", "Finance", "Logged Out", "2025-12-20 05:00 PM"),
-    (12, "Priya Sharma", "LA-0018", "Customer Success", "Logged In", "2025-12-20 09:00 AM"),
-    (13, "Michael Chen", "LA-0019", "Software Dev", "Logged Out", "2025-12-19 06:10 PM"),
-    (14, "Robert King", "LA-0021", "IT Support", "Logged In", "2025-12-21 08:00 AM"),
-    (15, "Emily Watson", "LA-0022", "UX Research", "Logged In", "2025-12-21 07:45 AM"),
-    (16, "Aria Gupta", "LA-0023", "Automation testing", "Logged Out", "2025-12-18 11:00 AM"),
-    (17, "James Wilson", "LA-0024", "Growth Marketing", "Logged In", "2025-12-21 09:30 AM"),
-    (18, "Lisa Thompson", "LA-0025", "Support Desk", "Logged In", "2025-12-21 08:15 AM"),
-    (19, "David Smith", "LA-0026", "Accounts", "Logged Out", "2025-12-20 04:45 PM"),
-    (20, "Olivia Brown", "LA-0027", "Regional Sales", "Logged In", "2025-12-25 09:00 AM")
+    (1, "System Admin", "LA-0001", "IT Management", "Logged Out", 40000, "2025-12-20 09:00 AM"),
+    (2, "Jane Executive", "LA-0002", "Executive Office", "Logged In", 50000, "2025-12-21 10:30 AM"),
+    (3, "John HR", "LA-0003", "Human Resources", "Logged In", 45000, "2025-12-21 08:45 AM"),
+    (4, "Alice Interviewer", "LA-0004", "Recruitment", "Logged Out", 48000, "2025-12-19 05:15 PM"),
+    (5, "Marshall Nichols", "LA-0012", "Sales", "Logged In", 65000, "2025-12-21 09:15 AM"),
+    (6, "Maryam Amiri", "LA-0011", "Sales", "Logged In", 67899, "2025-12-21 08:45 AM"),
+    (7, "Gary Camara", "LA-0013", "Product Design", "Logged In", 70000, "2025-12-21 10:20 AM"),
+    (8, "Frank Camly", "LA-0014", "Software Engineering", "Logged In", 85000, "2025-12-21 09:00 AM"),
+    (9, "Aarav Mehta", "LA-0015", "Marketing Strategy", "Logged In", 75000, "2025-12-21 11:45 AM"),
+    (10, "Sophia Turner", "LA-0016", "Quality Assurance", "Logged Out", 65000, "2025-12-21 02:30 PM"),
+    (11, "Daniel Roberts", "LA-0017", "Finance", "Logged Out", 85000, "2025-12-20 05:00 PM"),
+    (12, "Priya Sharma", "LA-0018", "Customer Success", "Logged In", 70000, "2025-12-20 09:00 AM"),
+    (13, "Michael Chen", "LA-0019", "Software Dev", "Logged Out", 85000, "2025-12-19 06:10 PM"),
+    (14, "Robert King", "LA-0021", "IT Support", "Logged In", 75000, "2025-12-21 08:00 AM"),
+    (15, "Emily Watson", "LA-0022", "UX Research", "Logged In", 85000, "2025-12-21 07:45 AM"),
+    (16, "Aria Gupta", "LA-0023", "Automation testing", "Logged Out", 65433, "2025-12-18 11:00 AM"),
+    (17, "James Wilson", "LA-0024", "Growth Marketing", "Logged In", 75000, "2025-12-21 09:30 AM"),
+    (18, "Lisa Thompson", "LA-0025", "Support Desk", "Logged In", 75000, "2025-12-21 08:15 AM"),
+    (19, "David Smith", "LA-0026", "Accounts", "Logged Out", 85000, "2025-12-20 04:45 PM"),
+    (20, "Olivia Brown", "LA-0027", "Regional Sales", "Logged In", 75000, "2025-12-25 09:00 AM")
 ]
 # Sample Employee IDs (matching your previous sample data)
 attendance_data_to_insert = [
@@ -98,6 +98,16 @@ def ensure_tables_exist():
     );
     """)
 
+    #Run query:
+    query = '''
+        create table if not exists login(id integer primary key autoincrement,
+        email text not null, 
+        password text not null, 
+        role text not null, 
+        gender text not null, 
+        phoneNumber text not null unique); 
+        ''' 
+    cur.execute(query)
     conn.commit()
     conn.close()
 
@@ -108,7 +118,7 @@ def populate_databases():
     cur_c = conn_c.cursor()
     conn_c.execute("DELETE FROM login")
     conn_c.commit()
-    template_c = "INSERT OR IGNORE INTO login(email, password, role, gender, phoneNumber) VALUES(?,?,?,?,?)"
+    template_c = "INSERT OR IGNORE INTO cred_db.login(email, password, role, gender, phoneNumber) VALUES(?,?,?,?,?)"
     cur_c.executemany(template_c, login_data)
     conn_c.commit()
     conn_c.close()
@@ -119,7 +129,7 @@ def populate_databases():
     cur_u = conn_u.cursor()
     conn_u.execute("DELETE FROM user")
     conn_u.commit()
-    template_u = "INSERT INTO user(auth_id, name, employeeId, department, status, lastLogin) VALUES(?,?,?,?,?,?)"
+    template_u = "INSERT INTO user(auth_id, name, employeeId, department, status, BaseSalary,lastLogin) VALUES(?,?,?,?,?,?,?)"
     cur_u.executemany(template_u, company_user_data)
     conn_u.commit()
     conn_u.close()

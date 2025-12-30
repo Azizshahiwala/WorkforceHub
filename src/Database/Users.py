@@ -1,71 +1,77 @@
-#login.db <-> CompanyUsers.db
-#ComapnyUsers.db <-> CompanyUser.jsx
+# src/Database/Users.py
 import sqlite3 as sq 
-from flask import Blueprint,jsonify
+from flask import Blueprint, jsonify
 import os
-from tkinter import messagebox as mb
-users = Blueprint('CentralUserBase',__name__,url_prefix='/api')
 
-databaseDir = os.path.join(os.getcwd(),"src","Database")
-CompanyUserPath = os.path.join(databaseDir,"CompanyUsers.db")
-CredentialsPath = os.path.join(databaseDir,"Credentials.db")
+users = Blueprint('CentralUserBase', __name__, url_prefix='/api')
+
+# Paths
+databaseDir = os.path.join(os.getcwd(), "src", "Database")
+CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
+CredentialsPath = os.path.join(databaseDir, "Credentials.db")
+
+class UserDB:
+    def __init__(self, db_path, cred_path):
+        self.db_path = db_path
+        self.cred_path = cred_path
+
+    def _get_connection(self):
+        conn = sq.connect(self.db_path)
+        conn.execute("PRAGMA foreign_keys = ON;")
+        cursor = conn.cursor()
+        cursor.execute(f"ATTACH DATABASE '{self.cred_path}' AS cred_db")
+        return conn, cursor
+
+    def create_table(self):
+        conn, cursor = self._get_connection()
+        query = """
+        CREATE TABLE IF NOT EXISTS user(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            auth_id INTEGER NOT NULL UNIQUE,
+            name TEXT NOT NULL,
+            employeeId TEXT UNIQUE NOT NULL,
+            department TEXT,
+            status TEXT DEFAULT 'Logged Out',
+            lastLogin TEXT,
+            BaseSalary REAL default 0.0,
+            FOREIGN KEY (auth_id) REFERENCES cred_db.login(id)
+        );
+        """
+        cursor.execute(query)
+        conn.commit()
+        conn.close()
+
+    def fetch_all_with_credentials(self):
+        conn, cursor = self._get_connection()
+        query = """
+        SELECT 
+            emp.name, emp.employeeId, emp.department, emp.status, emp.lastLogin, 
+            login.role, login.gender, login.phoneNumber 
+        FROM user as emp
+        JOIN cred_db.login as login ON emp.auth_id = login.id 
+        """
+        cursor.execute(query)
+        data = cursor.fetchall()
+        conn.close()
+        return data
+
+# Instantiate the object
+user_manager = UserDB(CompanyUserPath, CredentialsPath)
 
 def createCompanyUsers():
-    conn = sq.connect(CompanyUserPath)
-    conn.execute("PRAGMA foreign_keys = ON;")
-    cursor = conn.cursor()
+    user_manager.create_table()
 
-    # Use ATTACH to perform a cross-database JOIN
-    cursor.execute(f"ATTACH DATABASE '{CredentialsPath}' AS cred_db")
-
-    companyTable = """
-    create table if not exists user(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    auth_id INTEGER NOT NULL unique,
-    name TEXT NOT NULL,
-    employeeId TEXT UNIQUE NOT NULL,
-    department TEXT,
-    status TEXT DEFAULT 'Logged Out',
-    lastLogin TEXT,
-    FOREIGN KEY (auth_id) REFERENCES cred_db.login(id)
-    """
-    cursor.execute(companyTable) 
-    conn.commit()
-    conn.close()
-
-def fetchCompanyUserValues():
-    conn = sq.connect(CompanyUserPath)
-    conn.execute("PRAGMA foreign_keys = ON;")
-    cursor = conn.cursor()
-
-    # Use ATTACH to perform a cross-database JOIN
-    cursor.execute(f"ATTACH DATABASE '{CredentialsPath}' AS cred_db")
-
-    query = """
-    select emp.name, emp.employeeId, emp.department, emp.status, emp.lastLogin, 
-    login.role, login.gender, login.phoneNumber 
-    from user as emp
-    join cred_db.login as login ON emp.auth_id = login.id 
-    """
-    cursor.execute(query)
-    conn.commit()
-    CompanyUsers = cursor.fetchall()
-    conn.close()
-    return CompanyUsers
-
-@users.route("/getCompanyUsers",methods=['GET'])
-def getCompanyUserValues():
+@users.route("/getCompanyUsers", methods=['GET'])
+def get_company_users():
     try:
-        fetchedData = fetchCompanyUserValues()
-        # Convert the list of tuples from SQL into a list of JSON objects
-        result = []
-
-        for row in fetchedData:
-            result.append({"name":row[0],"employeeId": row[1],"department": row[2],"status": row[3],"lastLogin": row[4],"role": row[5],"gender": row[6],"phoneNumber": row[7]})
-
-        print("getCompanyUserValues:",result[-1])
-        return jsonify(result),200
-    except sq.DataError as de:
-        mb.showerror(de)
-        return jsonify({"error": str(de)}), 500 # Added return on error
-    
+        data = user_manager.fetch_all_with_credentials()
+        result = [
+            {
+                "name": r[0], "employeeId": r[1], "department": r[2], 
+                "status": r[3], "lastLogin": r[4], "role": r[5], 
+                "gender": r[6], "phoneNumber": r[7]
+            } for r in data
+        ]
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
