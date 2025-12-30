@@ -1,127 +1,52 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import './PayRoll.css';
 
-const data = [
-  {
-    id: 1,
-    name: "Marshall Nichols",
-    employeeId: "LA-0011",
-    phone: "+91 9876543210",
-    joinDate: "2022-03-15",
-    role: "Senior Developer",
-    salary: 85000
-  },
-  {
-    id: 2,
-    name: "Maryam Amiri",
-    employeeId: "LA-0012",
-    phone: "+91 9876543211",
-    joinDate: "2021-07-10",
-    role: "Sales Executive",
-    salary: 60000
-  },
-  {
-    id: 3,
-    name: "Gary Camara",
-    employeeId: "LA-0013",
-    phone: "+91 9876543212",
-    joinDate: "2023-01-20",
-    role: "Marketing Manager",
-    salary: 70000
-  },
-  {
-    id: 4,
-    name: "Frank Camly",
-    employeeId: "LA-0014",
-    phone: "+91 9876543213",
-    joinDate: "2020-11-05",
-    role: "QA Tester",
-    salary: 55000
-  },
-  {
-    id: 5,
-    name: "Aarav Mehta",
-    employeeId: "LA-0015",
-    phone: "+91 9876543214",
-    joinDate: "2024-02-01",
-    role: "Software Intern",
-    salary: 20000
-  },
-  {
-    id: 6,
-    name: "Sophia Turner",
-    employeeId: "LA-0016",
-    phone: "+91 9876543215",
-    joinDate: "2019-09-18",
-    role: "Finance Analyst",
-    salary: 75000
-  },
-  {
-    id: 7,
-    name: "Daniel Roberts",
-    employeeId: "LA-0017",
-    phone: "+91 9876543216",
-    joinDate: "2022-06-30",
-    role: "Frontend Developer",
-    salary: 65000
-  },
-  {
-    id: 8,
-    name: "Priya Sharma",
-    employeeId: "LA-0018",
-    phone: "+91 9876543217",
-    joinDate: "2023-08-12",
-    role: "Customer Support",
-    salary: 45000
-  },
-  {
-    id: 9,
-    name: "Michael Chen",
-    employeeId: "LA-0019",
-    phone: "+91 9876543218",
-    joinDate: "2021-04-25",
-    role: "Marketing Executive",
-    salary: 62000
-  },
-  {
-    id: 10,
-    name: "Olivia Brown",
-    employeeId: "LA-0020",
-    phone: "+91 9876543219",
-    joinDate: "2020-01-10",
-    role: "Sales Manager",
-    salary: 90000
-  }
-];
-
-
-
 function PayRoll() {
+  const [Window, setWindow] = useState(false);
+  const [salBreakup, setSalBreakup] = useState(null);
+  const [Employee, setEmployee] = useState([]);
+  const [search, setSearch] = useState("");
 
-  const [Employee, setEmployee] = useState(data);
-
-  // search Employee
-  const [search,setSearch]= useState("");
-  
-    // useEffect(() => {
-    //     const saved = localStorage.getItem("employees");
-    //     if (saved) {
-    //       setEmployee(JSON.parse(saved));
-    //     }
-    //   }, []);
-
-// Remove Employee
-const removeRow = (id) => {
-  if (window.confirm("Are you sure you want to remove this employee?")) {
-    const updated = Employee.filter(emp => emp.id !== id);
-    setEmployee(updated);
+  const getCurrentMonthYear = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+  };
+  async function SalaryBreakupCard(empId) {
+    const currentMonth = getCurrentMonthYear();
+    try {
+      const response = await fetch(`http://localhost:5000/api/pay-Salarybreakup/${empId}/${currentMonth+"%"}`);
+      const data = await response.json();
+      
+      console.log("HTTP STATUS:", response.status);
+    console.log("RAW RESPONSE:", data);
+      if (response.ok) {
+        setSalBreakup(data[0]);
+        console.log("Salary Breakup Data:", salBreakup);
+        setWindow(true); // Open window ONLY after data is received
+      } else {
+        alert("Error fetching breakup data");
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    }
   }
-};
 
-// (Optional) Mail handler
-const displayRow = (id) => {
-  alert("Mail sent to employee ID: " + id);
-};
+  useEffect(() => {
+    const loadEmployees = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/getCompanyUsers");
+        const empdata = await response.json();
+        if (Array.isArray(empdata)) {
+          setEmployee(empdata);
+        }
+      } catch (error) {
+        console.error("Load Error:", error);
+      }
+    };
+    loadEmployees();
+  }, []);
 
   return (
     <div className="leave-page">
@@ -131,81 +56,67 @@ const displayRow = (id) => {
 
       <div className="leave-card">
         <div className="leave-card-header">
-          {/* <h3>Employee Salarys</h3> */}
           <input
             type="text"
             placeholder="Search by name...🔍"
             className="search-input"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            />
+          />
         </div>
 
-        <table className="leave-table">
-          <tbody>
+        <div className="emp-grid">
+          {Employee
+            .filter(emp => emp.name.toLowerCase().includes(search.toLowerCase()))
+            .map((emp) => (
+              <div className="emp-card" key={emp.employeeId}>
+                <div className="emp-card-row">
+                  <span>ID:</span> <strong>{emp.employeeId}</strong>
+                </div>
+                <div className="emp-card-row">
+                  <span>Name:</span> <strong>{emp.name}</strong>
+                </div>
+                <div className="emp-card-row">
+                  {/* FIXED: Using 'base_salary' or 'BaseSalary' to match your DB */}
+                  <span>Salary:</span> <strong>₹ {emp.BaseSalary}</strong>
+                </div>
+                <div className="emp-card-row">
+                  {/* FIXED: Using 'base_salary' or 'BaseSalary' to match your DB */}
+                  <span>Phone:</span> <strong> {emp.phoneNumber}</strong>
+                </div>
+                <div className="emp-card-row">
+                  <span>Role:</span> <strong>{emp.role}</strong>
+                </div>
 
-            {/* filter => Loop through all employees and show only those whose name contains the 
-            searched text, ignoring case. */}
+                <div style={{ marginTop: "12px", textAlign: "right" }}>
+                  <button
+                    onClick={() => SalaryBreakupCard(emp.employeeId)}
+                    className="action-btn btn-card"
+                  >
+                    📄 Salary Breakup
+                  </button>
+                </div>
+              </div>
+            ))}
+        </div>
 
-            <div className="emp-grid">
-              {Employee
-                .filter(emp =>
-                  emp.name.toLowerCase().includes(search.toLowerCase())
-                )
-                .map((emp) => (
-                  <div className="emp-card" key={emp.id}>
-                    {/* Top-right remove button */}
-                    {/* <button
-                      className="remove-icon-btn"
-                      onClick={() => removeRow(emp.id)}
-                      title="Remove Employee"
-                    >
-                      ✕
-                    </button> */}
-
-                    <div className="emp-card-row">
-                      <span>Employee ID:</span>
-                      <strong>{emp.employeeId}</strong>
-                    </div>
-
-                    <div className="emp-card-row">
-                      <span>Name:</span>
-                      <strong>{emp.name}</strong>
-                    </div>
-
-                    <div className="emp-card-row">
-                      <span>Phone:</span>
-                      <strong>{emp.phone}</strong>
-                    </div>
-
-                    <div className="emp-card-row">
-                      <span>Join Date:</span>
-                      <strong>{emp.joinDate}</strong>
-                    </div>
-
-                    <div className="emp-card-row">
-                      <span>Role:</span>
-                      <strong>{emp.role}</strong>
-                    </div>
-
-                    <div className="emp-card-row">
-                      <span>Salary:</span>
-                      <strong>₹ {emp.salary}</strong>
-                    </div>
-
-                    <div style={{ marginTop: "12px", textAlign: "right" }}>
-                      <button
-                        onClick={() => displayRow(emp.id)}
-                        className="action-btn btn-mail"
-                      >
-                        ✉️ Mail
-                      </button>
-                    </div>
-                  </div>
-                ))}
+        {/* MODAL SECTION */}
+        {Window && salBreakup && (
+          <div className="SalBreakup-overlay">
+            <div className="SalBreakup-page">
+              <h2>Salary Breakup for {salBreakup.empId}</h2>
+              <div className="breakup-stats">
+                <p><strong>Base Salary:</strong> ₹{salBreakup.BaseSalary}</p>
+                <p><strong>Days Worked:</strong> {salBreakup.daysLoggedIn}</p>
+                <p><strong>Tax Deducted:</strong> ₹{salBreakup.TaxAmount}</p>
+                <p><strong>Gross Pay:</strong> ₹{salBreakup.GrossSalary}</p>
+                <hr />
+                <p className="net-pay"><strong>Net Take-Home:</strong> ₹{salBreakup.NetSalary}</p>
+              </div>
+              <button className="close-btn" onClick={() => setWindow(false)}>Close</button>
             </div>
-          </tbody>
-        </table>
+          </div>
+        )}
       </div>
     </div>
   );

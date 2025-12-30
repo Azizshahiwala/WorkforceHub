@@ -28,11 +28,8 @@ def createCredentials():
         #Create template (used when multiple queries to be ran later.)
         cursor.execute(query)
         conn.commit()
-
-        #A temporary block of code which should be removed later.
-        message = "Database created. "
-        #This json code will be sent to react useeffect
-        return jsonify({"message":message}),200
+        conn.close()
+        return True
         
     except Exception as e:
         mb.showerror(message=e)
@@ -98,7 +95,7 @@ def login():
             else:
                 return jsonify({"success":False,"role":"","message":"Invalid email or password","Permission":0}),200       
         #Returning True / False after successful fetch is more reliable. 
-    
+        
     except sq.OperationalError as e:
         mb.showwarning(e)
         return jsonify({"success":False,"role":"","message":"User not registered."}),500

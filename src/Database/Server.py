@@ -10,6 +10,7 @@ from flask_cors import CORS
 from AuthLogin import authlogin,createCredentials
 from Users import users,createCompanyUsers
 from Attendance import attendance,createAttendance
+from Payroll import payroll,createPayroll
 #render_template -> imports function which is used to load html
 #redirect -> used to redirect browser to a path
 #session -> processing of Sessions
@@ -26,23 +27,34 @@ app = Flask(__name__)
 app.register_blueprint(authlogin)
 app.register_blueprint(users)
 app.register_blueprint(attendance)
-    
+app.register_blueprint(payroll)
+
 # Enables communication between your React app and this Flask server
 CORS(app)  
 
 @app.route("/api/init-db",methods=['GET'])
 def createDatabases():
     try:
-        #For Credentials.db
-        createCredentials()
+        #Credentials.db
 
-        #For CompanyUsers.db
+        #Creates main login table
+        createCredentials()
+        
+        #CompanyUsers.db
+
+        #Creates user table (profile)
         createCompanyUsers()
 
+        #Creates attendance table
         createAttendance()
         
+        #Creates payroll table.
+        createPayroll()
+        
+       
         return jsonify({"message": "Databases initialized successfully"}), 200
     except Exception as e:
+        print(f"Global Init Error: {e}") 
         return jsonify({"error": str(e)}), 500
 #Run app
 if __name__ == '__main__':

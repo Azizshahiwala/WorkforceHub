@@ -42,7 +42,6 @@ function App() {
         const response = await fetch("http://localhost:5000/api/init-db");
         //convert response to json
         const data = await response.json();
-        //temporary message
         console.log("Backend response:", data.message);
       } catch (error) {
         console.error("Failed to initialize database on startup:", error);

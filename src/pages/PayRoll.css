@@ -61,6 +61,25 @@
   padding: 24px;
 }
 
+.SalBreakup-page{
+  position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.2);
+    width: 800px;
+    max-width: 95vw;
+    border: 1px solid #e2e8f0;
+
+    /* --- ADD THESE FOR SCROLLING --- */
+    max-height: 80vh;  /* Limits height to 80% of the screen */
+    overflow-y: auto;  /* Adds scrollbar if content is taller than max-height */
+
+}
 /* ===============================
    Employee Card
 ================================ */
@@ -126,7 +145,15 @@
   color: #fff;
   transform: scale(1.1);
 }
-
+.close-btn{
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
 /* ===============================
    Action Buttons (Mail)
 ================================ */
@@ -146,6 +173,10 @@
   color: #0369a1;
 }
 
+.btn-card {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
 .btn-mail:hover {
   background-color: #0369a1;
   color: #ffffff;
