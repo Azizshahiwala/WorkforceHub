@@ -39,6 +39,7 @@ function PayRoll() {
         const response = await fetch("http://localhost:5000/api/getCompanyUsers");
         const empdata = await response.json();
         if (Array.isArray(empdata)) {
+          console.log("Employee Data Loaded:", empdata);
           setEmployee(empdata);
         }
       } catch (error) {
@@ -69,7 +70,9 @@ function PayRoll() {
           {Employee
             .filter(emp => emp.name.toLowerCase().includes(search.toLowerCase()))
             .map((emp) => (
+              
               <div className="emp-card" key={emp.employeeId}>
+                
                 <div className="emp-card-row">
                   <span>ID:</span> <strong>{emp.employeeId}</strong>
                 </div>
