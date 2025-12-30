@@ -13,7 +13,6 @@ function AdminSidebar({ darkMode }) {
           color: darkMode ? "#ffffff" : "#000000"
         }}
       >
-        Hello Marshall Nichols
       </h2>
         <li>
           <NavLink
