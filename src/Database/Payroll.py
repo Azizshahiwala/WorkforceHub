@@ -25,6 +25,7 @@ class Payroll:
         cursor = conn.cursor()
         cursor.execute(f"ATTACH DATABASE '{self.CredentialsPath}' AS cred_db")
         return conn,cursor
+    
     def create_table(self):
         conn,cursor = self._get_connection()
         Payrolltable = """
@@ -49,12 +50,11 @@ class Payroll:
         conn,cursor = self._get_connection()
         #Get phone and id from cred_db.login
         Keys = """
-        select cred_db.login.phoneNumber,
-        emp.employeeId
-        from cred_db.login
-        join user as emp
-        on cred_db.login.id = emp.auth_id
-        where emp.employeeId = ?;"""
+        SELECT login.phoneNumber, emp.employeeId
+        FROM cred_db.login AS login
+        JOIN user AS emp ON login.id = emp.auth_id
+        WHERE emp.employeeId = ?;
+        """
 
         cursor.execute(Keys,(empId,))
 
@@ -65,15 +65,23 @@ class Payroll:
         fetchBaseSal = """
         select BaseSalary from user where employeeId = ?;"""
 
-        cursor.execute(fetchBaseSal,(empId))
-        BaseSalary = cursor.fetchone()[0]
+        cursor.execute(fetchBaseSal,(empId,))
+        row = cursor.fetchone()[0]
+
+        if not row:
+            conn.close()
+            return jsonify({"error": "Employee not found"}), 404
+        BaseSalary = row[0]
 
         #Now get total days for a single emp.
 
         fetchEmpTotalDay = """
-        select count(*) from Attendance where empId = ? and (status = 'Present' or status = 'Logged in') and date like ?;
+            SELECT count(*) FROM Attendance 
+            WHERE empId = ? AND (status = 'Present' OR status = 'Logged in') 
+            AND date LIKE ?;
         """
-        cursor.execute(fetchEmpTotalDay,(empId,MonthYear))
+        cursor.execute(fetchEmpTotalDay,(empId,MonthYear+"%"))
+        conn.close()
         TotalDays = cursor.fetchone()[0]
         
         taxamount = 0.0
@@ -179,7 +187,7 @@ def createPayroll():
 #Used to display salary breakup
 @payroll.route("/pay-Salarybreakup/<string:empId>/<string:MonthYear>",methods=['GET'])
 def returnSalBreakup(empId,MonthYear):
-    Paymanager.SalaryBreakup(empId,MonthYear)
+    return Paymanager.SalaryBreakup(empId,MonthYear)
 
 #Data is sent to frontend
 #Used to store and process salary details

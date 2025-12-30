@@ -38,7 +38,8 @@ def createDatabases():
         #Credentials.db
 
         #Creates main login table
-        createCredentials()
+        if not createCredentials():
+            raise Exception("Failed to create Credentials database.")
 
         #CompanyUsers.db
 
@@ -51,8 +52,10 @@ def createDatabases():
         #Creates payroll table.
         createPayroll()
         
+       
         return jsonify({"message": "Databases initialized successfully"}), 200
     except Exception as e:
+        print(f"Global Init Error: {e}") 
         return jsonify({"error": str(e)}), 500
 #Run app
 if __name__ == '__main__':

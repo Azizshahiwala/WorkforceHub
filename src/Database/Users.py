@@ -33,8 +33,8 @@ class UserDB:
             department TEXT,
             status TEXT DEFAULT 'Logged Out',
             lastLogin TEXT,
-            BaseSalary REAL default 0.0,
-            FOREIGN KEY (auth_id) REFERENCES cred_db.login(id)
+            BaseSalary REAL DEFAULT 0.0
+            -- Note: Cross-db foreign keys are logical only in SQLite
         );
         """
         cursor.execute(query)
@@ -44,12 +44,11 @@ class UserDB:
     def fetch_all_with_credentials(self):
         conn, cursor = self._get_connection()
         query = """
-        SELECT 
-            emp.name, emp.employeeId, emp.department, emp.status, emp.lastLogin, 
-            login.role, login.gender, login.phoneNumber 
-        FROM user as emp
-        JOIN cred_db.login as login ON emp.auth_id = login.id 
-        """
+   SELECT emp.name, emp.employeeId, emp.department, emp.status, emp.lastLogin, 
+   login.role, login.gender, login.phoneNumber, emp.BaseSalary 
+   FROM user AS emp 
+   JOIN cred_db.login AS login ON emp.auth_id = login.id
+    """
         cursor.execute(query)
         data = cursor.fetchall()
         conn.close()
@@ -69,7 +68,7 @@ def get_company_users():
             {
                 "name": r[0], "employeeId": r[1], "department": r[2], 
                 "status": r[3], "lastLogin": r[4], "role": r[5], 
-                "gender": r[6], "phoneNumber": r[7]
+                "gender": r[6], "phoneNumber": r[7],"BaseSalary": r[8]
             } for r in data
         ]
         return jsonify(result), 200
