@@ -24,6 +24,14 @@ import AdminCompanyUser from "./pages/AdminCompanyUser";
 import AdminFeedback from "./pages/AdminFeedback";
 import AdminActivity from "./pages/AdminActivity";
 import AdminEmployeePerformance from "./pages/AdminEmployeePerformance";
+
+// Employee Layout import
+import EmployeeLayout from "./layout/EmployeeLayout";
+import EmployeeDashboard from "./pages/EmployeeDashboard";
+import ApplyLeave from "./pages/ApplyLeave";
+import Performance from "./pages/Performance";
+import Announcements from "./pages/EmployeeActivity";
+
 function App() {
   //This hook sends API request to the python flask end point: localhost/api/init-db
   //Which the flask uses CORS to validate the response. THEN, flask will run the database.py
@@ -73,6 +81,14 @@ function App() {
           <Route path="feedbackAdmin" element={<AdminFeedback />} />
           <Route path="activityAdmin" element={<AdminActivity />} />
           <Route path="performanceAdmin" element={<AdminEmployeePerformance />} />
+        </Route>
+
+        {/* 4. Move Employee Layout to /dashboard */}
+        <Route path="/dashboardEmployee" element={<EmployeeLayout />}>
+          <Route index element={<EmployeeDashboard />} />
+          <Route path="applyLeave" element={<ApplyLeave />} />
+          <Route path="performanceEmployee" element={<Performance />} />
+          <Route path="announcements" element={<Announcements />} />
         </Route>
 
         {/* Interviewer routes remain the same or adjust as needed */}
