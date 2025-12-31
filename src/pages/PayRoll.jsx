@@ -110,10 +110,10 @@ function PayRoll() {
               <h2>Salary Breakup for {salBreakup.name} - {salBreakup.empId}</h2>
               <div className="breakup-stats">
                 <p><strong>Base Salary:</strong> ₹{salBreakup.BaseSalary}</p>
-                <p><strong>Days Worked:</strong> {salBreakup.daysLoggedIn}</p>
+                <p><strong>Days Worked:</strong> {salBreakup.daysWorked}</p>
                 <p><strong>Tax Deducted:</strong> ₹{salBreakup.TaxAmount}</p>
                 <p><strong>Provident fund:</strong> ₹{salBreakup.ProvidentFund}</p>
-                <p><strong>Professional Tax:</strong> ₹{salBreakup.professionaltax}</p>
+                <p><strong>Professional Tax:</strong> ₹{salBreakup.ProfessionalTax}</p>
                 <p><strong>Gross Pay:</strong> ₹{salBreakup.GrossSalary}</p>
                 <p><strong>Loss Of Pay:</strong> ₹{salBreakup.LossOfPay}</p>
                 <hr />

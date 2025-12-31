@@ -177,7 +177,7 @@ class Payroll:
 
         conn.commit()
         result = [{"empId":empId,
-                   "daysLoggedIn":TotalDays,
+                   "daysWorked":TotalDays,
                    "BaseSalary":BaseEmpSal,
                    "TaxAmount":taxamount,
                    "ProvidentFund":ProvidentFund,
