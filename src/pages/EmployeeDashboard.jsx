@@ -2,7 +2,7 @@ import React from 'react'
 
 function EmployeeDashboard() {
   return (
-    <div>EmployeeDashboard</div>
+    <div>Employee Dashboard</div>
   )
 }
 

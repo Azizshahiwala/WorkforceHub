@@ -1,25 +1,29 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./FeedbackEmployees.css";
 
-const data = [
-  { id: 1, name: "Marshall Nichols", employeeId: "LA-0012", department: "Developer" },
-  { id: 2, name: "Maryam Amiri", employeeId: "LA-0011", department: "Sales" },
-  { id: 3, name: "Gary Camara", employeeId: "LA-0013", department: "Marketing" },
-  { id: 4, name: "Frank Camly", employeeId: "LA-0014", department: "Testers" },
-  { id: 5, name: "Aarav Mehta", employeeId: "LA-0015", department: "Intern" },
-  { id: 6, name: "Sophia Turner", employeeId: "LA-0016", department: "Finance" },
-  { id: 7, name: "Daniel Roberts", employeeId: "LA-0017", department: "Developer" },
-  { id: 8, name: "Priya Sharma", employeeId: "LA-0018", department: "Support" },
-  { id: 9, name: "Michael Chen", employeeId: "LA-0019", department: "Marketing" },
-  { id: 10, name: "Olivia Brown", employeeId: "LA-0020", department: "Sales" }
-];
+// name,employeeId,department
 
 function FeedbackEmployees() {
-  const [employees] = useState(data);
+  const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedEmp, setSelectedEmp] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [rate,setRate]=useState(0);
+
+  useEffect(() => {
+      //This useEffect loads Users from database CompanyUser once
+      const loadUser = async () => {
+        try {
+          //Get response into 'response'
+          const response = await fetch("http://localhost:5000/api/getCompanyUsers");
+          //convert response to json
+          const data = await response.json();
+          setEmployees(data)
+        } catch (error) {
+          console.error("Error from FeedbackEmployees.jsx:", error);
+        }
+      };
+      loadUser(); }, []);
 
   const giveFeedback = (emp) => {
     setSelectedEmp(emp);
@@ -28,7 +32,7 @@ function FeedbackEmployees() {
 
   const submitFeedback = () => {
     const data={
-    empId: selectedEmp.id,
+    empId: selectedEmp.employeeId,
     name: selectedEmp.name,
     rating: rate,
     comment: feedback,
