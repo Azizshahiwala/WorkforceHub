@@ -20,7 +20,47 @@ CredentialsPath = os.path.join(databaseDir, "Credentials.db")
 RecruitmentPath = os.path.join(databaseDir, "Recruitment.db")
 
 class Recruitment:
-    pass 
+    def __init__(self, compPath, credPath, recPath):
+        self.recPath = recPath
+        self.credPath = credPath
+        self.compPath = compPath
+
+    def _get_connection(self):
+        conn = sq.connect(self.recPath)
+        conn.execute("PRAGMA foreign_keys = ON;")
+        cursor = conn.cursor()
+        return conn, cursor
+    
+    #This creates a table for in-coming requests.
+    def create_table_TempStatusTable(self):
+        conn, cursor = self._get_connection()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS TempStatusTable(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT NOT NULL,
+                phoneNumber TEXT NOT NULL,
+                resume BLOB NOT NULL,
+                status TEXT DEFAULT 'Pending'
+            );
+        """)
+        conn.commit()
+        conn.close()
+
+    #This creates a table for Accepted candidates.
+    def create_table_MainStatusTable(self):
+        conn, cursor = self._get_connection()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS MainStatusTable(
+                auth_id INTEGER UNIQUE,
+                email TEXT NOT NULL,
+                phoneNumber TEXT NOT NULL,
+                resume BLOB NOT NULL
+            );
+        """)
+        conn.commit()
+        conn.close()
+manager = Recruitment(CompanyUserPath, CredentialsPath, RecruitmentPath)
 
 def createRecruitment():
-    pass
+    manager.create_table_TempStatusTable()
+    manager.create_table_MainStatusTable()

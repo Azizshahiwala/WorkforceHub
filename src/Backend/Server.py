@@ -53,7 +53,10 @@ def createDatabases():
         #Creates payroll table.
         createPayroll()
         
-       
+        #Recruitment.db
+
+        #Creates two state tables.
+        createRecruitment()
         return jsonify({"message": "Databases initialized successfully"}), 200
     except Exception as e:
         print(f"Global Init Error: {e}") 
