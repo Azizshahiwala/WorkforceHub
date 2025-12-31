@@ -33,9 +33,9 @@ login_data = [
     ("test2@workforce.com", "qa123", "Tester", "Female", "+918888888882"),
     ("test3@workforce.com", "qa123", "Tester", "Male", "+918888888883"),
 
-    ("sales1@workforce.com", "sale123", "Sales", "Female", "+919999999991"),
-    ("sales2@workforce.com", "sale123", "Sales", "Male", "+919999999992"),
-    ("sales3@workforce.com", "sale123", "Sales", "Female", "+919999999993"),
+    ("sales1@workforce.com", "sale123", "Sales manager", "Female", "+919999999991"),
+    ("sales2@workforce.com", "sale123", "Sales manager", "Male", "+919999999992"),
+    ("sales3@workforce.com", "sale123", "Sales manager", "Female", "+919999999993"),
 
     ("support1@workforce.com", "help123", "Support", "Male", "+910101010101"),
     ("support2@workforce.com", "help123", "Support", "Female", "+910101010102"),
@@ -64,9 +64,9 @@ company_user_data = [
     ("Tester Two", "LA-0019", "QA", "Logged In", 45000, "2025-12-21 11:10 AM"),
     ("Tester Three", "LA-0020", "QA", "Logged In", 45000, "2025-12-21 11:20 AM"),
 
-    ("Sales One", "LA-0021", "Sales", "Logged In", 65000, "2025-12-21 12:00 PM"),
-    ("Sales Two", "LA-0022", "Sales", "Logged In", 65000, "2025-12-21 12:10 PM"),
-    ("Sales Three", "LA-0023", "Sales", "Logged In", 65000, "2025-12-21 12:20 PM"),
+    ("Sales One", "LA-0021", "Sales manager", "Logged In", 65000, "2025-12-21 12:00 PM"),
+    ("Sales Two", "LA-0022", "Sales manager", "Logged In", 65000, "2025-12-21 12:10 PM"),
+    ("Sales Three", "LA-0023", "Sales manager", "Logged In", 65000, "2025-12-21 12:20 PM"),
 
     ("Support One", "LA-0024", "Support", "Logged In", 35000, "2025-12-21 01:00 PM"),
     ("Support Two", "LA-0025", "Support", "Logged In", 35000, "2025-12-21 01:10 PM"),

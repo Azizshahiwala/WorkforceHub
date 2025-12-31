@@ -8,7 +8,7 @@ export default function InterviewEnd() {
     <div style={{ padding: "40px", textAlign: "center" }}>
       <h1>✅ Interview Completed</h1>
       <p>Thank you! Our AI will review your interview.</p>
-      <button onClick={() => navigate("/login")} className="control-btn mute">
+      <button onClick={() => navigate("/")} className="control-btn mute">
         Back to Login
       </button>
     </div>

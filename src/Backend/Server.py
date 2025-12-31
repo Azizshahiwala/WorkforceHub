@@ -3,14 +3,15 @@
 #pip install flask
 #pip install flask-cors
 
-from tkinter import messagebox as mb
 from flask import Flask,session,make_response,jsonify
 from flask_cors import CORS
+
 #Get blueprint
 from AuthLogin import authlogin,createCredentials
 from Users import users,createCompanyUsers
 from Attendance import attendance,createAttendance
 from Payroll import payroll,createPayroll
+from Recruitment import recruitment,createRecruitment
 #render_template -> imports function which is used to load html
 #redirect -> used to redirect browser to a path
 #session -> processing of Sessions
@@ -28,6 +29,7 @@ app.register_blueprint(authlogin)
 app.register_blueprint(users)
 app.register_blueprint(attendance)
 app.register_blueprint(payroll)
+app.register_blueprint(recruitment)
 
 # Enables communication between your React app and this Flask server
 CORS(app)  
