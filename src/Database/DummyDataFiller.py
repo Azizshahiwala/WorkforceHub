@@ -1,129 +1,161 @@
 import sqlite3 as sq
 import os
-from datetime import datetime, timedelta
+import random
+from datetime import date, timedelta
 
-# Database Paths
+# ===============================
+# DATABASE PATHS
+# ===============================
 databaseDir = os.path.join(os.getcwd(), "src", "Database")
 CredentialsPath = os.path.join(databaseDir, "Credentials.db")
 CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
 
-# 1. login table data (Matches AuthLogin.py schema)
-# Format: (email, password, role, gender, phoneNumber)
+# ===============================
+# LOGIN DATA (20 USERS)
+# ===============================
 login_data = [
-    ("admin@workforce.com", "admin123", "Admin", "Male", "+912222222222"),
-    ("ceo@workforce.com", "ceo999", "CEO", "Female", "+910000000000"),
-    ("hr@workforce.com", "hr_secure", "HR", "Male", "+911234567890"),
-    ("interview@workforce.com", "test456", "interviewer", "Female", "+919999999999"),
-    ("marshall.n@workforce.com", "sales789", "Sales manager", "Male", "+912222222220"),
-    ("maryam.a@workforce.com", "internship", "Intern", "Female" , "+912222222229"),
-    ("gary.c@workforce.com", "creative01", "Designer", "Male", "+912222222999"),
-    ("frank.c@workforce.com", "coder99", "Developer", "Female", "+914567892304"),
-    ("aarav.m@workforce.com", "promo2025", "Marketing", "Male", "+911555555555"),
-    ("sophia.t@workforce.com", "bugfree", "Tester", "Female", "+912277889900"),
-    ("daniel.r@workforce.com", "money123", "Finance", "Male", "+912225678900"),
-    ("priya.s@workforce.com", "helpdesk", "Support", "Female", "+912212121221"),
-    ("michael.chen@workforce.com", "backend_pro", "Developer", "Male", "+919876543210"),
-    ("robert.k@workforce.com", "learning", "Intern", "Male", "+918887776665"),
-    ("emily.w@workforce.com", "pixel_art", "Designer", "Female", "+917778889990"),
-    ("aria.g@workforce.com", "no_bugs", "Tester", "Male", "+916665554443"),
-    ("james.w@workforce.com", "brand_it", "Marketing", "Female", "+915554443332"),
-    ("lisa.t@workforce.com", "assist_u", "Support", "Male", "+914443332221"),
-    ("david.s@workforce.com", "budget_it", "Finance", "Female", "+913332221110"),
-    ("olivia.b@workforce.com", "pitch_win", "Sales manager", "Female", "+912221110009")
+    ("admin@workforce.com", "admin123", "Admin", "Male", "+911111111111"),
+    ("ceo@workforce.com", "ceo999", "CEO", "Female", "+912222222222"),
+    ("hr@workforce.com", "hr_secure", "HR", "Male", "+913333333333"),
+    ("interview@workforce.com", "test456", "Interviewer", "Female", "+914444444444"),
+    ("finance@workforce.com", "money123", "Finance", "Male", "+915555555555"),
+
+    ("dev1@workforce.com", "dev123", "Developer", "Male", "+916666666666"),
+    ("dev2@workforce.com", "dev123", "Developer", "Female", "+916666666667"),
+    ("dev3@workforce.com", "dev123", "Developer", "Male", "+916666666668"),
+    ("dev4@workforce.com", "dev123", "Developer", "Female", "+916666666669"),
+
+    ("des1@workforce.com", "des123", "Designer", "Female", "+917777777771"),
+    ("des2@workforce.com", "des123", "Designer", "Male", "+917777777772"),
+    ("des3@workforce.com", "des123", "Designer", "Female", "+917777777773"),
+
+    ("test1@workforce.com", "qa123", "Tester", "Male", "+918888888881"),
+    ("test2@workforce.com", "qa123", "Tester", "Female", "+918888888882"),
+    ("test3@workforce.com", "qa123", "Tester", "Male", "+918888888883"),
+
+    ("sales1@workforce.com", "sale123", "Sales", "Female", "+919999999991"),
+    ("sales2@workforce.com", "sale123", "Sales", "Male", "+919999999992"),
+    ("sales3@workforce.com", "sale123", "Sales", "Female", "+919999999993"),
+
+    ("support1@workforce.com", "help123", "Support", "Male", "+910101010101"),
+    ("support2@workforce.com", "help123", "Support", "Female", "+910101010102"),
 ]
 
-# 2. user table data (Matches Users.py schema)
-# Format: (auth_id, name, employeeId, department, status, BaseSalary, lastLogin)
+# ===============================
+# USER DATA (NO auth_id HERE)
+# ===============================
 company_user_data = [
-    (1, "System Admin", "LA-0001", "IT Management", "Logged Out", 40000, "2025-12-20 09:00 AM"),
-    (2, "Jane Executive", "LA-0002", "Executive Office", "Logged In", 50000, "2025-12-21 10:30 AM"),
-    (3, "John HR", "LA-0003", "Human Resources", "Logged In", 45000, "2025-12-21 08:45 AM"),
-    (4, "Alice Interviewer", "LA-0004", "Recruitment", "Logged Out", 48000, "2025-12-19 05:15 PM"),
-    (5, "Marshall Nichols", "LA-0012", "Sales", "Logged In", 65000, "2025-12-21 09:15 AM"),
-    (6, "Maryam Amiri", "LA-0011", "Sales", "Logged In", 67899, "2025-12-21 08:45 AM"),
-    (7, "Gary Camara", "LA-0013", "Product Design", "Logged In", 70000, "2025-12-21 10:20 AM"),
-    (8, "Frank Camly", "LA-0014", "Software Engineering", "Logged In", 85000, "2025-12-21 09:00 AM"),
-    (9, "Aarav Mehta", "LA-0015", "Marketing Strategy", "Logged In", 75000, "2025-12-21 11:45 AM"),
-    (10, "Sophia Turner", "LA-0016", "Quality Assurance", "Logged Out", 65000, "2025-12-21 02:30 PM"),
-    (11, "Daniel Roberts", "LA-0017", "Finance", "Logged Out", 85000, "2025-12-20 05:00 PM"),
-    (12, "Priya Sharma", "LA-0018", "Customer Success", "Logged In", 70000, "2025-12-20 09:00 AM"),
-    (13, "Michael Chen", "LA-0019", "Software Dev", "Logged Out", 85000, "2025-12-19 06:10 PM"),
-    (14, "Robert King", "LA-0021", "IT Support", "Logged In", 75000, "2025-12-21 08:00 AM"),
-    (15, "Emily Watson", "LA-0022", "UX Research", "Logged In", 85000, "2025-12-21 07:45 AM"),
-    (16, "Aria Gupta", "LA-0023", "Automation testing", "Logged Out", 65433, "2025-12-18 11:00 AM"),
-    (17, "James Wilson", "LA-0024", "Growth Marketing", "Logged In", 75000, "2025-12-21 09:30 AM"),
-    (18, "Lisa Thompson", "LA-0025", "Support Desk", "Logged In", 75000, "2025-12-21 08:15 AM"),
-    (19, "David Smith", "LA-0026", "Accounts", "Logged Out", 85000, "2025-12-20 04:45 PM"),
-    (20, "Olivia Brown", "LA-0027", "Regional Sales", "Logged In", 75000, "2025-12-25 09:00 AM")
+    ("System Admin", "LA-0001", "IT Management", "Logged Out", 90000, "2025-12-20 09:00 AM"),
+    ("Jane Executive", "LA-0002", "Executive Office", "Logged In", 150000, "2025-12-21 10:30 AM"),
+    ("John HR", "LA-0003", "Human Resources", "Logged In", 60000, "2025-12-21 08:45 AM"),
+    ("Alice Interviewer", "LA-0004", "Recruitment", "Logged Out", 50000, "2025-12-19 05:15 PM"),
+    ("Frank Finance", "LA-0005", "Finance", "Logged In", 80000, "2025-12-21 11:00 AM"),
+
+    ("Dev One", "LA-0011", "Engineering", "Logged In", 70000, "2025-12-21 09:00 AM"),
+    ("Dev Two", "LA-0012", "Engineering", "Logged In", 70000, "2025-12-21 09:10 AM"),
+    ("Dev Three", "LA-0013", "Engineering", "Logged In", 70000, "2025-12-21 09:20 AM"),
+    ("Dev Four", "LA-0014", "Engineering", "Logged In", 70000, "2025-12-21 09:30 AM"),
+
+    ("Designer One", "LA-0015", "Design", "Logged In", 55000, "2025-12-21 10:00 AM"),
+    ("Designer Two", "LA-0016", "Design", "Logged In", 55000, "2025-12-21 10:10 AM"),
+    ("Designer Three", "LA-0017", "Design", "Logged In", 55000, "2025-12-21 10:20 AM"),
+
+    ("Tester One", "LA-0018", "QA", "Logged In", 45000, "2025-12-21 11:00 AM"),
+    ("Tester Two", "LA-0019", "QA", "Logged In", 45000, "2025-12-21 11:10 AM"),
+    ("Tester Three", "LA-0020", "QA", "Logged In", 45000, "2025-12-21 11:20 AM"),
+
+    ("Sales One", "LA-0021", "Sales", "Logged In", 65000, "2025-12-21 12:00 PM"),
+    ("Sales Two", "LA-0022", "Sales", "Logged In", 65000, "2025-12-21 12:10 PM"),
+    ("Sales Three", "LA-0023", "Sales", "Logged In", 65000, "2025-12-21 12:20 PM"),
+
+    ("Support One", "LA-0024", "Support", "Logged In", 35000, "2025-12-21 01:00 PM"),
+    ("Support Two", "LA-0025", "Support", "Logged In", 35000, "2025-12-21 01:10 PM"),
 ]
 
-# 3. Attendance Data
-attendance_data_to_insert = [
-    ("LA-0011", "2025-12-01", "Present"), ("LA-0011", "2025-12-02", "Present"),
-    ("LA-0011", "2025-12-03", "Present"), ("LA-0011", "2025-12-04", "Leave"),
-    ("LA-0011", "2025-12-05", "Present"), ("LA-0011", "2025-12-06", "Absent"),
-    ("LA-0011", "2025-12-07", "Present"), ("LA-0011", "2025-12-08", "Present"),
-    ("LA-0011", "2025-12-09", "Present"), ("LA-0011", "2025-12-10", "Leave")
-]
+# ===============================
+# STAFF EMP IDS (ATTENDANCE ONLY)
+# ===============================
+STAFF_EMP_IDS = [u[1] for u in company_user_data[5:]]
 
+# ===============================
+# ATTENDANCE GENERATOR
+# ===============================
+def generate_attendance(year, month):
+    records = []
+    start = date(year, month, 1)
+    end = (start.replace(day=28) + timedelta(days=4)).replace(day=1)
+
+    for emp in STAFF_EMP_IDS:
+        current = start
+        while current < end:
+            if current.weekday() < 5:
+                status = random.choices(
+                    ["Present", "Leave", "Absent"],
+                    weights=[80, 12, 8]
+                )[0]
+                records.append((emp, current.isoformat(), status))
+            current += timedelta(days=1)
+    return records
+
+# ===============================
+# MAIN SEED FUNCTION
+# ===============================
 def populate_databases():
 
-    # 1. Populating login table in Credentials.db
+    # ---------- LOGIN ----------
     conn_c = sq.connect(CredentialsPath)
     cur_c = conn_c.cursor()
-    cur_c.execute("DROP TABLE IF EXISTS login")
-    cur_c.execute("""
-        CREATE TABLE login(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT, password TEXT, role TEXT, gender TEXT, phoneNumber TEXT UNIQUE
-        )""")
-    # Direct insert (no alias prefix needed when connected directly)
-    template_c = "INSERT INTO login(email, password, role, gender, phoneNumber) VALUES(?,?,?,?,?);"
-    cur_c.executemany(template_c, login_data)
+
+    cur_c.execute("DELETE FROM login")
+
+    login_insert = """
+        INSERT INTO login(email, password, role, gender, phoneNumber)
+        VALUES (?, ?, ?, ?, ?)
+    """
+
+    login_id_map = []
+    for login_row, user_row in zip(login_data, company_user_data):
+        cur_c.execute(login_insert, login_row)
+        login_id = cur_c.lastrowid
+        login_id_map.append((login_id, user_row))
+
     conn_c.commit()
     conn_c.close()
 
-    # 2. Populating user table in CompanyUsers.db
+    # ---------- USERS ----------
     conn_u = sq.connect(CompanyUserPath)
     cur_u = conn_u.cursor()
-    cur_u.execute("DROP TABLE IF EXISTS user")
-    cur_u.execute("""
-        CREATE TABLE user(
-            id INTEGER PRIMARY KEY AUTOINCREMENT, 
-            auth_id INTEGER UNIQUE, name TEXT, employeeId TEXT UNIQUE, 
-            department TEXT, status TEXT, lastLogin TEXT, BaseSalary REAL
-        )""")
-    template_u = "INSERT INTO user(auth_id, name, employeeId, department, status, BaseSalary, lastLogin) VALUES(?,?,?,?,?,?,?)"
-    cur_u.executemany(template_u, company_user_data)
-    conn_u.commit()
-    conn_u.close()
-    
-    # Fill Login
-    conn_c = sq.connect(CredentialsPath)
-    conn_c.execute("DELETE FROM login")
-    template_c = "INSERT INTO login(email, password, role, gender, phoneNumber) VALUES(?,?,?,?,?)"
-    conn_c.executemany(template_c, login_data)
-    conn_c.commit()
-    conn_c.close()
-    print("✓ Credentials.db populated.")
 
-    # Fill User
-    conn_u = sq.connect(CompanyUserPath)
-    conn_u.execute("DELETE FROM user")
-    conn_u.execute("DELETE FROM Attendance")
-    
-    template_u = """
-        INSERT INTO user(auth_id, name, employeeId, department, status, BaseSalary, lastLogin) 
-        VALUES(?,?,?,?,?,?,?)
+    cur_u.execute("DELETE FROM user")
+    cur_u.execute("DELETE FROM Attendance")
+
+    user_insert = """
+        INSERT INTO user(auth_id, name, employeeId, department, status, BaseSalary, lastLogin)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     """
-    conn_u.executemany(template_u, company_user_data)
-    
-    template_a = "INSERT INTO Attendance (empId, date, status) VALUES (?, ?, ?)"
-    conn_u.executemany(template_a, attendance_data_to_insert)
-    
+
+    user_rows = []
+    for login_id, user in login_id_map:
+        name, empId, dept, status, salary, lastLogin = user
+        user_rows.append((login_id, name, empId, dept, status, salary, lastLogin))
+
+    cur_u.executemany(user_insert, user_rows)
+
+    # ---------- ATTENDANCE (2 MONTHS) ----------
+    attendance = []
+    attendance += generate_attendance(2025, 11)
+    attendance += generate_attendance(2025, 12)
+
+    cur_u.executemany(
+        "INSERT INTO Attendance(empId, date, status) VALUES (?, ?, ?)",
+        attendance
+    )
+
     conn_u.commit()
     conn_u.close()
-    print("✓ CompanyUsers.db populated.")
 
+    print("✓ Seed data generated successfully (Users, Attendance, Payroll-ready)")
+
+# ===============================
 if __name__ == "__main__":
     populate_databases()

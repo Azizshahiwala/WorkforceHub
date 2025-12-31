@@ -50,7 +50,7 @@ class Payroll:
         conn,cursor = self._get_connection()
         #Get phone and id from cred_db.login
         Keys = """
-        SELECT login.phoneNumber, emp.employeeId
+        SELECT login.phoneNumber, emp.employeeId, emp.name
         FROM cred_db.login AS login
         LEFT JOIN "user" AS emp ON login.id = emp.auth_id
         WHERE emp.employeeId = ?;
@@ -59,6 +59,7 @@ class Payroll:
         cursor.execute(Keys,(empId,))
 
         keydata = cursor.fetchone()
+        #print("Payroll.py Keydata fetch:",keydata)
         if not keydata:
             conn.close()
             return None, "Employee credentials not linked"
@@ -69,13 +70,11 @@ class Payroll:
 
         cursor.execute(fetchBaseSal,(empId,))
         row = cursor.fetchone()
-        print("Payroll.py BaseSalary fetch:",row)
-
         if not row:
             conn.close()
             return None," Employee not found."
         
-        BaseSalary = row[0]
+        BaseSalary = float(row[0])
 
         #Now get total days for a single emp.
 
@@ -91,8 +90,7 @@ class Payroll:
         taxamount = 0.0
         ProvidentFund = 0.0
         professionaltax = 0.0
-
-        if BaseSalary >= 0 and BaseSalary <= 300000:
+        if BaseSalary >= 0.0 and BaseSalary <= 300000:
             taxamount = 0.0
         elif BaseSalary > 300000 and BaseSalary <=700000:
             taxamount = BaseSalary * 0.05
@@ -111,6 +109,7 @@ class Payroll:
         result = [{
         "empId": empId,
         "phoneNumber": keydata[0],
+        "name": keydata[2],
         "MonthYear": MonthYear,
         "daysWorked": TotalDays,
         "BaseSalary": BaseSalary,
@@ -202,7 +201,7 @@ def returnSalBreakup(empId,MonthYear):
     if error:
         return jsonify({"error": error}), 404
     
-    print("Payroll raw data: ",data)
+    #print("Payroll raw data: ",data)
     return jsonify(data),200
 
 #Data is sent to frontend

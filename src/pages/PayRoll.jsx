@@ -107,12 +107,15 @@ function PayRoll() {
         {Window && salBreakup && (
           <div className="SalBreakup-overlay">
             <div className="SalBreakup-page">
-              <h2>Salary Breakup for {salBreakup.empId}</h2>
+              <h2>Salary Breakup for {salBreakup.name} - {salBreakup.empId}</h2>
               <div className="breakup-stats">
                 <p><strong>Base Salary:</strong> ₹{salBreakup.BaseSalary}</p>
                 <p><strong>Days Worked:</strong> {salBreakup.daysLoggedIn}</p>
                 <p><strong>Tax Deducted:</strong> ₹{salBreakup.TaxAmount}</p>
+                <p><strong>Provident fund:</strong> ₹{salBreakup.ProvidentFund}</p>
+                <p><strong>Professional Tax:</strong> ₹{salBreakup.professionaltax}</p>
                 <p><strong>Gross Pay:</strong> ₹{salBreakup.GrossSalary}</p>
+                <p><strong>Loss Of Pay:</strong> ₹{salBreakup.LossOfPay}</p>
                 <hr />
                 <p className="net-pay"><strong>Net Take-Home:</strong> ₹{salBreakup.NetSalary}</p>
               </div>
