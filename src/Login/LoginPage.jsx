@@ -41,7 +41,8 @@ export default function AccountLogin() {
     } 
     else if (data.Permission === 2) {
         // Staff
-        navigate("/dashboard/employee"); // Or your specific staff dashboard path
+        localStorage.setItem("employee", JSON.stringify(data));
+        navigate("/dashboardEmployee"); // Or your specific staff dashboard path
     }
      else alert(data.message);
      
