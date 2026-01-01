@@ -79,7 +79,7 @@ def login():
         cursor = conn.cursor()
 
         #To grant access according to user role, and to check if pass and mail exists, we fetch role using both param. 
-        cursor.execute("SELECT role FROM login WHERE email = ? AND password = ?", (email, password))
+        cursor.execute("SELECT * FROM login WHERE email = ? AND password = ?", (email, password))
         
         #Fetch just one field output 
         role = cursor.fetchone()
