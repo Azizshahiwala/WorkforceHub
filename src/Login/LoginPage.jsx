@@ -23,64 +23,56 @@ export default function AccountLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try{
-      const response = await fetch("http://localhost:5000/api/Login",
-      {method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-     });
+    try {
+      const response = await fetch("http://localhost:5000/api/Login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-     //Convert received data objects to json string. First let it web send data. so we use await
-     const data = await response.json();
+      const data = await response.json();
+      console.log("🔍 Login response:", data);  // DEBUG: Check this in console!
 
-     if (data.Permission === 1) {
-        // Admin or HR
-        if (data.role.toLowerCase() === "hr"){
+      // Defensive checks
+      if (!data || typeof data !== "object") {
+        alert("Server error - invalid response");
+        return;
+      }
+
+      if (!data.role) {
+        alert(data.message || "No role in response");
+        return;
+      }
+
+      // Permission 1: Non-Staff (Admin, CEO, HR, Interviewer)
+      if (data.Permission === 1) {
+        const roleLower = data.role.toLowerCase();
+        
+        if (roleLower === "hr") {
           localStorage.setItem("hr", JSON.stringify(data));
           navigate("/dashboard");
-        }
-        else if (data.role.toLowerCase() === "admin" || data.role.toLowerCase() == "ceo") {
+        } else if (roleLower === "admin" || roleLower === "ceo") {
           localStorage.setItem("authority", JSON.stringify(data));
           navigate("/dashboardAdmin");
+        } else {
+          // Interviewer or other admin roles
+          navigate("/interviewer");
         }
-        else{
-          navigate("/interviewer"); // Fallback for other admin roles
-        }
-    } 
-    else if (data.Permission === 2) {
-        // Staff
+      } 
+      // Permission 2: Staff (All other roles)
+      else if (data.Permission === 2) {
         localStorage.setItem("employee", JSON.stringify(data));
-        navigate("/dashboardEmployee"); // Or your specific staff dashboard path
-    }
-    else if(data.Permission ===3){
-      //localStorage.setItem("employee", JSON.stringify(data));
-      localStorage.setItem("employee", JSON.stringify(data));
-      navigate("/dashboardEmployee");
-
-    }else if(data.Permission ===0){
-      navigate("/");
-    }
-     else alert("Login failed: " + data.message);
-    }
-    catch(error){
-      console.log("Error from LoginPage.jsx",error)
+        navigate("/dashboardEmployee");
+      } 
+      else {
+        alert(data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("❌ Login error:", error);
+      alert("Failed to connect to server");
     }
   };
-  const sampleData = [
-            ["admin@workforce.com", "admin123", "Admin", "Male"],
-            ["ceo@workforce.com", "ceo999", "CEO", "Female"],
-            ["hr@workforce.com", "hr_secure", "HR", "Male"],
-            ["interview@workforce.com", "test456", "interviewer", "Female"],
-            ["sales@workforce.com", "sales789", "Sales manager", "Male"],
-            ["intern@workforce.com", "internship", "Intern", "Female"],
-            ["design@workforce.com", "creative01", "Designer", "Male"],
-            ["dev@workforce.com", "coder99", "Developer", "Female"],
-            ["marketing@workforce.com", "promo2025", "Marketing", "Male"],
-            ["qa@workforce.com", "bugfree", "Tester", "Female"],
-            ["finance@workforce.com", "money123", "Finance", "Male"],
-            ["support@workforce.com", "helpdesk", "Support", "Female"]]
-    
-  console.log(sampleData);
+
   return (
     <div className="login-wrapper">
       <div className="login-card">
@@ -90,11 +82,8 @@ export default function AccountLogin() {
           {roles.map((role) => (
             <div
               key={role.id}
-              className={`role-card ${
-                selectedRole === role.id ? "active" : "inactive"
-              }`}
-              onClick={() => {
-                setSelectedRole(role.id);}}
+              className={`role-card ${selectedRole === role.id ? "active" : "inactive"}`}
+              onClick={() => setSelectedRole(role.id)}
             >
               <img src={role.img} alt={role.label} className="role-img" />
               <p>{role.label}</p>
@@ -124,5 +113,4 @@ export default function AccountLogin() {
       </div>
     </div>
   );
-  
 }

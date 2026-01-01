@@ -29,7 +29,7 @@ import AdminEmployeePerformance from "./pages/AdminEmployeePerformance";
 import EmployeeLayout from "./layout/EmployeeLayout";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import ApplyLeave from "./pages/ApplyLeave";
-import Performance from "./pages/Performance";
+import CheckMyPerformance from "./pages/Performance";
 import Announcements from "./pages/EmployeeActivity";
 
 function App() {
@@ -68,7 +68,7 @@ function App() {
           <Route path="Applications" element={<Recruitment />} />
           <Route path="activity" element={<Activity />} />
           <Route path="attendance/AttendanceOverview" element={<AttendanceOverview/>} />
-          <Route path="performance" element={<EmployeePerformance />} />
+          <Route path="EmployeePerformance" element={<EmployeePerformance />} />
           {/*<Route path="*" element={<NotFoundPage />} />*/}
         </Route>
 
@@ -86,7 +86,7 @@ function App() {
         <Route path="/dashboardEmployee" element={<EmployeeLayout />}>
           <Route index element={<EmployeeDashboard />} />
           <Route path="applyLeave" element={<ApplyLeave />} />
-          <Route path="performanceEmployee" element={<Performance />} />
+          <Route path="performanceEmployee" element={<CheckMyPerformance />} />
           <Route path="announcements" element={<Announcements />} />
         </Route>
 

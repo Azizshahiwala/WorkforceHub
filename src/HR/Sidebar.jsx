@@ -61,7 +61,7 @@ function Sidebar({ darkMode }) {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/dashboard/performance" className="sidebar-item">
+          <NavLink to="/dashboard/EmployeePerformance" className="sidebar-item">
             Employee Performance
           </NavLink>
         </li>
