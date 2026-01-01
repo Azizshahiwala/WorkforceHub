@@ -48,7 +48,7 @@ login_data = [
 # USER DATA (NO auth_id HERE)
 # ===============================
 company_user_data = [
-    ("System Admin", "LA-0001", "IT Management", "Logged Out", 90000, "2025-12-20 09:00 AM"),
+    ("System Admin", "LA-0001", "IT Management", "Logged In", 90000, "2025-12-20 09:00 AM"),
     ("Jane Executive", "LA-0002", "Executive Office", "Logged In", 150000, "2025-12-21 10:30 AM"),
     ("John HR", "LA-0003", "Human Resources", "Logged In", 60000, "2025-12-21 08:45 AM"),
     ("Alice Interviewer", "LA-0004", "Recruitment", "Logged Out", 50000, "2025-12-19 05:15 PM"),

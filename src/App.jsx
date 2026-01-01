@@ -86,7 +86,7 @@ function App() {
         <Route path="/dashboardEmployee" element={<EmployeeLayout />}>
           <Route index element={<EmployeeDashboard />} />
           <Route path="applyLeave" element={<ApplyLeave />} />
-          <Route path="performanceEmployee" element={<EmployeePerformance />} />
+          <Route path="performanceEmployee" element={<CheckMyPerformance />} />
           <Route path="announcements" element={<Announcements />} />
         </Route>
 
