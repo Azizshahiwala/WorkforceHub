@@ -65,7 +65,7 @@ export default function AccountLogin() {
             ["finance@workforce.com", "money123", "Finance", "Male"],
             ["support@workforce.com", "helpdesk", "Support", "Female"]]
     
-  console.log(sampleData)
+  console.log(sampleData);
   return (
     <div className="login-wrapper">
       <div className="login-card">

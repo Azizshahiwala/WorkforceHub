@@ -79,7 +79,7 @@ def login():
         cursor = conn.cursor()
 
         #To grant access according to user role, and to check if pass and mail exists, we fetch role using both param. 
-        cursor.execute("SELECT role FROM login WHERE email = ? AND password = ?", (email, password))
+        cursor.execute("SELECT * FROM login WHERE email = ? AND password = ?", (email, password))
         
         #Fetch just one field output 
         role = cursor.fetchone()
@@ -87,7 +87,7 @@ def login():
 
         if role:
             print(role)
-            res = role[0]
+            res = role['role']
             if isStaff(res):
                 return jsonify({"success":True,"role":res,"message":"Successful match","Permission":2}),200 
             elif isNonStaff(res):
