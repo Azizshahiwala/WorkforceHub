@@ -6,24 +6,45 @@ function PayRoll() {
   const [salBreakup, setSalBreakup] = useState(null);
   const [Employee, setEmployee] = useState([]);
   const [search, setSearch] = useState("");
-
+  const [CurrentGatewayRes, setCurrentGatewayRes] = useState("");
   const getCurrentMonthYear = () => {
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     return `${year}-${month}`;
   };
+
+  async function SendMail(empId) {
+    const currentMonth = getCurrentMonthYear();
+    try{
+      const response = await fetch(`http://localhost:5000/api/pay-gateway/${empId}`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body : JSON.stringify({ MonthYear : currentMonth }),
+      });
+
+      if(response.ok){
+        setCurrentGatewayRes(response);
+        //This filters out non-same employeeId entries. 
+        //Meaning it removes entries whose payslip has been sent (empId = employeeId).
+        setEmployee((prev) => prev.filter((emp) => emp.employeeId !== empId));
+        alert("Mail sent successfully!");
+      }
+      else{
+        alert("Error: Mail could not be processed.");
+      }
+    }
+    catch(error){
+      console.error("PayRoll.jsx Mail Error:", error);
+    }
+  }
   async function SalaryBreakupCard(empId) {
     const currentMonth = getCurrentMonthYear();
     try {
       const response = await fetch(`http://localhost:5000/api/pay-Salarybreakup/${empId}/${currentMonth+"%"}`);
       const data = await response.json();
-      
-      console.log("HTTP STATUS:", response.status);
-    console.log("RAW RESPONSE:", data);
       if (response.ok) {
         setSalBreakup(data[0]);
-        console.log("Salary Breakup Data:", salBreakup);
         setWindow(true); // Open window ONLY after data is received
       } else {
         alert("Error fetching breakup data");
@@ -98,6 +119,13 @@ function PayRoll() {
                   >
                     📄 Salary Breakup
                   </button>
+                  
+                  <button
+                    onClick={() => SendMail(emp.employeeId)}
+                    className="action-btn btn-card"
+                    name="MonthYear">
+                    📄 Send Payslip
+                  </button>
                 </div>
               </div>
             ))}
@@ -107,12 +135,15 @@ function PayRoll() {
         {Window && salBreakup && (
           <div className="SalBreakup-overlay">
             <div className="SalBreakup-page">
-              <h2>Salary Breakup for {salBreakup.empId}</h2>
+              <h2>Salary Breakup for {salBreakup.name} - {salBreakup.empId}</h2>
               <div className="breakup-stats">
                 <p><strong>Base Salary:</strong> ₹{salBreakup.BaseSalary}</p>
-                <p><strong>Days Worked:</strong> {salBreakup.daysLoggedIn}</p>
+                <p><strong>Days Worked:</strong> {salBreakup.daysWorked}</p>
                 <p><strong>Tax Deducted:</strong> ₹{salBreakup.TaxAmount}</p>
+                <p><strong>Provident fund:</strong> ₹{salBreakup.ProvidentFund}</p>
+                <p><strong>Professional Tax:</strong> ₹{salBreakup.ProfessionalTax}</p>
                 <p><strong>Gross Pay:</strong> ₹{salBreakup.GrossSalary}</p>
+                <p><strong>Loss Of Pay:</strong> ₹{salBreakup.LossOfPay}</p>
                 <hr />
                 <p className="net-pay"><strong>Net Take-Home:</strong> ₹{salBreakup.NetSalary}</p>
               </div>

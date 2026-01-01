@@ -1,18 +1,14 @@
 // components/Sidebar.jsx
 import { NavLink } from "react-router-dom";
 
-function AdminSidebar({ darkMode }) {
+function EmpSidebar({ darkMode }) {
   return (
     
     <div className={`sidebar ${darkMode ? "dark" : ""}`}>
       <ul>
         <h2
-        style={
-          {
-            
-          color: darkMode ? "#ffffff" : "#000000"
-        }}
-      >
+        style={{
+          color: darkMode ? "#ffffff" : "#000000"}}>
       </h2>
         <li>
           <NavLink
@@ -44,4 +40,4 @@ function AdminSidebar({ darkMode }) {
   );
 }
 
-export default AdminSidebar;
+export default EmpSidebar;

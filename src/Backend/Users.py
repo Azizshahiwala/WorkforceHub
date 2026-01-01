@@ -43,6 +43,7 @@ class UserDB:
 
     def fetch_all_with_credentials(self):
         conn, cursor = self._get_connection()
+        
         query = """
    SELECT emp.name, emp.employeeId, emp.department, emp.status, emp.lastLogin, 
    login.role, login.gender, login.phoneNumber, emp.BaseSalary 
@@ -51,10 +52,7 @@ class UserDB:
     """
         cursor.execute(query)
         data = cursor.fetchall()
-        demo = "select role from cred_db.login;"
-        cursor.execute(demo)
-        roledata = cursor.fetchall()
-        print("Roles in cred_db.login:", roledata[5])
+        print("cred_db.login:", data[0])
         conn.close()
         return data
 

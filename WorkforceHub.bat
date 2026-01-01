@@ -2,7 +2,7 @@
 echo Starting AI Talent Hub...
 
 :: 1. Start the Flask Backend in a new window with a specific title
-start "WorkforceBackend" cmd /c "cd src/Database && python Server.py"
+start "WorkforceBackend" cmd /c "cd src/Backend && python Server.py"
 
 :: 2. Start the React Frontend in the current window
 :: This window becomes the 'Controller'. Closing it or pressing Ctrl+C will trigger the cleanup.

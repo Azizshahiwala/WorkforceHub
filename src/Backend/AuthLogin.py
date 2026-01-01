@@ -10,7 +10,6 @@ from flask import request as rq
 from flask import Blueprint,jsonify
 import os 
 import sqlite3 as sq
-from tkinter import messagebox as mb
 def createCredentials():
     try:
         if not os.path.exists(databaseDir):
@@ -32,7 +31,7 @@ def createCredentials():
         return True
         
     except Exception as e:
-        mb.showerror(message=e)
+        print(e)
         
 def isStaff(role):
     staff = ["Sales manager", "Intern", "Designer", "Developer", 
@@ -49,7 +48,7 @@ def isStaff(role):
     
     return False
 def isNonStaff(role):
-    nonstaff = ["Admin", "CEO", "HR"]
+    nonstaff = ["Admin", "CEO", "HR","Interviewer"]
     nonstaffmap = [item.lower() == role.lower() for item in nonstaff]
     
     if any(nonstaffmap):
@@ -87,6 +86,7 @@ def login():
         conn.close()
 
         if role:
+            print(role)
             res = role[0]
             if isStaff(res):
                 return jsonify({"success":True,"role":res,"message":"Successful match","Permission":2}),200 
@@ -97,8 +97,8 @@ def login():
         #Returning True / False after successful fetch is more reliable. 
         
     except sq.OperationalError as e:
-        mb.showwarning(e)
+        print(e)
         return jsonify({"success":False,"role":"","message":"User not registered."}),500
     except Exception as e:
-        mb.showwarning(e)
+        print(e)
         return jsonify({"success":False,"role":"","message":"Un-identified error"}),500

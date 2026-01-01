@@ -1,7 +1,7 @@
 // src/pages/LeaveManager.jsx
 import React from "react";
 import "./LeaveManager.css";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 const data=JSON.parse(localStorage.getItem("leaveData")) || [];
 
