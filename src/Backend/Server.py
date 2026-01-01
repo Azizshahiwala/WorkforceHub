@@ -12,6 +12,7 @@ from Users import users,createCompanyUsers
 from Attendance import attendance,createAttendance
 from Payroll import payroll,createPayroll
 from Recruitment import recruitment,createRecruitment
+from DummyDataFiller import populate_databases
 #render_template -> imports function which is used to load html
 #redirect -> used to redirect browser to a path
 #session -> processing of Sessions
@@ -57,6 +58,10 @@ def createDatabases():
 
         #Creates two state tables.
         createRecruitment()
+
+        #Dummy data filler
+        populate_databases()
+        
         return jsonify({"message": "Databases initialized successfully"}), 200
     except Exception as e:
         print(f"Global Init Error: {e}") 
