@@ -87,7 +87,7 @@ def login():
 
         if role:
             print(role)
-            res = role['role']
+            res = role[3]
             if isStaff(res):
                 return jsonify({"success":True,"role":res,"message":"Successful match","Permission":2}),200 
             elif isNonStaff(res):
