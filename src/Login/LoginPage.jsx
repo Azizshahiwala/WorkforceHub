@@ -35,17 +35,32 @@ export default function AccountLogin() {
 
      if (data.Permission === 1) {
         // Admin or HR
-        if (data.role.toLowerCase() === "admin") navigate("/dashboardAdmin");
-        else if (data.role.toLowerCase() === "interviewer") navigate("/interviewer");
-        else navigate("/dashboard"); 
+        if (data.role.toLowerCase() === "hr"){
+          localStorage.setItem("hr", JSON.stringify(data));
+          navigate("/dashboard");
+        }
+        else if (data.role.toLowerCase() === "admin" || data.role.toLowerCase() == "ceo") {
+          localStorage.setItem("authority", JSON.stringify(data));
+          navigate("/dashboardAdmin");
+        }
+        else{
+          navigate("/interviewer"); // Fallback for other admin roles
+        }
     } 
     else if (data.Permission === 2) {
         // Staff
         localStorage.setItem("employee", JSON.stringify(data));
         navigate("/dashboardEmployee"); // Or your specific staff dashboard path
     }
-     else alert(data.message);
-     
+    else if(data.Permission ===3){
+      //localStorage.setItem("employee", JSON.stringify(data));
+      localStorage.setItem("employee", JSON.stringify(data));
+      navigate("/dashboardEmployee");
+
+    }else if(data.Permission ===0){
+      navigate("/");
+    }
+     else alert("Login failed: " + data.message);
     }
     catch(error){
       console.log("Error from LoginPage.jsx",error)

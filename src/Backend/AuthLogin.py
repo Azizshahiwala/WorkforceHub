@@ -34,8 +34,8 @@ def createCredentials():
         print(e)
         
 def isStaff(role):
-    staff = ["Sales manager", "Intern", "Designer", "Developer", 
-    "Marketing", "Tester", "Finance", "Support"]
+    staff = ["Sales manager", "Designer", "Developer", 
+    "Marketing",  "Finance"]
     
     # for security check, we trim and lower the string.
     # and then we compare role with individual staff.
@@ -55,7 +55,15 @@ def isNonStaff(role):
         return True
     
     return False
+def isEmployee(role):
+    employee = ["Intern", "Tester", "Support"]
+    
+    employeemap = [item.lower() == role.lower() for item in employee]
 
+    if any(employeemap):
+        return True
+    
+    return False
 authlogin = Blueprint('Auth',__name__,url_prefix='/api')
 
 #os.getcwd() Returns the current working directory
@@ -64,7 +72,7 @@ databaseDir = os.path.join(os.getcwd(),"src","Database")
 databasePath = os.path.join(databaseDir,"Credentials.db")
 #Returns: HOME/src/Database/Credentials.db
 
-@authlogin.route("/Login",methods=['POST'])
+@authlogin.route("/Login",methods=['POST','GET'])
 def login():
     role=None
     try:
@@ -79,7 +87,7 @@ def login():
         cursor = conn.cursor()
 
         #To grant access according to user role, and to check if pass and mail exists, we fetch role using both param. 
-        cursor.execute("SELECT * FROM login WHERE email = ? AND password = ?", (email, password))
+        cursor.execute("SELECT role FROM login WHERE email = ? AND password = ?", (email, password))
         
         #Fetch just one field output 
         role = cursor.fetchone()
@@ -87,15 +95,17 @@ def login():
 
         if role:
             print(role)
-            res = role[3]
+            res = role[0]
             if isStaff(res):
                 return jsonify({"success":True,"role":res,"message":"Successful match","Permission":2}),200 
             elif isNonStaff(res):
                 return jsonify({"success":True,"role":res,"message":"Successful match","Permission":1}),200      
+            elif isEmployee(res):
+                return jsonify({"success":True,"role":res,"message":"Successful match","Permission":3}),200   
             else:
-                return jsonify({"success":False,"role":"","message":"Invalid email or password","Permission":0}),200       
-        #Returning True / False after successful fetch is more reliable. 
-        
+                return jsonify({"success":False,"role":"","message":"Role not defined","Permission":0}),200    
+        else:
+            return jsonify({"success":False,"role":"","message":"Invalid email or password"}),200
     except sq.OperationalError as e:
         print(e)
         return jsonify({"success":False,"role":"","message":"User not registered."}),500

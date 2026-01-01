@@ -13,7 +13,7 @@ import "./AdminDashboard.css";
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-export default function Dashboard() {
+export default function AdminDashboard() {
   const [employees,setEmployees] = useState([])
     
     useEffect(() => {

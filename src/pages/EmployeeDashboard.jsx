@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function EmployeeDashboard() {
+function EmployeeDashboard() {
   const [employee, setEmployee] = useState(null);
   const navigate = useNavigate();
 
@@ -23,3 +23,5 @@ export default function EmployeeDashboard() {
     </div>
   );
 }
+
+export default EmployeeDashboard; 
