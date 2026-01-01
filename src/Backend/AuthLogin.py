@@ -1,38 +1,36 @@
-#This file checks Staff: Sales manager, Intern, Designer, Developer, Marketing
-#Marketing, tester, finance, support.
-#Non-Staff:
-
-#Admin -> dashboardAdmin
-#HR -> dashboard
-
-#Staff -> Employee dashboard
 from flask import request as rq
-from flask import Blueprint,jsonify
-import os 
+from flask import Blueprint, jsonify
+import os
 import sqlite3 as sq
+
+databaseDir = os.path.join(os.getcwd(), "src", "Database")
+databasePath = os.path.join(databaseDir, "Credentials.db")
+
 def createCredentials():
     try:
-        if not os.path.exists(databaseDir):
-            os.makedirs(databaseDir)
-
-        #Connect to database
+        os.makedirs(databaseDir, exist_ok=True)
         conn = sq.connect(databasePath)
         conn.execute("PRAGMA foreign_keys = ON;")
-        #Create cursor
         cursor = conn.cursor()
-        #Run query:
-        query = '''
-        create table if not exists login(id integer primary key autoincrement,email text not null, password text not null, role text not null, gender text not null, phoneNumber text not null unique); 
-        ''' 
-        #Create template (used when multiple queries to be ran later.)
-        cursor.execute(query)
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS login(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            role TEXT NOT NULL,
+            gender TEXT NOT NULL,
+            phoneNumber TEXT NOT NULL UNIQUE
+        );
+        ''')
         conn.commit()
         conn.close()
+        print("✅ Database ready")
         return True
-        
     except Exception as e:
-        print(e)
-        
+        print(f"❌ DB Error: {e}")
+        return False
+
+# ✅ FIXED: Exact role names matching your DummyDataFiller
 def isStaff(role):
     staff = ["Sales manager", "Designer", "Developer", 
     "Marketing",  "Finance"]
@@ -72,43 +70,45 @@ databaseDir = os.path.join(os.getcwd(),"src","Database")
 databasePath = os.path.join(databaseDir,"Credentials.db")
 #Returns: HOME/src/Database/Credentials.db
 
-@authlogin.route("/Login",methods=['POST','GET'])
+@authlogin.route("/Login", methods=['POST'])
 def login():
-    role=None
     try:
-        #This function will fetch email and password from react website when form button is clicked. It will wait for response
-        data = rq.json
+        data = rq.get_json()
         email = data.get("email")
         password = data.get("password")
-
-        #Connect to database
-        conn = sq.connect(databasePath)
-        #Create cursor
-        cursor = conn.cursor()
-
-        #To grant access according to user role, and to check if pass and mail exists, we fetch role using both param. 
-        cursor.execute("SELECT role FROM login WHERE email = ? AND password = ?", (email, password))
         
-        #Fetch just one field output 
-        role = cursor.fetchone()
+        print(f"🔍 Login attempt: {email}")
+        
+        conn = sq.connect(databasePath)
+        cursor = conn.cursor()
+        cursor.execute("SELECT role FROM login WHERE email = ? AND password = ?", (email, password))
+        role_data = cursor.fetchone()
         conn.close()
-
-        if role:
-            print(role)
-            res = role[0]
-            if isStaff(res):
-                return jsonify({"success":True,"role":res,"message":"Successful match","Permission":2}),200 
-            elif isNonStaff(res):
-                return jsonify({"success":True,"role":res,"message":"Successful match","Permission":1}),200      
-            elif isEmployee(res):
-                return jsonify({"success":True,"role":res,"message":"Successful match","Permission":3}),200   
+        
+        if role_data:
+            role = role_data[0]
+            print(f"✅ User found - Role: '{role}'")  # ← CRITICAL DEBUG
+            
+            role_lower = role.lower().strip()
+            
+            if isNonStaff(role):
+                print("✅ → Non-Staff (Permission 1)")
+                return jsonify({"success": True, "role": role, "message": "Success", "Permission": 1}), 200
+            elif isStaff(role):
+                print("✅ → Staff (Permission 2)")
+                return jsonify({"success": True, "role": role, "message": "Success", "Permission": 2}), 200
+            elif isEmployee(role):
+                print("✅ → Employee (Permission 3)")
+                return jsonify({"success": True, "role": role, "message": "Success", "Permission": 3}), 200
             else:
-                return jsonify({"success":False,"role":"","message":"Role not defined","Permission":0}),200    
+                print(f"❌ Role '{role}' not recognized")
+                return jsonify({"success": False, "role": "", "message": "Role not recognized", "Permission": 0}), 200
         else:
-            return jsonify({"success":False,"role":"","message":"Invalid email or password"}),200
-    except sq.OperationalError as e:
-        print(e)
-        return jsonify({"success":False,"role":"","message":"User not registered."}),500
+            print(f"❌ No user found for {email}")
+            return jsonify({"success": False, "role": "", "message": "Invalid credentials"}), 200
+            
     except Exception as e:
-        print(e)
-        return jsonify({"success":False,"role":"","message":"Un-identified error"}),500
+        print(f"❌ Error: {e}")
+        return jsonify({"success": False, "role": "", "message": str(e)}), 500
+# ===============================   
+# ATTENDANCE GENERATOR
