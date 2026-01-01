@@ -23,8 +23,4 @@ export default function EmployeeDashboard() {
       <h1>Welcome, {employee.role}!</h1>
     </div>
   );
-
-    <div>Employee Dashboard</div>
-  )
-
 }
