@@ -39,7 +39,7 @@ def isStaff(role):
     
     # for security check, we trim and lower the string.
     # and then we compare role with individual staff.
-    staffmap = [item.lower() == role.lower() for item in staff]
+    staffmap = [item.strip().lower() == role.strip().lower() for item in staff]
 
     #Map How much roles match as boolean values and use any() to check that
     #ANY ONE value should be true.
@@ -49,7 +49,7 @@ def isStaff(role):
     return False
 def isNonStaff(role):
     nonstaff = ["Admin", "CEO", "HR","Interviewer"]
-    nonstaffmap = [item.lower() == role.lower() for item in nonstaff]
+    nonstaffmap = [item.strip().lower() == role.strip().lower() for item in nonstaff]
     
     if any(nonstaffmap):
         return True
@@ -58,7 +58,7 @@ def isNonStaff(role):
 def isEmployee(role):
     employee = ["Intern", "Tester", "Support"]
     
-    employeemap = [item.lower() == role.lower() for item in employee]
+    employeemap = [item.strip().lower() == role.strip().lower() for item in employee]
 
     if any(employeemap):
         return True

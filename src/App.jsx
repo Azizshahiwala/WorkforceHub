@@ -68,7 +68,7 @@ function App() {
           <Route path="Applications" element={<Recruitment />} />
           <Route path="activity" element={<Activity />} />
           <Route path="attendance/AttendanceOverview" element={<AttendanceOverview/>} />
-          <Route path="performance" element={<EmployeePerformance />} />
+          <Route path="performance" element={<Performance />} />
           {/*<Route path="*" element={<NotFoundPage />} />*/}
         </Route>
 
@@ -86,7 +86,7 @@ function App() {
         <Route path="/dashboardEmployee" element={<EmployeeLayout />}>
           <Route index element={<EmployeeDashboard />} />
           <Route path="applyLeave" element={<ApplyLeave />} />
-          <Route path="performanceEmployee" element={<Performance />} />
+          <Route path="performanceEmployee" element={<EmployeePerformance />} />
           <Route path="announcements" element={<Announcements />} />
         </Route>
 

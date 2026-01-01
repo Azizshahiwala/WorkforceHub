@@ -66,21 +66,33 @@ export default function AccountLogin() {
       console.log("Error from LoginPage.jsx",error)
     }
   };
-  const sampleData = [
-            ["admin@workforce.com", "admin123", "Admin", "Male"],
-            ["ceo@workforce.com", "ceo999", "CEO", "Female"],
-            ["hr@workforce.com", "hr_secure", "HR", "Male"],
-            ["interview@workforce.com", "test456", "interviewer", "Female"],
-            ["sales@workforce.com", "sales789", "Sales manager", "Male"],
-            ["intern@workforce.com", "internship", "Intern", "Female"],
-            ["design@workforce.com", "creative01", "Designer", "Male"],
-            ["dev@workforce.com", "coder99", "Developer", "Female"],
-            ["marketing@workforce.com", "promo2025", "Marketing", "Male"],
-            ["qa@workforce.com", "bugfree", "Tester", "Female"],
-            ["finance@workforce.com", "money123", "Finance", "Male"],
-            ["support@workforce.com", "helpdesk", "Support", "Female"]]
-    
-  console.log(sampleData);
+  console.log([
+    ["admin@workforce.com", "admin123", "Admin", "Male", "+911111111111"],
+    ["ceo@workforce.com", "ceo999", "CEO", "Female", "+912222222222"],
+    ["hr@workforce.com", "hr_secure", "HR", "Male", "+913333333333"],
+    ["interview@workforce.com", "test456", "Interviewer", "Female", "+914444444444"],
+    ["finance@workforce.com", "money123", "Finance", "Male", "+915555555555"],
+    ["dev1@workforce.com", "dev123", "Developer", "Male", "+916666666666"],
+    ["dev2@workforce.com", "dev123", "Developer", "Female", "+916666666667"],
+    ["dev3@workforce.com", "dev123", "Developer", "Male", "+916666666668"],
+    ["dev4@workforce.com", "dev123", "Developer", "Female", "+916666666669"],
+    ["des1@workforce.com", "des123", "Designer", "Female", "+917777777771"],
+    ["des2@workforce.com", "des123", "Designer", "Male", "+917777777772"],
+    ["des3@workforce.com", "des123", "Designer", "Female", "+917777777773"],
+
+    ["test1@workforce.com", "qa123", "Tester", "Male", "+918888888881"],
+    ["test2@workforce.com", "qa123", "Tester", "Female", "+918888888882"],
+    ["test3@workforce.com", "qa123", "Tester", "Male", "+918888888883"],
+    ["sales1@workforce.com", "sale123", "Sales manager", "Female", "+919999999991"],
+    ["sales2@workforce.com", "sale123", "Sales manager", "Male", "+919999999992"],
+    ["sales3@workforce.com", "sale123", "Sales manager", "Female", "+919999999993"],
+
+    ["support1@workforce.com", "help123", "Support", "Male", "+910101010101"],
+    ["support2@workforce.com", "help123", "Support", "Female", "+910101010102"],
+
+    ["intern1@workforce.com", "freelance", "Intern", "Female", "+910101010102"],
+    ["intern2@workforce.com", "freelance", "Intern", "Female", "+910101010102"],
+]);
   return (
     <div className="login-wrapper">
       <div className="login-card">

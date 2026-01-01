@@ -39,6 +39,9 @@ login_data = [
 
     ("support1@workforce.com", "help123", "Support", "Male", "+910101010101"),
     ("support2@workforce.com", "help123", "Support", "Female", "+910101010102"),
+
+    ("intern1@workforce.com", "freelance", "Intern", "Female", "+910101010102"),
+    ("intern2@workforce.com", "freelance", "Intern", "Female", "+910101010102"),
 ]
 
 # ===============================
@@ -60,9 +63,9 @@ company_user_data = [
     ("Designer Two", "LA-0016", "Design", "Logged In", 55000, "2025-12-21 10:10 AM"),
     ("Designer Three", "LA-0017", "Design", "Logged In", 55000, "2025-12-21 10:20 AM"),
 
-    ("Tester One", "LA-0018", "QA", "Logged In", 45000, "2025-12-21 11:00 AM"),
-    ("Tester Two", "LA-0019", "QA", "Logged In", 45000, "2025-12-21 11:10 AM"),
-    ("Tester Three", "LA-0020", "QA", "Logged In", 45000, "2025-12-21 11:20 AM"),
+    ("Tester One", "LA-0018", "Tester", "Logged In", 45000, "2025-12-21 11:00 AM"),
+    ("Tester Two", "LA-0019", "Tester", "Logged In", 45000, "2025-12-21 11:10 AM"),
+    ("Tester Three", "LA-0020", "Tester", "Logged In", 45000, "2025-12-21 11:20 AM"),
 
     ("Sales One", "LA-0021", "Sales manager", "Logged In", 65000, "2025-12-21 12:00 PM"),
     ("Sales Two", "LA-0022", "Sales manager", "Logged In", 65000, "2025-12-21 12:10 PM"),

@@ -6,4 +6,4 @@ function Performance() {
   )
 }
 
-export default Performance
+export default Performance;
