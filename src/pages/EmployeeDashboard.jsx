@@ -18,13 +18,8 @@ export default function EmployeeDashboard() {
   if (!employee) return <h2>Loading...</h2>;
 
   return (
-
     <div>
       <h1>Welcome, {employee.role}!</h1>
     </div>
   );
-
-    <div>Employee Dashboard</div>
-  )
-
 }
