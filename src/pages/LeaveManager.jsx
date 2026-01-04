@@ -46,7 +46,7 @@ function LeaveManager() {
                 <td>
                   <div className="emp-cell">
                     <div className="emp-avatar">
-                      {req.name.charAt(0)}
+                      {/* {req.name.charAt(0)} */}
                     </div>
                     <span>{req.name}</span>
                   </div>

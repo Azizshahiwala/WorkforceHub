@@ -6,12 +6,14 @@ function EmployeeDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const empData = localStorage.getItem("employee");
+     const selectedEmp = JSON.parse(
+    localStorage.getItem("loggedInEmployee")
+  );
 
-    if (!empData) {
+    if (!selectedEmp) {
       navigate("/");
     } else {
-      setEmployee(JSON.parse(empData));
+      setEmployee(selectedEmp);
     }
   }, [navigate]);
 
@@ -20,6 +22,7 @@ function EmployeeDashboard() {
   return (
     <div>
       <h1>Welcome, {employee.role}!</h1>
+      <p>This is {employee.name}'s employee dashboard.</p>
     </div>
   );
 }

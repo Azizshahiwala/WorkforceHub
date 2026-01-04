@@ -18,74 +18,51 @@ export default function AccountLogin() {
       });
 
       const data = await response.json();
-      console.log("🔍 Login response:", data);  // DEBUG: Check this in console!
+      console.log("🔍 Login response:", data);
 
-      // Defensive checks
-      if (!data || typeof data !== "object") {
-        alert("Server error - invalid response");
+      if (!data || !data.Permission) {
+        alert("Invalid login response");
         return;
       }
 
-      if (!data.role) {
-        alert(data.message || "No role in response");
-        return;
+      // 🔐 STAFF (EMPLOYEE)
+      if (data.Permission === 2) {
+        // ✅ SAVE LOGGED-IN EMPLOYEE (IMPORTANT)
+        localStorage.setItem(
+          "loggedInEmployee",
+          JSON.stringify({
+            employeeId: data.employeeId || data.empId || data.id,
+            name: data.name || data.fullName || data.username,
+            email: data.email,
+            role: data.role,
+          })
+        );
+
+        navigate("/dashboardEmployee");
       }
 
-      // Permission 1: Non-Staff (Admin, CEO, HR, Interviewer)
-      if (data.Permission === 1) {
-        const roleLower = data.role.toLowerCase();
-        
-        if (roleLower === "hr") {
-          localStorage.setItem("hr", JSON.stringify(data));
+      // 🔐 NON-STAFF (HR / ADMIN / CEO / INTERVIEWER)
+      else if (data.Permission === 1) {
+        const role = data.role?.toLowerCase();
+
+        if (role === "hr") {
+          localStorage.setItem("loggedInHR", JSON.stringify(data));
           navigate("/dashboard");
-        } else if (roleLower === "admin" || roleLower === "ceo") {
-          localStorage.setItem("authority", JSON.stringify(data));
+        } else if (role === "admin" || role === "ceo") {
+          localStorage.setItem("loggedInAdmin", JSON.stringify(data));
           navigate("/dashboardAdmin");
         } else {
-          // Interviewer or other admin roles
           navigate("/interviewer");
         }
-      } 
-      // Permission 2: Staff (All other roles)
-      else if (data.Permission === 2) {
-        localStorage.setItem("employee", JSON.stringify(data));
-        navigate("/dashboardEmployee");
-      } 
-      else {
-        alert(data.message || "Login failed");
+      } else {
+        alert("Login failed");
       }
     } catch (error) {
       console.error("❌ Login error:", error);
       alert("Failed to connect to server");
     }
   };
-  console.log([
-    ["admin@workforce.com", "admin123", "Admin", "Male", "+911111111111"],
-    ["ceo@workforce.com", "ceo999", "CEO", "Female", "+912222222222"],
-    ["hr@workforce.com", "hr_secure", "HR", "Male", "+913333333333"],
-    ["interview@workforce.com", "test456", "Interviewer", "Female", "+914444444444"],
-    ["finance@workforce.com", "money123", "Finance", "Male", "+915555555555"],
-    ["dev1@workforce.com", "dev123", "Developer", "Male", "+916666666666"],
-    ["dev2@workforce.com", "dev123", "Developer", "Female", "+916666666667"],
-    ["dev3@workforce.com", "dev123", "Developer", "Male", "+916666666668"],
-    ["dev4@workforce.com", "dev123", "Developer", "Female", "+916666666669"],
-    ["des1@workforce.com", "des123", "Designer", "Female", "+917777777771"],
-    ["des2@workforce.com", "des123", "Designer", "Male", "+917777777772"],
-    ["des3@workforce.com", "des123", "Designer", "Female", "+917777777773"],
 
-    ["test1@workforce.com", "qa123", "Tester", "Male", "+918888888881"],
-    ["test2@workforce.com", "qa123", "Tester", "Female", "+918888888882"],
-    ["test3@workforce.com", "qa123", "Tester", "Male", "+918888888883"],
-    ["sales1@workforce.com", "sale123", "Sales manager", "Female", "+919999999991"],
-    ["sales2@workforce.com", "sale123", "Sales manager", "Male", "+919999999992"],
-    ["sales3@workforce.com", "sale123", "Sales manager", "Female", "+919999999993"],
-
-    ["support1@workforce.com", "help123", "Support", "Male", "+910101010101"],
-    ["support2@workforce.com", "help123", "Support", "Female", "+910101010102"],
-
-    ["intern1@workforce.com", "freelance", "Intern", "Female", "+910101010102"],
-    ["intern2@workforce.com", "freelance", "Intern", "Female", "+910101010102"],
-]);
   return (
     <div className="login-wrapper">
       <div className="login-card">
@@ -93,20 +70,20 @@ export default function AccountLogin() {
         <form onSubmit={handleSubmit} className="form">
           <input
             type="email"
-            name="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+
           <input
             type="password"
-            name="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+
           <button type="submit">Login</button>
         </form>
       </div>
