@@ -2,20 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 
-import hrImg from "../images/HR.png";
-import empImg from "../images/employee.png";
-import adminImg from "../images/admin.png";
-import interviewerImg from "../images/interviewer.png";
-
-const roles = [
-  { id: "hr", label: "HR", img: hrImg },
-  { id: "employee", label: "Employees", img: empImg },
-  { id: "admin", label: "Admin", img: adminImg },
-  { id: "interviewer", label: "Interviewer", img: interviewerImg },
-];
-
 export default function AccountLogin() {
-  const [selectedRole, setSelectedRole] = useState("hr");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -102,21 +89,7 @@ export default function AccountLogin() {
   return (
     <div className="login-wrapper">
       <div className="login-card">
-        <h2 className="title">Choose Account Type</h2>
-
-        <div className="roles">
-          {roles.map((role) => (
-            <div
-              key={role.id}
-              className={`role-card ${selectedRole === role.id ? "active" : "inactive"}`}
-              onClick={() => setSelectedRole(role.id)}
-            >
-              <img src={role.img} alt={role.label} className="role-img" />
-              <p>{role.label}</p>
-            </div>
-          ))}
-        </div>
-
+        <h2 className="title">Login with your account</h2>
         <form onSubmit={handleSubmit} className="form">
           <input
             type="email"

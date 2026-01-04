@@ -64,3 +64,22 @@ manager = Recruitment(CompanyUserPath, CredentialsPath, RecruitmentPath)
 def createRecruitment():
     manager.create_table_TempStatusTable()
     manager.create_table_MainStatusTable()
+
+@recruitment.route('/RegisterForm', methods=['POST'])
+def resumeProcess():
+    data = rq.get_json()
+    email = data.get('email')
+    phoneNumber = data.get('phoneNumber')
+    resume = data.get('resume')  # Expecting base64 encoded string
+    status = 'Pending'
+    try:
+        conn, cursor = manager._get_connection()
+        cursor.execute("""
+            INSERT INTO TempStatusTable (email, phoneNumber, resume, status)
+            VALUES (?, ?, ?, ?);
+        """, (email, phoneNumber, resume, status))
+        conn.commit()
+        conn.close()
+        return jsonify({"message": "Resume uploaded successfully. Please wait for approval.", "status": "success"}), 200
+    except Exception as e:
+        return jsonify({"message": f"Error uploading resume: {e}", "status": "error"}), 500
