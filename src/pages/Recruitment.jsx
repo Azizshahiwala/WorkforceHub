@@ -1,86 +1,45 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./Recruitment.css";
 
 function Recruitment() {
-  const initialApplications = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    position: "Senior Developer",
-    email: "sarah.j@email.com",
-    phone: "+1 2345678900",
-    experience: "5 years",
-    appliedDate: new Date().toLocaleDateString(),
-  },
-  {
-    id: 3,
-    name: "Michael Chen",
-    position: "UI/UX Designer",
-    email: "m.chen@email.com",
-    phone: "+1 2345678902",
-    experience: "4 years",
-    appliedDate: new Date().toLocaleDateString(),
-  },
-  {
-    id: 4,
-    name: "Emily Rodriguez",
-    position: "QA Engineer",
-    email: "emily.r@email.com",
-    phone: "+1 2345678903",
-    experience: "3 years",
-    appliedDate: new Date().toLocaleDateString(),
-  },
-  {
-    id: 5,
-    name: "David Smith",
-    position: "Product Manager",
-    email: "d.smith@email.com",
-    phone: "+1 2345678904",
-    experience: "7 years",
-    appliedDate: new Date().toLocaleDateString(),
-  },
-  {
-    id: 6,
-    name: "Aria Gupta",
-    position: "Backend Developer",
-    email: "aria.g@email.com",
-    phone: "+1 2345678905",
-    experience: "2 years",
-    appliedDate: new Date().toLocaleDateString(),
-  },
-  {
-    id: 7,
-    name: "James Wilson",
-    position: "DevOps Engineer",
-    email: "j.wilson@email.com",
-    phone: "+1 2345678906",
-    experience: "6 years",
-    appliedDate: new Date().toLocaleDateString(),
-  },
-  {
-    id: 8,
-    name: "Sophia Martinez",
-    position: "HR Specialist",
-    email: "s.martinez@email.com",
-    phone: "+1 2345678907",
-    experience: "5 years",
-    appliedDate: new Date().toLocaleDateString(),
-  }
-];
-const [applications, setApplications] = useState(initialApplications);
 
-  function Reject(id){
-    
-    //initialApplications -> array of objects. So i need to create a copy of it to modify.
+const [applications, setApplications] = useState(null);
 
-    const UpdatedList = applications.filter(item => item.id != id);  
-    //item => item.id is the same as array function. item.id refers to list's item
-    // and just 'id' refers to the id passed in the function parameter.
-    
-    setApplications(UpdatedList);
-    //This re-renders the component with updated list.
-   }
-  
+  useEffect(() => {
+  fetch("http://localhost:5000/api/RegisterForm/applications")
+    .then(res => res.json())
+    .then(data => setApplications(data));
+  }, []);
+
+  function Reject(id) {
+  fetch(`http://localhost:5000/api/recruitment/reject/${id}`, {
+    method: "DELETE"
+  }).then(() => {
+    setApplications(prev => prev.filter(item => item.id !== id));
+  }).then(()=>{alert(this.message)});
+}
+  function Accept(id) {
+  fetch(`http://localhost:5000/api/RegisterConfirm/${id}`, {
+    method: "POST"
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        alert("Candidate admitted successfully");
+
+        // Remove admitted candidate from table
+        setApplications(prev =>
+          prev.filter(app => app.id !== id)
+        );
+      } else {
+        alert(data.error || "Admission failed");
+      }
+    })
+    .catch(err => {
+      console.error("Admit error:", err);
+      alert("Server error while admitting candidate");
+    });
+}
   return (<>
   <div>
     <table className="Inner-table"border={1} cellPadding={10} cellSpacing={0}>
@@ -109,8 +68,8 @@ const [applications, setApplications] = useState(initialApplications);
         </td> 
         <td>{Submission.experience}</td>   
         <td>{Submission.appliedDate}</td>
-        <td><button className="Repbtn" >Show report</button></td>
-        <td><button className="Accbtn">Send Mail</button>
+        <td><button className="Repbtn">Show report</button></td>
+        <td><button className="Accbtn"onClick={() =>Accept(Submission.id)}>Notify for interview</button>
          <button className="Rejbtn" onClick={() =>Reject(Submission.id)}>Reject</button></td>
       </tr>
     ))}

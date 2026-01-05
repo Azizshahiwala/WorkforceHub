@@ -1,0 +1,22 @@
+.login-wrapper { min-height: 100vh; background: linear-gradient(135deg, #dff3ff, #f7fbff); display: flex; justify-content: center; align-items: center; }
+.login-card { background: #fff; width: 400px; padding: 25px 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); text-align: center; }
+.title { margin-bottom: 20px; color: #333; }
+.roles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
+/* 🔹 Card */ 
+.role-card { border: 2px solid #e3e3e3; border-radius: 12px; padding: 10px; cursor: pointer; transition: 0.3s; background: #fff;
+height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+overflow: hidden; }
+.role-card:hover { border-color: #4da3ff; }
+.role-card.active { border-color: #4da3ff; background: #eef6ff; }
+
+/* 🔹 Image inside card / 
+
+/* 🔹 Label */ 
+.role-card p { margin: 0; font-size: 14px; font-weight: 600; color: #333; }
+.role-img { width: 60px; height: 60px; object-fit: cover; margin-bottom: 8px; border-radius: 50%;display: block; }
+.form { margin-top: 10px; }
+.form input { width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #ccc; outline: none; font-size: 14px; }
+.form input:focus { border-color: #4da3ff; }
+.form button { width: 100%; padding: 10px; background: #4da3ff; border: none; color: #fff; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.3s; }
+.form button:hover { background: #2f8cff; }
+

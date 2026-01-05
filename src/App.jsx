@@ -1,6 +1,6 @@
 // App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect , useState} from "react";
 import HRLayout from "./layout/HRLayout";
 import Dashboard from "./pages/Dashboard";
 import LeaveManager from "./pages/LeaveManager";
@@ -32,9 +32,29 @@ import ApplyLeave from "./pages/ApplyLeave";
 import CheckMyPerformance from "./pages/Performance";
 import Announcements from "./pages/EmployeeActivity";
 
+//Entry point - Registration
+import RegisterForm from "./Login/RegisterForm";
 function App() {
+
+  const [isNewDevice, setIsNewDevice] = useState(null);
+
+  useEffect(() => {
+    // Check if the device has a "hasVisited" flag
+    const hasVisited = localStorage.getItem("hasVisited");
+    if (hasVisited) {
+      setIsNewDevice(false);
+    } else {
+      setIsNewDevice(true);
+    }
+  }, []);
+
+  // Prevent flicker while checking localStorage
+  if (isNewDevice === null) return null;
+
   //This hook sends API request to the python flask end point: localhost/api/init-db
   //Which the flask uses CORS to validate the response. THEN, flask will run the database.py
+  
+  
   useEffect(() => {
     const initDB = async () => {
       try {
@@ -54,8 +74,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 1. Login is now the index page */}
-        <Route path="/" element={<Login />} />
+        {/* 1. Login or Register is now the index page */}
+        <Route path="/" element={isNewDevice ? <RegisterForm /> : <Login />} />
 
         {/* 2. Move HR Layout to /dashboard */}
         <Route path="/dashboard" element={<HRLayout />}>
