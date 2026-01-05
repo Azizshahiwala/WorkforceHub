@@ -3,7 +3,7 @@ import "./Recruitment.css";
 
 function Recruitment() {
 
-const [applications, setApplications] = useState(null);
+const [applications, setApplications] = useState([]);
 
   useEffect(() => {
   fetch("http://localhost:5000/api/RegisterForm/applications")

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./LoginPage.css";
+import "./RegisterForm.css";
 
-const UploadToUrl = "http://localhost:5000/api/RegisterForm";
+const UploadToUrl = "http://localhost:5000/api/RegisterForm/applications/upload";
 const roles = [
   { id: "Employee", label: "Employees"},
   { id: "Interviewer", label: "Interviewer"},
@@ -27,19 +27,6 @@ export default function RegisterForm() {
   const [gender,setGender] = useState(null);
   const [personExperience, setpersonExperience] = useState(null)
   const [name, setName] = useState("")
-  const handleEmail = (e) => {
-    if(e.target.value.length >= 7 ){
-      setEmail(e.target.value);
-    }
-  }
-
-  const handlePhone = (e) => {
-    //submit only if 10 or 12 digits
-    if(e.target.value.length == 10 || e.target.value.length == 12 ){
-      setPhoneNumber(e.target.value);
-    }
-  }
-
   const handleFileChange = (e) => {
     if(e.target.files.length == 1){
       setFile(e.target.files[0]);
@@ -47,11 +34,16 @@ export default function RegisterForm() {
   }
   const handleRegister = async (e) => {
   e.preventDefault();
-  try {
-    if(!selectedRole || !email || !phoneNumber || !file || !gender || !personExperience || !name){
-      alert("Please fill required fields.");
+  if (!selectedRole || !email || !phoneNumber || !file || !gender || !personExperience || !name) {
+      alert("Please fill all required fields correctly.");
       return;
     }
+
+    if (phoneNumber.length !== 13) {
+        alert("Phone number must be of 12 digits.");
+        return;
+    }
+  try {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('email', email);
@@ -80,27 +72,28 @@ export default function RegisterForm() {
     console.error("❌ Registration error:", error);
   }
 }   
-    <form className="Register-form" onSubmit={handleRegister}>
-        
+  return (
+    <div className="login-wrapper">
+      <form className="Register-form" onSubmit={handleRegister}>
         <div className="SensitiveInfo">
-          {/*Get sensitive stuff*/}
-          <p>Enter your name: <input type="text" value={name} onChange={(e) => setName(e.target.value)} name="name" placeholder="Eg. Marshal Dennis Ritche"/></p>
-          <p>Enter your email: <input type="email" value={email} onChange={handleEmail} name="email" placeholder="Eg. abc@hotmail.com"/></p>
-          <p>Enter your mobile: <input type="tel" value={phoneNumber} onChange={handlePhone} name="phoneNumber" placeholder="Eg. +91xxxxxxxxxx"/></p>
-          <select
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}>
-              <option value="">Select Your Gender</option>
-              <option key={1} value="Male">Male</option>
-              <option key={2} value="Female">Female</option>
-            </select>
+          <p>Enter your name: 
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Eg. Marshal Dennis Ritche" />
+          </p>
+          <p>Enter your email: 
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Eg. abc@hotmail.com" />
+          </p>
+          <p>Enter your mobile: 
+            <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} placeholder="Eg. +91xxxxxxxxxx" />
+          </p>
+          <select value={gender} onChange={(e) => setGender(e.target.value)}>
+            <option value="">Select Your Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
         </div>
+
         <div className="roles">
-          {roles.map((role) => (
-            <div>
-            <select
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}>
+            <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value)}>
               <option value="">Select Role</option>
               {roles.map((role) => (
                 <option key={role.id} value={role.id}>
@@ -108,22 +101,20 @@ export default function RegisterForm() {
                 </option>
               ))}
             </select>
-            </div>
-          ))}
         </div>
+
         <div className="ResumeUploadArea">
-          {/*Upload resume here. .pdf and experience.*/}
-          <input 
-        type="file" 
-        accept=".pdf" 
-        name="file"
-        onChange={handleFileChange} />
-        {file && <p>Selected file: {file.name}</p>}
-          
-        <p>Work experience: <input type="number" name="personExperience" onClick={(e) => setpersonExperience(e.target.value)}/> year(s)</p>
+          <input type="file" accept=".pdf" onChange={handleFileChange} />
+          {file && <p>Selected file: {file.name}</p>}
+          <p>Work experience: 
+            <input type="number" value={personExperience} onChange={(e) => setpersonExperience(e.target.value)} /> year(s)
+          </p>
         </div>
-        <button type="submit" onClick={handleRegister} className="Register-button">
-          Register
+
+        <button type="submit" className="Register-button">
+          Submit Application
         </button>
-    </form>
+      </form>
+    </div>
+  );
 }

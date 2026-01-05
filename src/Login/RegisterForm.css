@@ -1,22 +1,107 @@
-.login-wrapper { min-height: 100vh; background: linear-gradient(135deg, #dff3ff, #f7fbff); display: flex; justify-content: center; align-items: center; }
-.login-card { background: #fff; width: 400px; padding: 25px 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); text-align: center; }
-.title { margin-bottom: 20px; color: #333; }
-.roles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
-/* 🔹 Card */ 
-.role-card { border: 2px solid #e3e3e3; border-radius: 12px; padding: 10px; cursor: pointer; transition: 0.3s; background: #fff;
-height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center;
-overflow: hidden; }
-.role-card:hover { border-color: #4da3ff; }
-.role-card.active { border-color: #4da3ff; background: #eef6ff; }
+/* src/Login/RegisterForm.css */
 
-/* 🔹 Image inside card / 
+.Register-form {
+  background: #ffffff;
+  width: 500px;
+  max-width: 90%;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-/* 🔹 Label */ 
-.role-card p { margin: 0; font-size: 14px; font-weight: 600; color: #333; }
-.role-img { width: 60px; height: 60px; object-fit: cover; margin-bottom: 8px; border-radius: 50%;display: block; }
-.form { margin-top: 10px; }
-.form input { width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #ccc; outline: none; font-size: 14px; }
-.form input:focus { border-color: #4da3ff; }
-.form button { width: 100%; padding: 10px; background: #4da3ff; border: none; color: #fff; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.3s; }
-.form button:hover { background: #2f8cff; }
+/* Section titles or grouping text */
+.Register-form p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
+/* Common styling for all inputs and selects */
+.Register-form input[type="text"],
+.Register-form input[type="email"],
+.Register-form input[type="tel"],
+.Register-form input[type="number"],
+.Register-form select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.Register-form input:focus,
+.Register-form select:focus {
+  border-color: #4da3ff;
+  box-shadow: 0 0 0 3px rgba(77, 163, 255, 0.15);
+}
+
+/* Info Section (Name, Email, Mobile, Gender) */
+.SensitiveInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Role Selection Section */
+.roles {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Resume and Experience Section */
+.ResumeUploadArea {
+  background: #f9fafb;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px dashed #d1d5db;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.ResumeUploadArea input[type="file"] {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Register Button */
+.Register-button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #4da3ff, #2f8cff);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.2s;
+  margin-top: 10px;
+}
+
+.Register-button:hover {
+  opacity: 0.9;
+}
+
+.Register-button:active {
+  transform: scale(0.98);
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 600px) {
+  .Register-form {
+    width: 95%;
+    padding: 20px;
+  }
+}

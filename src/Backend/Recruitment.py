@@ -58,7 +58,9 @@ class Recruitment:
                 phoneNumber TEXT NOT NULL,
                 resume BLOB NOT NULL,
                 PersonExperience TEXT NOT NULL,
+                applied_date TEXT
                 status TEXT DEFAULT 'Pending'
+                       
             );
         """)
         conn.commit()
@@ -102,6 +104,7 @@ def fetchApplications():
         Candidates = cursor.fetchall()
 
         conn.close()
+
         result = [{
         "id": r[0],
         "email": r[1],
@@ -112,6 +115,7 @@ def fetchApplications():
         "experience": r[7],        
         "status": r[8]} for r in Candidates]
 
+        Candidates.append()
         return jsonify(result), 200
     except Exception as e:
         print("Error from fetchApplications:",e)
@@ -127,15 +131,16 @@ def resumeProcess():
     name = rq.form.get('name')
     resume = rq.files.get('file')  # base64 encoded string
     status = 'Pending'
+    applied_date = datetime.now().strftime("%d %b, %Y") # Format: 05 Jan, 2026
     
     #To store resume, we convert it to binary data.
     binary_resume = resume.read()
     try:
         conn, cursor = manager._get_connection()
         cursor.execute("""
-            INSERT INTO TempStatusTable (email, role, gender,name,phoneNumber, resume, PersonExperience, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-        """, (email, role, gender, name, phoneNumber, binary_resume, personExp, status))
+            INSERT INTO TempStatusTable (email, role, gender,name,phoneNumber, resume, PersonExperience, applied_date, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+        """, (email, role, gender, name, phoneNumber, binary_resume, personExp, applied_date,status))
         conn.commit()
         conn.close()
         return jsonify({"message": "Application uploaded. Please wait for approval.", "status": "success"}), 200
@@ -146,7 +151,7 @@ def resumeProcess():
 def admitEmployee(Tempid):
     conn,cursor = manager._get_connection()
     TempItems = "select * from TempStatusTable where id = ?;"
-    cursor.execute(TempItems,(Tempid))
+    cursor.execute(TempItems,(Tempid,))
     Candidate = cursor.fetchone()
 
     if not Candidate:

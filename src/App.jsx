@@ -48,13 +48,8 @@ function App() {
     }
   }, []);
 
-  // Prevent flicker while checking localStorage
-  if (isNewDevice === null) return null;
-
   //This hook sends API request to the python flask end point: localhost/api/init-db
-  //Which the flask uses CORS to validate the response. THEN, flask will run the database.py
-  
-  
+  //Which the flask uses CORS to validate the response. THEN, flask will run the database.py  
   useEffect(() => {
     const initDB = async () => {
       try {
@@ -70,6 +65,9 @@ function App() {
 
     initDB();
   }, []);
+
+  // Prevent flicker while checking localStorage
+  if (isNewDevice === null) return null;
 
   return (
     <BrowserRouter>
