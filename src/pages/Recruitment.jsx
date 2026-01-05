@@ -40,6 +40,10 @@ const [applications, setApplications] = useState([]);
       alert("Server error while admitting candidate");
     });
 }
+function showReport(id) {
+    // Open the backend PDF route in a new tab
+    window.open(`http://localhost:5000/api/recruitment/resume/${id}`, '_blank');
+} 
   return (<>
   <div>
     <table className="Inner-table"border={1} cellPadding={10} cellSpacing={0}>
@@ -68,7 +72,7 @@ const [applications, setApplications] = useState([]);
         </td> 
         <td>{Submission.experience}</td>   
         <td>{Submission.appliedDate}</td>
-        <td><button className="Repbtn">Show report</button></td>
+        <td><button className="Repbtn" onClick={() => showReport(Submission.id)}>Show report</button></td>
         <td><button className="Accbtn"onClick={() =>Accept(Submission.id)}>Notify for interview</button>
          <button className="Rejbtn" onClick={() =>Reject(Submission.id)}>Reject</button></td>
       </tr>

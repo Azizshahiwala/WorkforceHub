@@ -9,6 +9,10 @@ from flask import Blueprint,jsonify
 import os 
 import sqlite3 as sq
 
+#For pdf viewing, we need
+import io
+from flask import send_file
+
 #For unique user profile id. NOT auth_id
 from datetime import datetime, date, time, timezone
 recruitment = Blueprint('Recruitment', __name__, url_prefix='/api')
@@ -58,9 +62,8 @@ class Recruitment:
                 phoneNumber TEXT NOT NULL,
                 resume BLOB NOT NULL,
                 PersonExperience TEXT NOT NULL,
-                applied_date TEXT
+                applied_date TEXT,
                 status TEXT DEFAULT 'Pending'
-                       
             );
         """)
         conn.commit()
@@ -99,26 +102,28 @@ def fetchApplications():
     try:
         conn, cursor = manager._get_connection()
 
-        TempItems = "select * from TempStatusTable"
+        TempItems = "SELECT id, email, role, gender, name, phoneNumber, PersonExperience, status, applied_date FROM TempStatusTable"
         cursor.execute(TempItems)
         Candidates = cursor.fetchall()
 
         conn.close()
 
         result = [{
-        "id": r[0],
-        "email": r[1],
-        "position": r[2],          
-        "gender": r[3],
-        "name": r[4],
-        "phone": r[5],
-        "experience": r[7],        
-        "status": r[8]} for r in Candidates]
+            "id": r[0],
+            "email": r[1],
+            "position": r[2],          
+            "gender": r[3],
+            "name": r[4],
+            "phone": r[5],
+            "experience": r[6],        
+            "status": r[7],
+            "appliedDate": r[8]  # This is the new applied_date column
+        } for r in Candidates]
 
-        Candidates.append()
         return jsonify(result), 200
     except Exception as e:
         print("Error from fetchApplications:",e)
+        return jsonify({"error": str(e), "status": "error"}), 500
 
 @recruitment.route('/RegisterForm/applications/upload', methods=['POST'])
 def resumeProcess():
@@ -138,9 +143,9 @@ def resumeProcess():
     try:
         conn, cursor = manager._get_connection()
         cursor.execute("""
-            INSERT INTO TempStatusTable (email, role, gender,name,phoneNumber, resume, PersonExperience, applied_date, status)
+            INSERT INTO TempStatusTable (email, role, gender, name, phoneNumber, resume, PersonExperience, status, applied_date)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
-        """, (email, role, gender, name, phoneNumber, binary_resume, personExp, applied_date,status))
+        """, (email, role, gender, name, phoneNumber, binary_resume, personExp, status, applied_date))
         conn.commit()
         conn.close()
         return jsonify({"message": "Application uploaded. Please wait for approval.", "status": "success"}), 200
@@ -197,4 +202,26 @@ def admitEmployee(Tempid):
 @recruitment.route("/recruitment/reject/<int:id>", methods=["DELETE"])
 def reject_candidate(id):
     manager.cleanupTempTable(id)
-    return jsonify({"message": "Candidate rejected"}), 200      
+    return jsonify({"message": "Candidate rejected"}), 200  
+
+@recruitment.route('/recruitment/resume/<int:id>', methods=['GET'])
+def get_resume(id):
+    try:
+        conn, cursor = manager._get_connection()
+        # Fetch only the resume BLOB for the specific ID
+        cursor.execute("SELECT resume FROM TempStatusTable WHERE id = ?", (id,))
+        record = cursor.fetchone()
+        conn.close()
+
+        if record and record[0]:
+            # Convert binary data to a file-like object and send as PDF
+            return send_file(
+                io.BytesIO(record[0]),
+                mimetype='application/pdf',
+                as_attachment=False,
+                download_name=f"resume_{id}.pdf"
+            )
+        else:
+            return jsonify({"message": "Resume not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500    

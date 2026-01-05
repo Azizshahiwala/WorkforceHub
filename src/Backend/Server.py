@@ -60,7 +60,7 @@ def createDatabases():
         createRecruitment()
 
         #Dummy data filler
-        populate_databases()
+        #populate_databases()
         
         return jsonify({"message": "Databases initialized successfully"}), 200
     except Exception as e:

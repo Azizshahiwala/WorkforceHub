@@ -38,6 +38,7 @@ function App() {
 
   const [isNewDevice, setIsNewDevice] = useState(null);
 
+  
   useEffect(() => {
     // Check if the device has a "hasVisited" flag
     const hasVisited = localStorage.getItem("hasVisited");
@@ -65,7 +66,6 @@ function App() {
 
     initDB();
   }, []);
-
   // Prevent flicker while checking localStorage
   if (isNewDevice === null) return null;
 

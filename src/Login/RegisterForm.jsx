@@ -24,8 +24,8 @@ export default function RegisterForm() {
   const [selectedRole, setSelectedRole] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [gender,setGender] = useState(null);
-  const [personExperience, setpersonExperience] = useState(null)
+  const [gender,setGender] = useState("");
+  const [personExperience, setpersonExperience] = useState("")
   const [name, setName] = useState("")
   const handleFileChange = (e) => {
     if(e.target.files.length == 1){
