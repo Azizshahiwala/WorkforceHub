@@ -36,19 +36,6 @@ import Announcements from "./pages/EmployeeActivity";
 import RegisterForm from "./Login/RegisterForm";
 function App() {
 
-  const [isNewDevice, setIsNewDevice] = useState(null);
-
-  
-  useEffect(() => {
-    // Check if the device has a "hasVisited" flag
-    const hasVisited = localStorage.getItem("hasVisited");
-    if (hasVisited) {
-      setIsNewDevice(false);
-    } else {
-      setIsNewDevice(true);
-    }
-  }, []);
-
   //This hook sends API request to the python flask end point: localhost/api/init-db
   //Which the flask uses CORS to validate the response. THEN, flask will run the database.py  
   useEffect(() => {
@@ -66,15 +53,12 @@ function App() {
 
     initDB();
   }, []);
-  // Prevent flicker while checking localStorage
-  if (isNewDevice === null) return null;
-
   return (
     <BrowserRouter>
       <Routes>
         {/* 1. Login or Register is now the index page */}
-        <Route path="/" element={isNewDevice ? <RegisterForm /> : <Login />} />
-
+        <Route path="/RegisterForm" element={<RegisterForm />} />
+        <Route path="/" element={<Login />} />
         {/* 2. Move HR Layout to /dashboard */}
         <Route path="/dashboard" element={<HRLayout />}>
           <Route index element={<Dashboard />} />

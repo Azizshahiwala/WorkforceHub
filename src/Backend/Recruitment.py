@@ -24,7 +24,7 @@ CredentialsPath = os.path.join(databaseDir, "Credentials.db")
 #This is where our resume will be stored.
 #This will be, Document Repository
 RecruitmentPath = os.path.join(databaseDir, "Recruitment.db")
-
+global binaryRes
 class Recruitment:
     def __init__(self, compPath, credPath, recPath):
         self.recPath = recPath
@@ -91,6 +91,12 @@ class Recruitment:
         cursor.execute("delete from TempStatusTable where id = ?",(idToDelete,))   
         conn.commit()
         conn.close()
+    def createBackup(self,new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience):
+        conn,cursor = self._get_connection()
+        
+        cursor.execute("insert into MainStatusTable values(?,?,?,?,?,?,?,?)",(new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience)) 
+        conn.commit()
+        conn.close()
 manager = Recruitment(CompanyUserPath, CredentialsPath, RecruitmentPath)
 
 def createRecruitment():
@@ -154,6 +160,7 @@ def resumeProcess():
     
 @recruitment.route('/RegisterConfirm/<int:Tempid>', methods=['POST'])
 def admitEmployee(Tempid):
+
     conn,cursor = manager._get_connection()
     TempItems = "select * from TempStatusTable where id = ?;"
     cursor.execute(TempItems,(Tempid,))
@@ -167,7 +174,8 @@ def admitEmployee(Tempid):
     gender = Candidate[3]
     name = Candidate[4]
     phoneNumber = Candidate[5]
-
+    BinaryRes = Candidate[6]
+    PersonExp = Candidate[7]
     conn.close()
     
     try:
@@ -192,6 +200,8 @@ def admitEmployee(Tempid):
         cursor.execute(userEntry,(new_auth_id,name,employeeId,role,'Just admitted',datetime.now().strftime("%S%M%H %d%m%y"),0.0))
         conn.commit()
 
+        #Save
+        manager.createBackup(new_auth_id,email,role,gender,name,phoneNumber,BinaryRes,PersonExp)
         manager.cleanupTempTable(Tempid)
 
         return jsonify({"message": "Employee successfully admitted", "status": "success"}), 200

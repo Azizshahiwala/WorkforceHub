@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RegisterForm.css";
-
+import { Link } from "react-router-dom";
 const UploadToUrl = "http://localhost:5000/api/RegisterForm/applications/upload";
 const roles = [
   { id: "Employee", label: "Employees"},
@@ -114,6 +114,7 @@ export default function RegisterForm() {
         <button type="submit" className="Register-button">
           Submit Application
         </button>
+        <Link to="/">Already have an account? Click here</Link>
       </form>
     </div>
   );

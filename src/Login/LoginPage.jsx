@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
-
+import { Link } from "react-router-dom";
 export default function AccountLogin() {
+  function clearLocalStorage(){
+
+  }
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -85,6 +88,7 @@ export default function AccountLogin() {
           />
 
           <button type="submit">Login</button>
+          <Link to="/RegisterForm">Click here to register if you're new here</Link>
         </form>
       </div>
     </div>
