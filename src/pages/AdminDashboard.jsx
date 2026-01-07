@@ -60,20 +60,15 @@ export default function AdminDashboard() {
       backgroundColor: "#36A2EB" 
     }]
   };
-
-
-// Add this function inside Dashboard component
   const getAvgPerformance = () => {
   try {
     const data = localStorage.getItem("feedback");
     if (data) {
       const feedback = JSON.parse(data);
 
-      // reduce() turns an array into a single value by processing each item one by one
       const avg = feedback.reduce((sum, f) => sum + parseInt(f.rating), 0) / feedback.length;
       
-      // Math.round() rounds numbers to the nearest whole number.
-      return Math.round(avg * 10) / 10; // 1 decimal place
+      return Math.round(avg * 10) / 10;
     }
   } catch (e) {
     return 0;
@@ -81,9 +76,6 @@ export default function AdminDashboard() {
   return 0;
 }
 const reviewsCount = JSON.parse(localStorage.getItem("feedback") || "[]").length;
-
-  // TO-DO List State and Handler
-
   const [task, setTask] = useState("");
   const [store, setStore] = useState(() => {
   // runs once on first render

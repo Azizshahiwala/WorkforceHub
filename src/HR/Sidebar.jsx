@@ -2,19 +2,15 @@
 import { NavLink } from "react-router-dom";
 
 function Sidebar({ darkMode }) {
+  const hrUser = JSON.parse(localStorage.getItem("loggedInHR"));
+  const displayName = hrUser ? hrUser.name : "HR User";
   return (
     
     <div className={`sidebar ${darkMode ? "dark" : ""}`}>
       <ul>
-        <h2
-        style={
-          {
-            
-          color: darkMode ? "#ffffff" : "#000000"
-        }}
-      >
-        Hello HR
-      </h2>
+        <h2 style={{ color: darkMode ? "#ffffff" : "#000000" }}>
+          Hello, {displayName}
+        </h2>
         <li>
           <NavLink
                 to="/dashboard"

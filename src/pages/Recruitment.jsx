@@ -32,7 +32,7 @@ const [applications, setApplications] = useState([]);
           prev.filter(app => app.id !== id)
         );
       } else {
-        alert(data.error || "Admission failed");
+        alert(data.message);
       }
     })
     .catch(err => {

@@ -24,7 +24,7 @@ CredentialsPath = os.path.join(databaseDir, "Credentials.db")
 #This is where our resume will be stored.
 #This will be, Document Repository
 RecruitmentPath = os.path.join(databaseDir, "Recruitment.db")
-global binaryRes
+
 class Recruitment:
     def __init__(self, compPath, credPath, recPath):
         self.recPath = recPath
@@ -142,7 +142,7 @@ def resumeProcess():
     name = rq.form.get('name')
     resume = rq.files.get('file')  # base64 encoded string
     status = 'Pending'
-    applied_date = datetime.now().strftime("%d %b, %Y") # Format: 05 Jan, 2026
+    applied_date = datetime.now().strftime("%y-%m-%d %I:%M:%S %p") # Format: 05 Jan, 2026
     
     #To store resume, we convert it to binary data.
     binary_resume = resume.read()

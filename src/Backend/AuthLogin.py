@@ -70,6 +70,8 @@ databaseDir = os.path.join(os.getcwd(),"src","Database")
 databasePath = os.path.join(databaseDir,"Credentials.db")
 #Returns: HOME/src/Database/Credentials.db
 
+CompanyUserPath = os.path.join(databaseDir,"CompanyUsers.db")
+
 @authlogin.route("/Login", methods=['POST'])
 def login():
     try:
@@ -81,34 +83,47 @@ def login():
         
         conn = sq.connect(databasePath)
         cursor = conn.cursor()
-        cursor.execute("SELECT role FROM login WHERE email = ? AND password = ?", (email, password))
-        role_data = cursor.fetchone()
+
+        #To support indiviual user login, we use user table.
+        cursor.execute(f"ATTACH DATABASE '{CompanyUserPath}' AS profile")
+
+        cursor.execute(
+            """SELECT login.role, user.name, user.employeeId, login.email
+               FROM login
+               left join profile.user 'user' on login.id = user.auth_id 
+               where login.email = ? and login.password = ?"""
+            , (email, password))
+        
+        user_info = cursor.fetchone()
         conn.close()
         
-        if role_data:
-            role = role_data[0]
-            print(f"✅ User found - Role: '{role}'")  # ← CRITICAL DEBUG
-            
-            role_lower = role.lower().strip()
-            
+        if user_info:
+            role, name, employeeId, email = user_info  
+            permission = 0  
             if isNonStaff(role):
-                print("✅ → Non-Staff (Permission 1)")
-                return jsonify({"success": True, "role": role, "message": "Success", "Permission": 1}), 200
+                permission = 1
             elif isStaff(role):
-                print("✅ → Staff (Permission 2)")
-                return jsonify({"success": True, "role": role, "message": "Success", "Permission": 2}), 200
+                permission = 2
             elif isEmployee(role):
-                print("✅ → Employee (Permission 3)")
-                return jsonify({"success": True, "role": role, "message": "Success", "Permission": 3}), 200
+                permission = 3
             else:
-                print(f"❌ Role '{role}' not recognized")
-                return jsonify({"success": False, "role": "", "message": "Role not recognized", "Permission": 0}), 200
+                permission = 0
+
+            return jsonify({
+                "success": True,
+                "Permission": permission,
+                "role": role,
+                "name": name,
+                "employeeId": employeeId,
+                "email": email,
+                "message": "Login successful"
+            }), 200
         else:
             print(f"❌ No user found for {email}")
-            return jsonify({"success": False, "role": "", "message": "Invalid credentials"}), 200
+            return jsonify({"success": False,"message": "Invalid credentials"}), 200
             
     except Exception as e:
         print(f"❌ Error: {e}")
-        return jsonify({"success": False, "role": "", "message": str(e)}), 500
+        return jsonify({"success": False,"message": str(e)}), 500
 # ===============================   
 # ATTENDANCE GENERATOR

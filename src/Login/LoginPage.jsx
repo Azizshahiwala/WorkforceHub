@@ -3,9 +3,6 @@ import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 import { Link } from "react-router-dom";
 export default function AccountLogin() {
-  function clearLocalStorage(){
-
-  }
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -23,42 +20,35 @@ export default function AccountLogin() {
       const data = await response.json();
       console.log("🔍 Login response:", data);
 
-      if (!data || !data.Permission) {
+      if (!data || data.Permission === 0) {
         alert("Invalid login response");
         return;
       }
-
-      // 🔐 STAFF (EMPLOYEE)
-      if (data.Permission === 2) {
-        // ✅ SAVE LOGGED-IN EMPLOYEE (IMPORTANT)
-        localStorage.setItem(
-          "loggedInEmployee",
-          JSON.stringify({
-            employeeId: data.employeeId || data.empId || data.id,
-            name: data.name || data.fullName || data.username,
+      const userSession = JSON.stringify({
+            employeeId: data.employeeId,
+            name: data.name,
             email: data.email,
             role: data.role,
           })
-        );
-
+      // staff (EMPLOYEE)
+      if (data.Permission === 2 || data.Permission === 3) {
+        localStorage.setItem("loggedInEmployee",userSession);
         navigate("/dashboardEmployee");
       }
-
-      // 🔐 NON-STAFF (HR / ADMIN / CEO / INTERVIEWER)
+      // nonstaff (HR / ADMIN / CEO / INTERVIEWER)
       else if (data.Permission === 1) {
-        const role = data.role?.toLowerCase();
-
-        if (role === "hr") {
-          localStorage.setItem("loggedInHR", JSON.stringify(data));
+    
+        if (data.role.toLowerCase() === "hr") {
+          localStorage.setItem("loggedInHR", userSession);
           navigate("/dashboard");
-        } else if (role === "admin" || role === "ceo") {
-          localStorage.setItem("loggedInAdmin", JSON.stringify(data));
+        } else if (data.role.toLowerCase() === "admin" || data.role.toLowerCase() === "ceo") {
+          localStorage.setItem("loggedInAdmin", userSession);
           navigate("/dashboardAdmin");
         } else {
           navigate("/interviewer");
         }
       } else {
-        alert("Login failed");
+        alert(userSession);
       }
     } catch (error) {
       console.error("❌ Login error:", error);
