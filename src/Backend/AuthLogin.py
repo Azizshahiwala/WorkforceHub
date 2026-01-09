@@ -88,7 +88,7 @@ def login():
         cursor.execute(f"ATTACH DATABASE '{CompanyUserPath}' AS profile")
 
         cursor.execute(
-            """SELECT login.role, user.name, user.employeeId, login.email
+            """SELECT login.role, user.name, user.employeeId, login.email, login.id
                FROM login
                left join profile.user 'user' on login.id = user.auth_id 
                where login.email = ? and login.password = ?"""
@@ -98,7 +98,7 @@ def login():
         conn.close()
         
         if user_info:
-            role, name, employeeId, email = user_info  
+            role, name, employeeId, email, id = user_info  
             permission = 0  
             if isNonStaff(role):
                 permission = 1
@@ -114,6 +114,7 @@ def login():
                 "Permission": permission,
                 "role": role,
                 "name": name,
+                "id":id,
                 "employeeId": employeeId,
                 "email": email,
                 "message": "Login successful"
@@ -125,5 +126,3 @@ def login():
     except Exception as e:
         print(f"❌ Error: {e}")
         return jsonify({"success": False,"message": str(e)}), 500
-# ===============================   
-# ATTENDANCE GENERATOR

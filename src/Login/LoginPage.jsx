@@ -26,6 +26,7 @@ export default function AccountLogin() {
       }
       const userSession = JSON.stringify({
             employeeId: data.employeeId,
+            auth_id: data.id,
             name: data.name,
             email: data.email,
             role: data.role,

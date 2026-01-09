@@ -12,6 +12,7 @@ from Users import users,createCompanyUsers
 from Attendance import attendance,createAttendance
 from Payroll import payroll,createPayroll
 from Recruitment import recruitment,createRecruitment
+from LeaveHandler import leaveManager,createLeave
 from DummyDataFiller import populate_databases
 #render_template -> imports function which is used to load html
 #redirect -> used to redirect browser to a path
@@ -31,6 +32,7 @@ app.register_blueprint(users)
 app.register_blueprint(attendance)
 app.register_blueprint(payroll)
 app.register_blueprint(recruitment)
+app.register_blueprint(leaveManager)
 
 # Enables communication between your React app and this Flask server
 CORS(app)  
@@ -58,6 +60,12 @@ def createDatabases():
 
         #Creates two state tables.
         createRecruitment()
+        
+        #CompanyUserLeave.db
+        createLeave()
+        
+        #Creates leave tables.
+        createLeave()
 
         #Dummy data filler
         #populate_databases()
