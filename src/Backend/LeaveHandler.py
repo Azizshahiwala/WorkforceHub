@@ -73,49 +73,49 @@ class LeaveHandler:
         except Exception as e:
             print("Error createLeaverq",e)
             return "error"
-    def fetchData(self,Leaveid,employeeId):
+    def fetchData(self,Leaveid):
         try:
             conn,cursor = self._get_connection()
 
             query = """
-            select * from IncomingLeaves where Leaveid = ? and employeeId = ?;
+            select * from IncomingLeaves where Leaveid = ?;
             """     
-            cursor.execute(query,(Leaveid,employeeId,))
-            conn.close()
-            return cursor.fetchone()
+            cursor.execute(query,(Leaveid,))
+            res = cursor.fetchone()
+            conn.close()    
+            print(res)
+            return res
         except Exception as e:
             print("Error createLeaverq",e)
-            return False
+            return jsonify(e)
     
     def LeavesChecker(self):
-        conn, cursor = self.get_connection()
+        conn, cursor = self._get_connection()
+        today = date.today()
 
-        today = datetime.today().date()
+        cursor.execute("""
+            SELECT Leaveid, enddate
+            FROM LiveLeaves
+            WHERE status = 'Active'
+        """)
 
-        query = """
-    SELECT Leaveid, enddate
-    FROM LiveLeaves
-    WHERE status = 'Active';
-    """
-
-        cursor.execute(query)
         activeLeaves = cursor.fetchall()
-
         closedCount = 0
 
         for leave in activeLeaves:
             leaveId = leave[0]
-            enddate_str = leave[1]
+            enddate_str = leave[1]  # ← THIS is enddate_str
 
-        enddate = datetime.strptime(enddate_str, "%Y-%m-%d").date()
+            enddate = datetime.strptime(enddate_str, "%Y-%m-%d").date()
 
-        # 🔑 YOUR RULE
-        if today == enddate:
-            cursor.execute(
-                "UPDATE LiveLeaves SET status = 'Completed' WHERE Leaveid = ?",
-                (leaveId,)
-            )
-            closedCount += 1
+            # 🔑 Rule: close if today is enddate OR passed
+            if today >= enddate:
+                cursor.execute("""
+                    UPDATE LiveLeaves
+                    SET status = 'Completed'
+                    WHERE Leaveid = ?
+                """, (leaveId,))
+                closedCount += 1
 
         conn.commit()
         conn.close()
@@ -168,10 +168,13 @@ def PostLeave(empId,auth_id):
     dateSubmitted = data.get('dateSubmitted')
     try:
         print(startdate,enddate)
+        start = datetime.strptime(startdate, "%Y-%m-%d").date()
+        end = datetime.strptime(enddate, "%Y-%m-%d").date()
+        
         if reason == "":
             return jsonify({"message":"Reason not given. ","status":"reason not provided"})
         
-        if enddate < startdate:
+        if end < start:
             return jsonify({"message":"Invalid structure. ","status":"datetime compare error"})
 
         status = leavehandler.createLeaveRq(name,department,startdate,enddate,reason,dateSubmitted,empId,auth_id)
@@ -184,20 +187,28 @@ def PostLeave(empId,auth_id):
     #When leave application is created, store it in incomingLeaves (yet to accept). 
     
 
-@leaveManager.route('/acceptLeave/<string:empId>/<string:leaveID>',methods=['POST'])
-def AcceptLeave(empId,leaveID):
+@leaveManager.route('/acceptLeave/<string:leaveID>',methods=['POST'])
+def AcceptLeave(leaveID):
     #When leave application is accepted,
     #Remove from incomingLeaves
     #Transfer to LiveLeaves
     try:
-        FetchedData = leavehandler.fetchData(leaveID,empId)
-
+        FetchedData = leavehandler.fetchData(leaveID)
+        
+        if not FetchedData:
+            return jsonify({
+                "message": "Leave request not found or already processed.",
+                "status": "error"
+            }), 404
+        
         conn,cursor = leavehandler._get_connection()
         toLiveQuery = """
-        insert into LiveLeaves(LeaveId, auth_id, name, employeeId, department, startdate, enddate, reason,
-        status, dateSubmitted) values(?,?,?,?,?,?,?,?,?,?);
+        INSERT INTO LiveLeaves(
+            LeaveId, auth_id, name, employeeId, department,
+            startdate, enddate, reason, status, dateSubmitted
+        ) VALUES (?,?,?,?,?,?,?,?,?,?)
         """
-        cursor.execute(toLiveQuery,(FetchedData[0],FetchedData[1],FetchedData[2],FetchedData[3],FetchedData[4],FetchedData[5],FetchedData[6],"Active",FetchedData[8],))   
+        cursor.execute(toLiveQuery,(FetchedData[0],FetchedData[1],FetchedData[2],FetchedData[3],FetchedData[4],FetchedData[5],FetchedData[6],FetchedData[7],'Active',FetchedData[9]))   
         remQuery = """
         delete from IncomingLeaves where LeaveId = ? and employeeId = ?;
         """
@@ -210,13 +221,19 @@ def AcceptLeave(empId,leaveID):
         return jsonify({"message":f"{e}","status":"error"})
     
 
-@leaveManager.route('/rejectLeave/<string:empId>/<string:leaveID>',methods=['POST'])
-def RejectLeave(empId,leaveID):
+@leaveManager.route('/rejectLeave/<string:leaveID>',methods=['POST'])
+def RejectLeave(leaveID):
     #When leave application is rejected,
     #Remove from incomingLeaves.
     try:
-        FetchedData = leavehandler.fetchData(leaveID,empId)
+        FetchedData = leavehandler.fetchData(leaveID)
 
+        if not FetchedData:
+            return jsonify({
+                "message": "Leave request not found or already processed.",
+                "status": "error"
+            }), 404
+        
         conn,cursor = leavehandler._get_connection()
         remQuery = """
         delete from IncomingLeaves where LeaveId = ? and employeeId = ?;

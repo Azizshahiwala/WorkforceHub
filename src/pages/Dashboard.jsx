@@ -23,6 +23,13 @@ export default function Dashboard() {
       .catch(err => console.error("Dashboard load error:", err));
   }, []);
 
+  //This use effects checks if leave is expired or not.
+  useEffect(() => {
+        fetch(`http://localhost:5000/api/CloseLeaveDuration`)
+          .then(res => res.json())
+          .then(data => console.log(data.closedCount));
+      }, []);
+
   // Gender data
   const genderData = {
     labels: ["Male", "Female"],

@@ -14,18 +14,11 @@ function LeaveManager() {
           .then(data => setLeaveRequests(data))
           .catch(err => console.error("Error loading personal leaves:", err));
       }, []);
-  
-  //This use effects checks if leave is expired or not.
-  useEffect(() => {
-        fetch(`http://localhost:5000/api/CloseLeaveDuration`)
-          .then(res => res.json())
-          .then(data => console.log(data.closedCount));
-      }, []);
 
   const handleLeaveOption = async (Leaveid,option,employeeId) => {
     try{
       if(option === "accept"){
-        const response = await fetch(`http://localhost:5000/api/acceptLeave/${employeeId}/${Leaveid}`, {
+        const response = await fetch(`http://localhost:5000/api/acceptLeave/${Leaveid}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({employeeId, Leaveid}),
@@ -41,7 +34,7 @@ function LeaveManager() {
         }
       }
       else if(option == "reject"){
-        const response = await fetch(`http://localhost:5000/api/rejectLeave${employeeId}/${Leaveid}`, {
+        const response = await fetch(`http://localhost:5000/api/rejectLeave/${Leaveid}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({employeeId, Leaveid}),
