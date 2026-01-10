@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from "react";
 import "./FeedbackEmployees.css";
 
+//THIS file submits feedback TO employees / admin / CEO.
 // name,employeeId,department
 
 function FeedbackEmployees() {

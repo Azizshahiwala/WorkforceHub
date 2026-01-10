@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./EmployeePerformance.css";
-
+//THIS file is for individual HR / Admin / CEO only.
 function Performance() {
   const [myFeedback, setMyFeedback] = useState([]);
   const [loggedInEmployee, setLoggedInEmployee] = useState(null);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./EmployeePerformance.css";
 
+//THIS file is FOR individual employees. where they look their performance
 function EmployeePerformance() {
   const [feedback, setFeedback] = useState([]);
 

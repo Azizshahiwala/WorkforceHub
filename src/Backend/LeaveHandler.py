@@ -3,6 +3,8 @@ from flask import Blueprint,jsonify
 import os 
 import sqlite3 as sq
 from datetime import datetime, date, time, timezone
+#Now we use NotifManager (send , update, recieve notification)
+from Notification import notifManager
 leaveManager = Blueprint('Leave', __name__, url_prefix='/api')
 
 # Paths
@@ -197,6 +199,7 @@ def AcceptLeave(leaveID):
     #When leave application is accepted,
     #Remove from incomingLeaves
     #Transfer to LiveLeaves
+    #Send notification.
     try:
         FetchedData = leavehandler.fetchData(leaveID)
         
@@ -219,8 +222,14 @@ def AcceptLeave(leaveID):
         delete from IncomingLeaves where LeaveId = ? and employeeId = ?;
         """
         cursor.execute(remQuery,(FetchedData[0],FetchedData[3]))
+        
+        notifManager.insert_notification(employeeId=FetchedData[3],
+                                         role=FetchedData[4],
+                                         message=f"Your leave request from {FetchedData[5]} - {FetchedData[6]} has been approved.")
         conn.commit()
         conn.close()
+
+
         return jsonify({"message":"Leave request approved.","status":"success"})
     except Exception as e:
         print(e)
@@ -245,6 +254,11 @@ def RejectLeave(leaveID):
         delete from IncomingLeaves where LeaveId = ? and employeeId = ?;
         """
         cursor.execute(remQuery,(FetchedData[0],FetchedData[3]))
+        
+        notifManager.insert_notification(employeeId=FetchedData[3],
+                                         role=FetchedData[4],
+                                         message=f"Your leave request from {FetchedData[5]} - {FetchedData[6]} has been rejected.")
+        
         conn.commit()
         conn.close()
         return jsonify({"message":"Leave request denied successfully.","status":"success"})
