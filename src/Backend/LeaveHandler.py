@@ -115,6 +115,12 @@ class LeaveHandler:
                     SET status = 'Completed'
                     WHERE Leaveid = ?
                 """, (leaveId,))
+
+                cursor.execute("""
+                    delete from LiveLeaves
+                    where status = 'Completed'
+                    and Leaveid = ?
+                """, (leaveId,))
                 closedCount += 1
 
         conn.commit()
@@ -150,7 +156,7 @@ def FetchAllLeaves():
                 "dateSubmitted": r[8]
             })
         conn.close()
-
+        
         return jsonify(result) ,200
     except Exception as e:
         print(e)
@@ -167,7 +173,6 @@ def PostLeave(empId,auth_id):
     reason = data.get('reason')
     dateSubmitted = data.get('dateSubmitted')
     try:
-        print(startdate,enddate)
         start = datetime.strptime(startdate, "%Y-%m-%d").date()
         end = datetime.strptime(enddate, "%Y-%m-%d").date()
         
@@ -177,7 +182,7 @@ def PostLeave(empId,auth_id):
         if end < start:
             return jsonify({"message":"Invalid structure. ","status":"datetime compare error"})
 
-        status = leavehandler.createLeaveRq(name,department,startdate,enddate,reason,dateSubmitted,empId,auth_id)
+        status = leavehandler.createLeaveRq(auth_id=auth_id,name=name,department=department,startdate=startdate,enddate=enddate,reason=reason,dateSubmitted=dateSubmitted,empId=empId)
         return jsonify({"message":"Leave request sent successfully.","status":status})
         
     except Exception as e:
@@ -201,6 +206,7 @@ def AcceptLeave(leaveID):
                 "status": "error"
             }), 404
         
+
         conn,cursor = leavehandler._get_connection()
         toLiveQuery = """
         INSERT INTO LiveLeaves(

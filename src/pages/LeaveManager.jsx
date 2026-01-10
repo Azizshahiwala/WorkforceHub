@@ -25,7 +25,7 @@ function LeaveManager() {
       });
 
       const data = await response.json();
-        if(data.success){
+        if(data.status == "success"){
           alert(data.name+"'s leave accepted.");
         }
         else{
@@ -41,7 +41,7 @@ function LeaveManager() {
       });
 
       const data = await response.json();
-        if(data.success){
+        if(data.status == "success"){
           alert(data.name+"'s leave rejected.");
         }
         else{
@@ -49,7 +49,7 @@ function LeaveManager() {
           return;
         }
       }
-      const updatedData = leaveRequests.filter(item => item.id !== id);
+      const updatedData = leaveRequests.filter(item => item.Leaveid !== Leaveid);
       setLeaveRequests(updatedData);
       }
     catch(e){
