@@ -29,7 +29,7 @@ import AdminEmployeePerformance from "./pages/AdminEmployeePerformance";
 import EmployeeLayout from "./layout/EmployeeLayout";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import ApplyLeave from "./pages/ApplyLeave";
-import CheckMyPerformance from "./pages/Performance";
+import EmployeePersonalPerformance from "./pages/Performance";
 import Announcements from "./pages/EmployeeActivity";
 
 //Entry point - Registration
@@ -88,7 +88,7 @@ function App() {
         <Route path="/dashboardEmployee" element={<EmployeeLayout />}>
           <Route index element={<EmployeeDashboard />} />
           <Route path="applyLeave" element={<ApplyLeave />} />
-          <Route path="performanceEmployee" element={<CheckMyPerformance />} />
+          <Route path="performanceEmployee" element={<EmployeePersonalPerformance />} />
           <Route path="announcements" element={<Announcements />} />
         </Route>
 

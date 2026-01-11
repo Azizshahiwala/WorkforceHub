@@ -1,47 +1,79 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./FeedbackEmployees.css";
 
-//THIS file submits feedback TO employees / admin / CEO.
-// name,employeeId,department
-
 function FeedbackEmployees() {
+  const [reviewers, setReviewers] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedEmp, setSelectedEmp] = useState(null);
   const [feedback, setFeedback] = useState("");
-  const [rate,setRate]=useState(0);
+  const [rate, setRate] = useState(0);
+
+  const adminSession = JSON.parse(localStorage.getItem("loggedInAdmin"));
+
+  //Auto fill if logged in by admin
+  const [givenBy, setGivenBy] = useState(
+  adminSession ? adminSession.employeeId : ""
+  );
 
   useEffect(() => {
-      //This useEffect loads Users from database CompanyUser once
-      const loadUser = async () => {
-        try {
-          //Get response into 'response'
-          const response = await fetch("http://localhost:5000/api/getCompanyUsers");
-          //convert response to json
-          const data = await response.json();
-          setEmployees(data)
-        } catch (error) {
-          console.error("Error from FeedbackEmployees.jsx:", error);
-        }
-      };
-      loadUser(); }, []);
+  fetch("http://localhost:5000/api/fetchReviewers")
+    .then(res => res.json())
+    .then(data => setReviewers(data))
+    .catch(err => console.error("Reviewer fetch error:", err));
+}, []);
 
-  const giveFeedback = (emp) => {
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/getCompanyUsers");
+        const data = await response.json();
+        setEmployees(data);
+      } catch (error) {
+        console.error("Error from FeedbackEmployees.jsx:", error);
+      }
+    };
+    loadUser();
+  }, []);
+
+  const openFeedbackModal = (emp) => {
     setSelectedEmp(emp);
     setFeedback("");
+    setRate(0); // Reset rating for new entry
   };
 
-  const submitFeedback = () => {
-    const data={
-    empId: selectedEmp.employeeId,
-    name: selectedEmp.name,
-    rating: rate,
-    comment: feedback,
+  const handleFormSubmit = async (e) => {
+    e.preventDefault(); // Prevents page reload
+
+    if (!givenBy) {
+    alert("Reviewer not selected");
+    return;
+    }
+    
+    const submissionData = {
+      empId: selectedEmp.employeeId,
+      name: selectedEmp.name,
+      rating: rate,
+      comment: feedback,
+      givenBy: givenBy
     };
-    const old = JSON.parse(localStorage.getItem("feedback"))|| [];
-    const updated=[...old,data];
-    localStorage.setItem("feedback",JSON.stringify(updated));
-    setSelectedEmp(null);
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/submitFeedback/${submissionData.empId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(submissionData),
+      });
+
+      if (response.ok) {
+        alert("Feedback submitted successfully!");
+        setSelectedEmp(null);
+      } else {
+        alert("Failed to submit feedback.");
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+    }
   };
 
   return (
@@ -50,7 +82,7 @@ function FeedbackEmployees() {
         <h2>Feedback to Employees</h2>
       </div>
 
-      <div className="leave-card">
+      <div className="leave-card" >
         <div className="leave-card-header">
           <h3>All Employees</h3>
           <input
@@ -58,8 +90,7 @@ function FeedbackEmployees() {
             placeholder="Search by name... 🔍"
             className="search-input"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+            onChange={(e) => setSearch(e.target.value)}/>
         </div>
 
         <table className="leave-table">
@@ -74,27 +105,24 @@ function FeedbackEmployees() {
           </thead>
           <tbody>
             {employees
-              .filter(emp =>
-                emp.name.toLowerCase().includes(search.toLowerCase())
-              )
+              .filter(emp => emp.name.toLowerCase().includes(search.toLowerCase()))
               .map((emp, index) => (
-                <tr key={emp.id}>
+                <tr key={emp.employeeId}>
                   <td>{index + 1}</td>
                   <td>
                     <div className="emp-cell">
-                      <div className="emp-avatar">
-                        {emp.name.charAt(0)}
-                      </div>
+                      <div className="emp-avatar">{emp.name.charAt(0)}</div>
                       <span>{emp.name}</span>
                     </div>
                   </td>
                   <td>{emp.employeeId}</td>
                   <td>{emp.department}</td>
                   <td>
+                    {/* Changed type to "button" so it doesn't trigger onSubmit yet */}
                     <button
                       className="give-feedback-btn"
-                      onClick={() => giveFeedback(emp)}
-                    >
+                      type="button"
+                      onClick={() => openFeedbackModal(emp)}>
                       Give Feedback
                     </button>
                   </td>
@@ -103,37 +131,45 @@ function FeedbackEmployees() {
           </tbody>
         </table>
 
-        {/* Feedback Modal */}
         {selectedEmp && (
+          <form onSubmit={handleFormSubmit}>
           <div className="modal-overlay">
             <div className="modal-box">
               <h3>HR Feedback</h3>
               <p>For: <strong>{selectedEmp.name}</strong></p>
-                <div>
-                  {[1,2,3,4,5].map(i=>(
-                    <span
-                      key={i}
-                      className={`fa fa-star ${i <= rate ? "checked" : ""}`}
-                      onClick={()=>setRate(i)}
-                      style={{ cursor: "pointer", fontSize: 24 }}
-                    />
-                   ))}
-                </div>
+              <div>
+                {[1, 2, 3, 4, 5].map(i => (
+                  <span
+                    key={i}
+                    className={`fa fa-star ${i <= rate ? "checked" : ""}`}
+                    onClick={() => setRate(i)}
+                    style={{ cursor: "pointer", fontSize: 24 }}
+                  />
+                ))}
+              </div>
               <textarea
                 rows="5"
                 placeholder="Write feedback here..."
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
-              />
+                required/>
 
+              <select onChange={(e) => setGivenBy(e.target.value)}>
+              <option value="">Select Reviewer</option>
+              {reviewers.map(rev => (
+              <option key={rev.employeeId} value={rev.employeeId}>
+              {rev.name} ({rev.role})
+              </option>
+              ))}
+              </select>
               <div className="modal-actions">
-                <button onClick={submitFeedback}>Submit</button>
-                <button onClick={() => setSelectedEmp(null)}>Close</button>
+                <button type="submit">Submit</button>
+                <button type="button" onClick={() => setSelectedEmp(null)}>Close</button>
               </div>
             </div>
           </div>
+          </form>
         )}
-
       </div>
     </div>
   );

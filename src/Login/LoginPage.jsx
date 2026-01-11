@@ -24,32 +24,33 @@ export default function AccountLogin() {
         alert("Invalid login response");
         return;
       }
-      const userSession = JSON.stringify({
+      const userSession = {
             employeeId: data.employeeId,
             auth_id: data.id,
             name: data.name,
             email: data.email,
             role: data.role,
-          })
+          }
       // staff (EMPLOYEE)
       if (data.Permission === 2 || data.Permission === 3) {
-        localStorage.setItem("loggedInEmployee",userSession);
+        localStorage.setItem("loggedInEmployee",JSON.stringify(userSession));
         navigate("/dashboardEmployee");
+      
       }
       // nonstaff (HR / ADMIN / CEO / INTERVIEWER)
       else if (data.Permission === 1) {
     
         if (data.role.toLowerCase() === "hr") {
-          localStorage.setItem("loggedInHR", userSession);
+          localStorage.setItem("loggedInHR", JSON.stringify(userSession));
           navigate("/dashboard");
         } else if (data.role.toLowerCase() === "admin" || data.role.toLowerCase() === "ceo") {
-          localStorage.setItem("loggedInAdmin", userSession);
+          localStorage.setItem("loggedInAdmin", JSON.stringify(userSession));
           navigate("/dashboardAdmin");
         } else {
           navigate("/interviewer");
         }
       } else {
-        alert(userSession);
+        alert(JSON.stringify(userSession));
       }
     } catch (error) {
       console.error("❌ Login error:", error);

@@ -5,17 +5,9 @@ import "./EmployeePerformance.css";
 function EmployeePerformance() {
   const [feedback, setFeedback] = useState([]);
 
-  useEffect(() => {
-    const data = localStorage.getItem("feedback");
-    if (data) {
-      setFeedback(JSON.parse(data));
-    }
-  }, []);
-
   const removeEmployee = (empId) => {
     const deleted=feedback.filter((f)=>f.empId!==empId);
     setFeedback(deleted);
-    localStorage.setItem("feedback",JSON.stringify(deleted));
   }
 
   return (
