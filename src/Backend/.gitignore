@@ -1,2 +1,2 @@
-./src/
-./__pycache__/
+./Backend/src/
+./Backend/__pycache__/
