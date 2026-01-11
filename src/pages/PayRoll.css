@@ -1,0 +1,202 @@
+/* ===============================
+   Page Layout
+================================ */
+.leave-page {
+  padding: 24px;
+  background-color: #f9fafb;
+  min-height: 100vh;
+}
+
+.leave-header h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ===============================
+   Main Wrapper Card
+================================ */
+.leave-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Header with search */
+.leave-card-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ===============================
+   Search Input
+================================ */
+.search-input {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 240px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* ===============================
+   Employee Cards Grid
+================================ */
+.emp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  padding: 24px;
+}
+
+.SalBreakup-page{
+  position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.2);
+    width: 800px;
+    max-width: 95vw;
+    border: 1px solid #e2e8f0;
+
+    /* --- ADD THESE FOR SCROLLING --- */
+    max-height: 80vh;  /* Limits height to 80% of the screen */
+    overflow-y: auto;  /* Adds scrollbar if content is taller than max-height */
+
+}
+/* ===============================
+   Employee Card
+================================ */
+.emp-card {
+  position: relative;
+  background: #fff;
+  border-radius: 14px;
+  padding: 36px 24px 26px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.emp-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.15);
+}
+
+/* Rows */
+.emp-card-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 15px;
+  color: #555;
+}
+
+.emp-card-row span {
+  font-size: 14px;
+  color: #888;
+}
+
+.emp-card-row strong {
+  font-size: 16px;
+  color: #222;
+  font-weight: 600;
+}
+
+/* ===============================
+   Top Right Remove Button
+================================ */
+.remove-icon-btn {
+  flex-shrink: 0;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 4px;   /* 👈 pushes button down */
+  margin-bottom: 4px;
+
+  transition: all 0.2s ease;
+}
+
+.remove-icon-btn:hover {
+  background: #dc2626;
+  color: #fff;
+  transform: scale(1.1);
+}
+.close-btn{
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+/* ===============================
+   Action Buttons (Mail)
+================================ */
+.action-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Mail button */
+.btn-mail {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.btn-card {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+.btn-mail:hover {
+  background-color: #0369a1;
+  color: #ffffff;
+}
+
+/* ===============================
+   Responsive
+================================ */
+@media (max-width: 900px) {
+  .emp-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .emp-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+}

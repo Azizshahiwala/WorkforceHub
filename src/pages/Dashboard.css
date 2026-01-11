@@ -1,0 +1,321 @@
+/* ===============================
+   Dashboard Layout
+================================ */
+.dashboard { 
+  display: flex; 
+  gap: 45px; 
+  flex-wrap: wrap; 
+  padding: 20px; 
+  background-color: #f9fafb; 
+  color: #111827;
+}
+
+/* Each chart / card wrapper */
+.emp-summary { 
+  flex: 1 1 320px;        /* slightly wider so they sit closer */
+  max-width: 450px; 
+  margin-bottom: 10px;
+  background-color: #ffffff;       /* card background */
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  padding: 20px 24px;
+}
+
+/* ===============================
+   Titles
+================================ */
+.card-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;         /* fixed dark text */
+  margin-bottom: 16px;
+}
+
+/* Keep titles dark in dark mode */
+body.dark .card-title {
+  color: #111827;
+}
+
+/* ===============================
+   Performance Card (Avg rating)
+================================ */
+.performance-card {
+  margin-bottom: 5px;       /* Very tight */
+  max-width: 200px !important;
+  padding: 20px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avg-score {
+  text-align: center;
+}
+
+.avg-score span {
+  display: block;
+  font-size: 14px;
+  color: #64748b;           /* fixed color */
+  margin-bottom: 5px;
+}
+
+.avg-score strong {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e293b;           /* fixed color */
+  margin-bottom: 5px;
+}
+
+.avg-score small {
+  font-size: 12px;
+  color: #94a3b8;           /* fixed color */
+}
+
+/* Keep performance card text same in dark mode */
+body.dark .performance-card {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+body.dark .performance-card .avg-score span,
+body.dark .performance-card .avg-score strong,
+body.dark .performance-card .avg-score small {
+  color: inherit;           /* stay as defined above */
+}
+
+/* ===============================
+   Pie Charts
+================================ */
+.pie-wrapper { 
+  position: relative; 
+  height: 280px; 
+}
+
+.pie-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Fixed colors so dark mode does not invert them */
+.pie-center-text span {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.pie-center-text strong {
+  display: block;
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Keep center text same in dark mode */
+body.dark .pie-center-text span {
+  color: #6b7280;
+}
+
+body.dark .pie-center-text strong {
+  color: #111827;
+}
+
+/* ===============================
+    TO DO LIST
+  ================================ */
+ /* Card */
+.emp-summary.todo-card {
+  max-width: 520px;
+}
+
+/* Input row */
+.todo-input-row {
+  display: flex;
+  gap: 12px;
+  margin: 18px 0 10px;
+  align-items: center;
+}
+
+.todo-input-row label {
+  font-size: 16px;
+  color: #111827;
+  min-width: 80px;
+}
+
+.todo-input-row input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+.todo-input-row input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #bfdbfe;
+}
+
+.todo-input-row button {
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.todo-input-row button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* List */
+.todo-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+/* Single task row */
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  background: #f9fafb;
+  font-size: 14px;
+  color: #111827;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* Task text */
+.todo-item span {
+  flex: 1;
+  margin-right: 10px;
+  word-break: break-word;
+}
+
+/* Remove button */
+.todo-remove-btn {
+  border: none;
+  background: #fee2e2;
+  color: #dc2626;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.todo-remove-btn:hover {
+  background: #dc2626;
+  color: #fff;
+  transform: scale(1.05);
+}
+.emp-summary.todo-card {
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;   /* stack children: title, input row, list */
+}
+
+/* Ensure list takes full width inside card */
+.todo-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  width: 100%;              /* full card width */
+}
+
+
+
+
+/* ===============================
+   Bar Chart
+================================ */
+.bar-wrapper {
+  position: relative;
+  height: 250px;
+}
+
+.bar-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #333;
+  background: rgba(255,255,255,0.9);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.bar-center-text strong {
+  font-size: 24px;
+  display: block;
+  color: #47B39C;
+}
+
+.bar-wrapper canvas {
+  max-height: 250px;
+}
+
+
+body.dark .dashboard {
+  background-color: #f9fafb;
+}
+/* ===============================
+   Dark Mode Notes
+   (your global dark-mode CSS should NOT override .dashboard)
+================================ */
+
+/*
+Example good dark-mode rules OUTSIDE this file:
+
+body.dark {
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+
+body.dark .navbar,
+body.dark .sidebar {
+  background-color: #020617;
+}
+
+Important: DO NOT add something like:
+
+body.dark .dashboard * { color: #fff; }
+body.dark canvas { filter: invert(1); }
+
+Those would break chart colors and text we fixed here.
+*/
+
+/* ===============================
+   Responsive
+================================ */
+@media (max-width: 768px) {
+  .dashboard {
+    gap: 20px;
+    padding: 10px;
+  }
+  
+  .emp-summary {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+}
