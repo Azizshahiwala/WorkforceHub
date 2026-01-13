@@ -11,20 +11,22 @@ function AttendanceDashboard() {
   const [Myevent, setMyEvents] = useState([]);
 
   // 2. Load all attendance records from your backend
+  const fetchAttendance = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/att-dashboard");
+      const attdata = await response.json();
+      const demo = attdata;
+      setAttendanceRecords(demo);
+      console.log("Request from fetchAttendance Query result:",attendanceRecords);
+    } catch (error) {
+      console.error("Error fetching attendance data:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchAttendance = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/att-dashboard");
-        const attdata = await response.json();
-        const demo = attdata;
-        setAttendanceRecords(demo);
-        console.log("Request from fetchAttendance Query result:",attendanceRecords);
-      } catch (error) {
-        console.error("Error fetching attendance data:", error);
-      }
-    };
     fetchAttendance();
   }, []);
+  
   // 1. Load Employees and set default selection
   useEffect(() => {
     const loadEmployees = async () => {
@@ -76,6 +78,7 @@ function AttendanceDashboard() {
     <div className="attendance-page">
       <div className="attendance-header">
         <h2>Attendance Dashboard</h2>
+        <button onClick={fetchAttendance}>Refresh Data</button>
 
         <select
           className="emp-select"

@@ -112,11 +112,23 @@ def login():
 
             # Update status and lastLogin
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            current_date = datetime.now().strftime("%Y-%m-%d")
             update_conn = sq.connect(CompanyUserPath)
             update_cursor = update_conn.cursor()
             update_cursor.execute("""
                 UPDATE user SET status = 'Logged In', lastLogin = ? WHERE employeeId = ?
             """, (current_time, employeeId))
+            
+            # Insert attendance record if not exists for today
+            update_cursor.execute("""
+                SELECT id FROM Attendance WHERE empId = ? AND date = ?
+            """, (employeeId, current_date))
+            existing = update_cursor.fetchone()
+            if not existing:
+                update_cursor.execute("""
+                    INSERT INTO Attendance (empId, date, status) VALUES (?, ?, 'Present')
+                """, (employeeId, current_date))
+            
             update_conn.commit()
             update_conn.close()
 
