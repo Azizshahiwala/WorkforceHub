@@ -43,11 +43,13 @@ export default function Dashboard() {
   };
   
   // Staff data  
-  const staffCount = employees.filter(e => !["Admin", "CEO"].includes(e.department)).length;
-  const staffData = {
+  const NonstaffCount = employees.filter(e => ["Admin", "CEO", "Interviewer","HR"].includes(e.department)).length;
+  const staffCount = employees.filter(e => !["Admin", "CEO", "Interviewer","HR"].includes(e.department)).length;
+  console.log("Non staff: "+NonstaffCount+", Staff: "+staffCount)
+  const PieData = {
     labels: ["Staff", "Non-Staff"],
     datasets: [{ 
-      data: [staffCount, employees.length - staffCount], 
+      data: [staffCount,NonstaffCount], 
       backgroundColor: ["#47B39C", "#EC6B56"] 
     }]
   };
@@ -120,7 +122,7 @@ const removeTask = (index) => {
       <div className="emp-summary">
         <h1 className="card-title">Staff Distribution</h1>
         <div className="pie-wrapper">
-          <Pie data={staffData} />
+          <Pie data={PieData} />
           <div className="pie-center-text">
             <span>Total</span>
             <strong>{employees.length}</strong>

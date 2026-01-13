@@ -63,7 +63,7 @@ attendance_manager = AttendanceDB(CompanyUserPath, CredentialsPath)
 def createAttendance():
     attendance_manager.create_table()
 
-@attendance.route("/att-dashboard", methods=['GET'])
+@attendance.route("/fetchdashboard", methods=['GET'])
 def get_attendance_dashboard():
     try:
         data = attendance_manager.fetch_dashboard_data()
