@@ -3,6 +3,8 @@ import React from "react";
 import "./LeaveManager.css";
 import { useState,useEffect } from "react";
 
+// Getting existing leave data from [Employee ApplyLeave.jsx] localStorage
+
 const data=JSON.parse(localStorage.getItem("leaveData")) || [];
 
 function LeaveManager() {
