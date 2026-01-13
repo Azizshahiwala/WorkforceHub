@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../pages/ApplyLeave.css";
+import "../Employees/ApplyLeave.css";
 
 function ApplyLeave() {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import "./AttendanceDashboard.css";
+import "../HR/AttendanceDashboard.css";
 import { Link } from "react-router-dom";
 
 function AttendanceDashboard() {

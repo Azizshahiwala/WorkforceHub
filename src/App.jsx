@@ -2,16 +2,16 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect , useState} from "react";
 import HRLayout from "./layout/HRLayout";
-import Dashboard from "./pages/Dashboard";
-import LeaveManager from "./pages/LeaveManager";
-import CompanyUser from "./pages/CompanyUser";
-import Payroll from "./pages/PayRoll";
-import Feedback from "./pages/FeedbackEmployees";
-import Recruitment from "./pages/Recruitment";
-import Activity from "./pages/Activity";
-import AttendanceDashboard from "./pages/AttendanceDashboard";
-import AttendanceOverview from "./pages/AttendanceOverview";
-import EmployeePerformance from "./pages/EmployeePerformance";
+import Dashboard from "./pages/HR/Dashboard";
+import LeaveManager from "./pages/HR/LeaveManager";
+import CompanyUser from "./pages/HR/CompanyUser";
+import Payroll from "./pages/HR/PayRoll";
+import Feedback from "./pages/HR/FeedbackEmployees";
+import Recruitment from "./pages/HR/Recruitment";
+import Activity from "./pages/HR/Activity";
+import AttendanceDashboard from "./pages/HR/AttendanceDashboard";
+import AttendanceOverview from "./pages/HR/AttendanceOverview";
+import EmployeePerformance from "./pages/HR/EmployeePerformance";
 import Login from "./Login/LoginPage";
 import Interviewer from "./Login/InterviewerPage";
 import InterviewStart from "./Login/InterviewStart";
@@ -19,18 +19,18 @@ import InterviewEnd from "./Login/InterviewEnd";
 
 // Admin Layout import
 import AdminLayout from "./layout/AdminLayout";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminCompanyUser from "./pages/AdminCompanyUser";
-import AdminFeedback from "./pages/AdminFeedback";
-import AdminActivity from "./pages/AdminActivity";
-import AdminEmployeePerformance from "./pages/AdminEmployeePerformance";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AdminCompanyUser from "./pages/Admin/AdminCompanyUser";
+import AdminFeedback from "./pages/Admin/AdminFeedback";
+import AdminActivity from "./pages/Admin/AdminActivity";
+import AdminEmployeePerformance from "./pages/Admin/AdminEmployeePerformance";
 
 // Employee Layout import
 import EmployeeLayout from "./layout/EmployeeLayout";
-import EmployeeDashboard from "./pages/EmployeeDashboard";
-import ApplyLeave from "./pages/ApplyLeave";
-import EmployeePersonalPerformance from "./pages/Performance";
-import Announcements from "./pages/EmployeeActivity";
+import EmployeeDashboard from "./pages/Employees/EmployeeDashboard";
+import ApplyLeave from "./pages/Employees/ApplyLeave";
+import EmployeePersonalPerformance from "./pages/Employees/Performance";
+import Announcements from "./pages/Employees/EmployeeActivity";
 
 //Entry point - Registration
 import RegisterForm from "./Login/RegisterForm";
@@ -70,8 +70,7 @@ function App() {
           <Route path="Applications" element={<Recruitment />} />
           <Route path="activity" element={<Activity />} />
           <Route path="attendance/AttendanceOverview" element={<AttendanceOverview/>} />
-          <Route path="performance" element={<EmployeePerformance />} />
-          {/*<Route path="*" element={<NotFoundPage />} />*/}
+          <Route path="EmployeePerformance" element={<EmployeePerformance />} />
         </Route>
 
 
