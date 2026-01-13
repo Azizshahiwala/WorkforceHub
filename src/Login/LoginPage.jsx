@@ -80,7 +80,7 @@ export default function AccountLogin() {
           />
 
           <button type="submit">Login</button>
-          <Link to="/RegisterForm">Click here to register if you're new here</Link>
+          <Link className="Register-Employee" to="/RegisterForm">Click here to register if you're new here</Link>
         </form>
       </div>
     </div>
