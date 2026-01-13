@@ -117,7 +117,7 @@ function AttendanceDashboard() {
 
       <div className="calendar-card">
         <FullCalendar
-          key={selectedEmp + Myevent.length}
+          key={selectedEmp}
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
           events={Myevent}
