@@ -70,7 +70,7 @@ function App() {
           <Route path="Applications" element={<Recruitment />} />
           <Route path="activity" element={<Activity />} />
           <Route path="attendance/AttendanceOverview" element={<AttendanceOverview/>} />
-          <Route path="performance" element={<EmployeePerformance />} />
+          <Route path="EmployeePerformance" element={<EmployeePerformance />} />
           {/*<Route path="*" element={<NotFoundPage />} />*/}
         </Route>
 
