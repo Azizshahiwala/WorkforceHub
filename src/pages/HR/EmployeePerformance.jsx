@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import "./EmployeePerformance.css";
+import "../HR/EmployeePerformance.css";
 
-function AdminEmployeePerformance() {
+function EmployeePerformance() {
   const [feedback, setFeedback] = useState([]);
 
   useEffect(() => {
@@ -42,4 +42,4 @@ function AdminEmployeePerformance() {
   );
 }
 
-export default AdminEmployeePerformance;
+export default EmployeePerformance;

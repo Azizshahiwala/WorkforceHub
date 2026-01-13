@@ -1,6 +1,6 @@
 import logo from "../images/logo.jpeg";
 import "../HR/Navbar.css";
-import { useState, useEffect,useRef } from "react";
+import { useState, useEffect } from "react";
 
 function Navbar({ darkMode, setDarkMode }) {
 

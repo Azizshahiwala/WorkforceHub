@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import './PayRoll.css';
+import '../HR/PayRoll.css';
 
 function PayRoll() {
   const [Window, setWindow] = useState(false);

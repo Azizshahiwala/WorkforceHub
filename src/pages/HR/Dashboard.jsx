@@ -9,7 +9,7 @@ import {
   Tooltip, 
   Legend 
 } from "chart.js";
-import "./Dashboard.css";
+import "../HR/Dashboard.css";
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 

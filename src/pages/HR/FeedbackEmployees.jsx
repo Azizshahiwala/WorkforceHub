@@ -1,41 +1,56 @@
-import React, { useState } from "react";
-import "./FeedbackEmployees.css";
-
-const data = [
-  { id: 1, name: "Marshall Nichols", employeeId: "LA-0012", department: "Developer" },
-  { id: 2, name: "Maryam Amiri", employeeId: "LA-0011", department: "Sales" },
-  { id: 3, name: "Gary Camara", employeeId: "LA-0013", department: "Marketing" },
-  { id: 4, name: "Frank Camly", employeeId: "LA-0014", department: "Testers" },
-  { id: 5, name: "Aarav Mehta", employeeId: "LA-0015", department: "Intern" },
-  { id: 6, name: "Sophia Turner", employeeId: "LA-0016", department: "Finance" },
-  { id: 7, name: "Daniel Roberts", employeeId: "LA-0017", department: "Developer" },
-  { id: 8, name: "Priya Sharma", employeeId: "LA-0018", department: "Support" },
-  { id: 9, name: "Michael Chen", employeeId: "LA-0019", department: "Marketing" },
-  { id: 10, name: "Olivia Brown", employeeId: "LA-0020", department: "Sales" }
-];
+import React, { useState, useEffect } from "react";
+import "../HR/FeedbackEmployees.css";
 
 function FeedbackEmployees() {
-  const [employees] = useState(data);
+  const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedEmp, setSelectedEmp] = useState(null);
   const [feedback, setFeedback] = useState("");
-  const [rate,setRate]=useState(0);
+  const [rate, setRate] = useState(0);
 
+  // Load employees from backend
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/getCompanyUsers"
+        );
+        const data = await response.json();
+        setEmployees(data);
+      } catch (error) {
+        console.error("Error loading employees:", error);
+      }
+    };
+
+    loadUser();
+  }, []);
+
+  // Open feedback modal
   const giveFeedback = (emp) => {
     setSelectedEmp(emp);
     setFeedback("");
+    setRate(0);
   };
 
+  // Submit feedback
   const submitFeedback = () => {
-    const data={
-    empId: selectedEmp.id,
-    name: selectedEmp.name,
-    rating: rate,
-    comment: feedback,
+    if (rate === 0 || feedback.trim() === "") {
+      alert("Please give rating and feedback");
+      return;
+    }
+
+    const data = {
+      empId: selectedEmp._id || selectedEmp.id,
+      name: selectedEmp.name,
+      rating: rate,
+      comment: feedback,
+      date: new Date().toISOString(),
     };
-    const old = JSON.parse(localStorage.getItem("feedback"))|| [];
-    const updated=[...old,data];
-    localStorage.setItem("feedback",JSON.stringify(updated));
+
+    const old = JSON.parse(localStorage.getItem("feedback")) || [];
+    const updated = [...old, data];
+    localStorage.setItem("feedback", JSON.stringify(updated));
+
     setSelectedEmp(null);
   };
 
@@ -69,16 +84,16 @@ function FeedbackEmployees() {
           </thead>
           <tbody>
             {employees
-              .filter(emp =>
-                emp.name.toLowerCase().includes(search.toLowerCase())
+              .filter((emp) =>
+                emp.name?.toLowerCase().includes(search.toLowerCase())
               )
               .map((emp, index) => (
-                <tr key={emp.id}>
+                <tr key={emp._id || emp.id|| `${emp.employeeId}-${index}`}>
                   <td>{index + 1}</td>
                   <td>
                     <div className="emp-cell">
                       <div className="emp-avatar">
-                        {emp.name.charAt(0)}
+                        {emp.name?.charAt(0)}
                       </div>
                       <span>{emp.name}</span>
                     </div>
@@ -103,17 +118,22 @@ function FeedbackEmployees() {
           <div className="modal-overlay">
             <div className="modal-box">
               <h3>HR Feedback</h3>
-              <p>For: <strong>{selectedEmp.name}</strong></p>
-                <div>
-                  {[1,2,3,4,5].map(i=>(
-                    <span
-                      key={i}
-                      className={`fa fa-star ${i <= rate ? "checked" : ""}`}
-                      onClick={()=>setRate(i)}
-                      style={{ cursor: "pointer", fontSize: 24 }}
-                    />
-                   ))}
-                </div>
+              <p>
+                For: <strong>{selectedEmp.name}</strong>
+              </p>
+
+              {/* Star Rating */}
+              <div style={{ marginBottom: "10px" }}>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <span
+                    key={`star-${i}`}
+                    className={`fa fa-star ${i <= rate ? "checked" : ""}`}
+                    onClick={() => setRate(i)}
+                    style={{ cursor: "pointer", fontSize: "24px", marginRight: "5px" }}
+                  />
+                ))}
+              </div>
+
               <textarea
                 rows="5"
                 placeholder="Write feedback here..."
@@ -128,7 +148,6 @@ function FeedbackEmployees() {
             </div>
           </div>
         )}
-
       </div>
     </div>
   );
