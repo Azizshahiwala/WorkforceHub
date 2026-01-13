@@ -9,12 +9,16 @@ import {useState,useEffect} from 'react';
 export function AttendanceOverview() {
     const [employees, setEmployees] = useState([]);
 
-    useEffect(() => {
+    const fetchEmployees = () => {
         fetch("http://localhost:5000/api/getCompanyUsers")
           .then(res => res.json())
           .then(data => setEmployees(data))
           .catch(err => console.error("data from dashboard load error:", err));
-      }, []);
+    };
+
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
 
     //Track if window is open
     const [Window,isWindowVisible] = useState(false);
@@ -62,17 +66,17 @@ export function AttendanceOverview() {
         setMyEvents(updatedEvents);
     }
     //Check for Absent and Present using ClickedDate state.
-    const PresentList = employees.filter(emp => emp.status === "Logged In" && emp.lastLogin.includes(ClickedDate));
+    const PresentList = employees.filter(emp => emp.status === "Logged In" && emp.lastLogin && emp.lastLogin.includes(ClickedDate));
     
     //backup real time date
     const RealToday = new Date();
 
-    //Check IF (Last login date is bigger than today) -> False if True
-    //Check IF (Last login includes diff clicked date) -> False if True
-    const AbsentList = employees.filter(emp => !(new Date(emp.lastLogin) > RealToday) && !(emp.lastLogin.includes(ClickedDate)));
+    // Absent: not logged in or last login not on clicked date
+    const AbsentList = employees.filter(emp => emp.status !== "Logged In" || !emp.lastLogin || !emp.lastLogin.includes(ClickedDate));
     return (<>
     <div className="attendance-page">
         <h2>Attendance Dashboard</h2>
+        <button onClick={fetchEmployees}>Refresh Data</button>
         <h4>Click on a date for more info</h4>
         {/*Check if window is true with &&*/}
         {Window && (

@@ -2,6 +2,7 @@ from flask import request as rq
 from flask import Blueprint, jsonify
 import os
 import sqlite3 as sq
+from datetime import datetime
 
 databaseDir = os.path.join(os.getcwd(), "src", "Database")
 databasePath = os.path.join(databaseDir, "Credentials.db")
@@ -108,6 +109,16 @@ def login():
                 permission = 3
             else:
                 permission = 0
+
+            # Update status and lastLogin
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            update_conn = sq.connect(CompanyUserPath)
+            update_cursor = update_conn.cursor()
+            update_cursor.execute("""
+                UPDATE user SET status = 'Logged In', lastLogin = ? WHERE employeeId = ?
+            """, (current_time, employeeId))
+            update_conn.commit()
+            update_conn.close()
 
             return jsonify({
                 "success": True,
