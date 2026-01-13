@@ -1,6 +1,6 @@
 // App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect , useState} from "react";
 import HRLayout from "./layout/HRLayout";
 import Dashboard from "./pages/Dashboard";
 import LeaveManager from "./pages/LeaveManager";
@@ -29,12 +29,15 @@ import AdminEmployeePerformance from "./pages/AdminEmployeePerformance";
 import EmployeeLayout from "./layout/EmployeeLayout";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import ApplyLeave from "./pages/ApplyLeave";
-import CheckMyPerformance from "./pages/Performance";
+import EmployeePersonalPerformance from "./pages/Performance";
 import Announcements from "./pages/EmployeeActivity";
 
+//Entry point - Registration
+import RegisterForm from "./Login/RegisterForm";
 function App() {
+
   //This hook sends API request to the python flask end point: localhost/api/init-db
-  //Which the flask uses CORS to validate the response. THEN, flask will run the database.py
+  //Which the flask uses CORS to validate the response. THEN, flask will run the database.py  
   useEffect(() => {
     const initDB = async () => {
       try {
@@ -50,13 +53,12 @@ function App() {
 
     initDB();
   }, []);
-
   return (
     <BrowserRouter>
       <Routes>
-        {/* 1. Login is now the index page */}
+        {/* 1. Login or Register is now the index page */}
+        <Route path="/RegisterForm" element={<RegisterForm />} />
         <Route path="/" element={<Login />} />
-
         {/* 2. Move HR Layout to /dashboard */}
         <Route path="/dashboard" element={<HRLayout />}>
           <Route index element={<Dashboard />} />
@@ -68,7 +70,7 @@ function App() {
           <Route path="Applications" element={<Recruitment />} />
           <Route path="activity" element={<Activity />} />
           <Route path="attendance/AttendanceOverview" element={<AttendanceOverview/>} />
-          <Route path="performance" element={<Performance />} />
+          <Route path="performance" element={<EmployeePerformance />} />
           {/*<Route path="*" element={<NotFoundPage />} />*/}
         </Route>
 
@@ -86,7 +88,7 @@ function App() {
         <Route path="/dashboardEmployee" element={<EmployeeLayout />}>
           <Route index element={<EmployeeDashboard />} />
           <Route path="applyLeave" element={<ApplyLeave />} />
-          <Route path="performanceEmployee" element={<CheckMyPerformance />} />
+          <Route path="performanceEmployee" element={<EmployeePersonalPerformance />} />
           <Route path="announcements" element={<Announcements />} />
         </Route>
 

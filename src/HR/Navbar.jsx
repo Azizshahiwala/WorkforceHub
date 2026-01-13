@@ -4,35 +4,12 @@ import { useState, useEffect,useRef } from "react";
 
 function Navbar({ darkMode, setDarkMode }) {
 
-   const [hasNotification, setHasNotification] = useState(false);
-  useEffect(() => {
-  const audio = new Audio("/notification.wav");
-
-  // show dot if already exists
-  if (localStorage.getItem("hasNewNotification") === "true") {
-    setHasNotification(true);
-  }
-
-  const handleStorageChange = (event) => {
-    if (event.key === "activities") {
-      setHasNotification(true);
-      audio.play().catch(() => {});
-    }
-  };
-
-  window.addEventListener("storage", handleStorageChange);
-
-  return () => {
-    window.removeEventListener("storage", handleStorageChange);
-  };
-
+  const [Notifs, setNotifs] = useState([]);
+  const [RedDot, SetRedDot] = useState(false);
   
-}, []);
-
+  const audio = new Audio("/notification.wav");
 const clearNotification = () => {
     new Audio("/notification.mp3").play();
-    setHasNotification(false);
-    localStorage.setItem("hasNewNotification", "false");
   };
 
   return (
@@ -46,7 +23,7 @@ const clearNotification = () => {
             className="fa-regular fa-bell"
             style={{ color: darkMode ? "#ffffff" : "#444444" }}
           ></i>
-           {hasNotification && <span className="notification-dot"></span>}
+           {RedDot && <span className="notification-dot"></span>}
         </button>
 
         <button

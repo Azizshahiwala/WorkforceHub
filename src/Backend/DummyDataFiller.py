@@ -40,8 +40,8 @@ login_data = [
     ("support1@workforce.com", "help123", "Support", "Male", "+910101010101"),
     ("support2@workforce.com", "help123", "Support", "Female", "+910101010102"),
 
-    ("intern1@workforce.com", "freelance", "Intern", "Female", "+910101010102"),
-    ("intern2@workforce.com", "freelance", "Intern", "Female", "+910101010102"),
+    ("intern1@workforce.com", "freelance", "Intern", "Female", "+910101010103"),
+    ("intern2@workforce.com", "freelance", "Intern", "Female", "+910101010104"),
 ]
 
 # ===============================

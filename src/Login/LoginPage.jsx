@@ -1,21 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
-
-import hrImg from "../images/HR.png";
-import empImg from "../images/employee.png";
-import adminImg from "../images/admin.png";
-import interviewerImg from "../images/interviewer.png";
-
-const roles = [
-  { id: "hr", label: "HR", img: hrImg },
-  { id: "employee", label: "Employees", img: empImg },
-  { id: "admin", label: "Admin", img: adminImg },
-  { id: "interviewer", label: "Interviewer", img: interviewerImg },
-];
-
+import { Link } from "react-router-dom";
 export default function AccountLogin() {
-  const [selectedRole, setSelectedRole] = useState("hr");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -33,42 +20,37 @@ export default function AccountLogin() {
       const data = await response.json();
       console.log("🔍 Login response:", data);
 
-      if (!data || !data.Permission) {
+      if (!data || data.Permission === 0) {
         alert("Invalid login response");
         return;
       }
-
-      // 🔐 STAFF (EMPLOYEE)
-      if (data.Permission === 2) {
-        // ✅ SAVE LOGGED-IN EMPLOYEE (IMPORTANT)
-        localStorage.setItem(
-          "loggedInEmployee",
-          JSON.stringify({
-            employeeId: data.employeeId || data.empId || data.id,
-            name: data.name || data.fullName || data.username,
+      const userSession = {
+            employeeId: data.employeeId,
+            auth_id: data.id,
+            name: data.name,
             email: data.email,
             role: data.role,
-          })
-        );
-
+          }
+      // staff (EMPLOYEE)
+      if (data.Permission === 2 || data.Permission === 3) {
+        localStorage.setItem("loggedInEmployee",JSON.stringify(userSession));
         navigate("/dashboardEmployee");
+      
       }
-
-      // 🔐 NON-STAFF (HR / ADMIN / CEO / INTERVIEWER)
+      // nonstaff (HR / ADMIN / CEO / INTERVIEWER)
       else if (data.Permission === 1) {
-        const role = data.role?.toLowerCase();
-
-        if (role === "hr") {
-          localStorage.setItem("loggedInHR", JSON.stringify(data));
+    
+        if (data.role.toLowerCase() === "hr") {
+          localStorage.setItem("loggedInHR", JSON.stringify(userSession));
           navigate("/dashboard");
-        } else if (role === "admin" || role === "ceo") {
-          localStorage.setItem("loggedInAdmin", JSON.stringify(data));
+        } else if (data.role.toLowerCase() === "admin" || data.role.toLowerCase() === "ceo") {
+          localStorage.setItem("loggedInAdmin", JSON.stringify(userSession));
           navigate("/dashboardAdmin");
         } else {
           navigate("/interviewer");
         }
       } else {
-        alert("Login failed");
+        alert(JSON.stringify(userSession));
       }
     } catch (error) {
       console.error("❌ Login error:", error);
@@ -79,23 +61,7 @@ export default function AccountLogin() {
   return (
     <div className="login-wrapper">
       <div className="login-card">
-        <h2 className="title">Choose Account Type</h2>
-
-        <div className="roles">
-          {roles.map((role) => (
-            <div
-              key={role.id}
-              className={`role-card ${
-                selectedRole === role.id ? "active" : "inactive"
-              }`}
-              onClick={() => setSelectedRole(role.id)}
-            >
-              <img src={role.img} alt={role.label} className="role-img" />
-              <p>{role.label}</p>
-            </div>
-          ))}
-        </div>
-
+        <h2 className="title">Login with your account</h2>
         <form onSubmit={handleSubmit} className="form">
           <input
             type="email"
@@ -114,6 +80,7 @@ export default function AccountLogin() {
           />
 
           <button type="submit">Login</button>
+          <Link to="/RegisterForm">Click here to register if you're new here</Link>
         </form>
       </div>
     </div>

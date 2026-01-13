@@ -21,8 +21,7 @@ function EmployeeDashboard() {
 
   return (
     <div>
-      <h1>Welcome, {employee.role}!</h1>
-      <p>This is {employee.name}'s employee dashboard.</p>
+      <h1>Welcome, {employee.name}!</h1>
     </div>
   );
 }

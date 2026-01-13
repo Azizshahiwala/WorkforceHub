@@ -8,11 +8,21 @@ function ApplyLeave() {
   const selectedEmp = JSON.parse(
     localStorage.getItem("loggedInEmployee")
   );
-
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [reason, setReason] = useState("");
+  const [fetchedLeave,updateFetchedLeaves] = useState([])
 
+  const leaveData = {
+      empId: selectedEmp.employeeId,
+      name: selectedEmp.name,
+      department: selectedEmp.role,
+      startDate,
+      endDate,
+      reason,
+      status: 'Not reviewed',
+      dateSubmitted : Date.now()
+    };
   // 🔐 Protect route
   useEffect(() => {
     if (!selectedEmp) {
@@ -21,41 +31,55 @@ function ApplyLeave() {
     }
   }, [selectedEmp, navigate]);
 
-  const handleLeave = () => {
+  const handleLeave = async (e) => {
+
+    e.preventDefault()    
+
     if (!selectedEmp) {
       alert("Please login again");
       return;
     }
 
     if (!startDate || !endDate || !reason) {
-      alert("Please fill all fields");
+      alert("Please fill all fields.");
       return;
     }
+    
+    try{
+      
+      const response = await fetch(`http://localhost:5000/api/postLeaveRq/${selectedEmp.employeeId}/${selectedEmp.auth_id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(leaveData),
+      });
 
-    const leaveData = {
-      id: Date.now(),
-      empId: selectedEmp.employeeId,
-      name: selectedEmp.name,
-      startDate,
-      endDate,
-      reason,
-      status: "Pending",
-    };
+      const data = await response.json();
+      if(data.status === "reason not provided"){
+        alert("Reason is not given. Cannot approve. Please reject this leave.");
+        return;
+      }
+      if(data.status === "datetime compare error"){
+        alert("start and end date syntax is invalid. Please reject this leave.");
+        return;
+      }
+      if (data.status === "success") {
+        alert("Leave applied successfully");
+        // Refresh local list after successful post
+        
+        updateFetchedLeaves(prev => [...prev, { ...leaveData, leaveData}]);
+        
 
-    const existingLeaves =
-      JSON.parse(localStorage.getItem("leaveData")) || [];
+        alert("Leave applied successfully");
 
-    existingLeaves.push(leaveData);
-    localStorage.setItem(
-      "leaveData",
-      JSON.stringify(existingLeaves)
-    );
-
-    alert("Leave applied successfully");
-
-    setStartDate("");
-    setEndDate("");
-    setReason("");
+        setStartDate("");
+        setEndDate("");
+        setReason("");
+      }
+    }
+    catch(err){
+      console.error("Submission error:", err);
+    }
+    
   };
 
   const handleCancel = () => {
@@ -66,12 +90,12 @@ function ApplyLeave() {
 
   return (
     <div className="apply-leave-page">
-      <form className="apply-leave-card">
+      <form className="apply-leave-card" onSubmit={handleLeave}>
         <h2>Apply Leave</h2>
 
         {selectedEmp && (
             <p className="emp-info">
-              Logged in as <b>{selectedEmp.role}</b> (
+              Logged in as <b>{selectedEmp.name}</b> (
               {selectedEmp.employeeId})
             </p>
         )}
@@ -100,10 +124,8 @@ function ApplyLeave() {
 
         <div className="apply-leave-actions">
           <button
-            type="button"
-            className="apply-btn"
-            onClick={handleLeave}
-          >
+            type="submit"
+            className="apply-btn">
             Apply
           </button>
           <button
