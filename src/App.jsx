@@ -29,7 +29,7 @@ import AdminEmployeePerformance from "./pages/Admin/AdminEmployeePerformance";
 import EmployeeLayout from "./layout/EmployeeLayout";
 import EmployeeDashboard from "./pages/Employees/EmployeeDashboard";
 import ApplyLeave from "./pages/Employees/ApplyLeave";
-import EmployeePersonalPerformance from "./pages/Employees/Performance";
+import EmployeePersonalPerformance from "./pages/Employees/MyPerformance";
 import Announcements from "./pages/Employees/EmployeeActivity";
 
 //Entry point - Registration
