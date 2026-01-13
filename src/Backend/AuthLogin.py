@@ -111,7 +111,7 @@ def login():
                 permission = 0
 
             # Update status and lastLogin
-            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M %p")
             current_date = datetime.now().strftime("%Y-%m-%d")
             update_conn = sq.connect(CompanyUserPath)
             update_cursor = update_conn.cursor()
