@@ -49,10 +49,10 @@ class AttendanceDB:
         """
         cursor.execute(query)
         data = cursor.fetchall()
-        #print("Attendance.py: ",data)
+        print("Attendance.py: ",data[0:5])
         if not data:
             conn.close()
-            return jsonify({"Error":"Table view error. No data found."}), 404
+            return [], 404
         
         conn.close()
         return data
@@ -63,17 +63,19 @@ attendance_manager = AttendanceDB(CompanyUserPath, CredentialsPath)
 def createAttendance():
     attendance_manager.create_table()
 
-@attendance.route("/att-dashboard", methods=['GET'])
+@attendance.route("/fetchdashboard", methods=['GET'])
 def get_attendance_dashboard():
     try:
         data = attendance_manager.fetch_dashboard_data()
-        result = [
-            {
+        result = []
+
+        for r in data:
+            result.append({
                 "lastLogin": r[0], "empId": r[1], "name": r[2], 
                 "date": r[3], "role": r[4], "status": r[5]
-            } for r in data
-        ]
-        print("Sample data from attendance.py: ",result)
+            })
+        
+        print("Sample data from attendance.py: ",result[0])
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500

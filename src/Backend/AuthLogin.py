@@ -2,6 +2,7 @@ from flask import request as rq
 from flask import Blueprint, jsonify
 import os
 import sqlite3 as sq
+from datetime import datetime
 
 databaseDir = os.path.join(os.getcwd(), "src", "Database")
 databasePath = os.path.join(databaseDir, "Credentials.db")
@@ -78,7 +79,6 @@ def login():
         data = rq.get_json()
         email = data.get("email")
         password = data.get("password")
-        
         print(f"🔍 Login attempt: {email}")
         
         conn = sq.connect(databasePath)
@@ -109,6 +109,7 @@ def login():
             else:
                 permission = 0
 
+            updateDate(id, employeeId)
             return jsonify({
                 "success": True,
                 "Permission": permission,
@@ -117,7 +118,8 @@ def login():
                 "id":id,
                 "employeeId": employeeId,
                 "email": email,
-                "message": "Login successful"
+                "message": "Login successful",
+                "loggedInAt": datetime.now().strftime("%y-%m-%d %I:%M:%S %p")
             }), 200
         else:
             print(f"❌ No user found for {email}")
@@ -126,3 +128,19 @@ def login():
     except Exception as e:
         print(f"❌ Error: {e}")
         return jsonify({"success": False,"message": str(e)}), 500
+    
+
+def updateDate(id, employeeId):
+
+    conn = sq.connect(CompanyUserPath)
+    conn.execute("PRAGMA foreign_keys = ON;")
+    cursor = conn.cursor()
+
+    loggedInAtQuery = """
+    update "user" set lastLogin = ? where id = ? and employeeId = ?;
+"""
+    cursor.execute(loggedInAtQuery,(datetime.now().strftime("%Y-%m-%d %I:%M %p"),id,employeeId,))
+    conn.commit()
+    conn.close()
+    
+#

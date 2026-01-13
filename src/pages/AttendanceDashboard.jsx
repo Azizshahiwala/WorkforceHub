@@ -6,29 +6,36 @@ import { Link } from "react-router-dom";
 
 function AttendanceDashboard() {
   const [employees, setEmployees] = useState([]);
-  const [attendanceRecords, setAttendanceRecords] = useState([]);
+  const [attRecord, setAttendanceRecords] = useState([]);
   const [selectedEmp, setSelectedEmp] = useState("");
   const [Myevent, setMyEvents] = useState([]);
-
-  // 2. Load all attendance records from your backend
+  const [loading, setloading] = useState(true);
+  // 2. Fetch all attendance records from your backend
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/att-dashboard");
+        
+        const response = await fetch("http://localhost:5000/api/fetchdashboard");
         const attdata = await response.json();
         const demo = attdata;
         setAttendanceRecords(demo);
-        console.log("Request from fetchAttendance Query result:",attendanceRecords);
+        setloading(false);
+        console.log("Step 1 fetchAttendance done")
       } catch (error) {
+        setloading(false);
         console.error("Error fetching attendance data:", error);
       }
     };
     fetchAttendance();
   }, []);
+
   // 1. Load Employees and set default selection
   useEffect(() => {
     const loadEmployees = async () => {
       try {
+
+        if(attRecord.length === 0) return;
+        
         const response = await fetch("http://localhost:5000/api/getCompanyUsers");
         const empdata = await response.json();
 
@@ -36,43 +43,51 @@ function AttendanceDashboard() {
           setEmployees(empdata);
           console.log("Request from loadEmployees Query result:", empdata);
           setSelectedEmp(empdata[0].employeeId); 
+          console.log("Step 2 loademployees done.")
         }
       } catch (error) {
         console.error("Error fetching employees:", error);
       }
+      finally{
+        setloading(false);
+      }
     };
     loadEmployees();
-  }, []);
+  }, [attRecord]);
 
-  
+  useEffect(() => {
+  console.log("Attendance state updated:", attRecord);
+  }, [attRecord]);
+
   //Map and Display attendance events for the selected employee
   useEffect(() => {
-    if (!selectedEmp || attendanceRecords.length === 0) {
-    return;
-    }
+  if (!selectedEmp || attRecord.length === 0) return;
 
-    const filteredRecords = attendanceRecords.filter(
-      (rec) => rec.empId === selectedEmp
-    );
-
-    const mappedEvents = filteredRecords.map((item) => ({
-      id: `att-${item.date}`,
+  const mappedEvents = attRecord
+    .filter((rec) => rec.empId === selectedEmp)
+    .map((item) => ({
+      id: `att-${item.empId}-${item.date}`,
       title: item.status,
-      date: item.date,
-      color: 
-        item.status === "Present" || item.status === "Logged In" ? "green" : 
-        item.status === "Late" ? "orange" : 
-        item.status === "Absent" ? "red" : "blue",
+      date: item.date, // YYYY-MM-DD (perfect)
+      color:
+        item.status === "Present" || item.status === "Logged In"
+          ? "green"
+          : item.status === "Late"
+          ? "orange"
+          : item.status === "Absent"? "red": "blue",
+          
     }));
 
-    // Directly set events as we no longer need to merge with holidays
-    setMyEvents(mappedEvents);
-  }, [selectedEmp, attendanceRecords]);
+  setMyEvents(mappedEvents);
+  console.log("Step 3 mapping and displaying done.")
+}, [selectedEmp, attRecord]);
 
-
-  
-
+  // if(loading) 
+  //   { 
+  //    return <p>Please wait while we fetch attendance records...</p>; 
+  //   }
   return (
+    
     <div className="attendance-page">
       <div className="attendance-header">
         <h2>Attendance Dashboard</h2>
@@ -102,6 +117,7 @@ function AttendanceDashboard() {
 
       <div className="calendar-card">
         <FullCalendar
+          key={selectedEmp + Myevent.length}
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
           events={Myevent}

@@ -52,7 +52,7 @@ class UserDB:
     """
         cursor.execute(query)
         data = cursor.fetchall()
-        print("cred_db.login:", data[0])
+        #print("cred_db.login:", data[0])
         conn.close()
         return data
 
@@ -74,8 +74,8 @@ def get_company_users():
                 "gender": r[6], "phoneNumber": r[7],"BaseSalary": r[8]
             } for r in data
         ]
-        print("RAW USERS ROW:", result[0])
-        print("ROW LENGTH:", len(result[0]))
+        #print("RAW USERS ROW:", result[0])
+        #print("ROW LENGTH:", len(result[0]))
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

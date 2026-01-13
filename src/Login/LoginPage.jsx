@@ -30,7 +30,9 @@ export default function AccountLogin() {
             name: data.name,
             email: data.email,
             role: data.role,
+            loggedInAt: data.loggedInAt
           }
+
       // staff (EMPLOYEE)
       if (data.Permission === 2 || data.Permission === 3) {
         localStorage.setItem("loggedInEmployee",JSON.stringify(userSession));
