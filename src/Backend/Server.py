@@ -15,7 +15,9 @@ from Recruitment import recruitment,createRecruitment
 from LeaveHandler import leaveManager,createLeave
 from Notification import notification,createNotifs
 from FeedbackPerformance import feedbackandperformance,FeedbackPerformanceSetup
+from Activity import activity,createActivity
 from DummyDataFiller import populate_databases
+
 #render_template -> imports function which is used to load html
 #redirect -> used to redirect browser to a path
 #session -> processing of Sessions
@@ -37,6 +39,8 @@ app.register_blueprint(recruitment)
 app.register_blueprint(leaveManager)
 app.register_blueprint(notification)
 app.register_blueprint(feedbackandperformance)
+app.register_blueprint(activity)
+
 # Enables communication between your React app and this Flask server
 CORS(app)  
 
@@ -70,10 +74,13 @@ def createDatabases():
         #Creates two state tables.
         createRecruitment()
         
-        #FeedbackPerformance.db
+        #GlobalInfo.db
 
         #Create Feedback and Performance tables
         FeedbackPerformanceSetup()
+
+        #Create table for activity (Admin,HR -> employees)
+        createActivity()
 
         #Dummy data filler
         #populate_databases()

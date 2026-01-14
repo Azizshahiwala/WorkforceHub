@@ -12,16 +12,16 @@ feedbackandperformance = Blueprint('feedbackPerformance', __name__, url_prefix='
 databaseDir = os.path.join(os.getcwd(), "src", "Database")
 CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
 CredentialsPath = os.path.join(databaseDir, "Credentials.db")
-PerformancePath = os.path.join(databaseDir, "FeedbackPerformance.db")
+GlobalInfoPath = os.path.join(databaseDir, "GlobalInfo.db")
 
 class FeedbackPerformance:
-    def __init__(self, compUser_path, cred_path, perf_path):
+    def __init__(self, compUser_path, cred_path, globalInfo_path):
         self.compUser_path = compUser_path
         self.cred_path = cred_path
-        self.perf_path = perf_path
+        self.globalInfo_path = globalInfo_path
 
-    def _conn_perf(self):
-        conn = sq.connect(self.perf_path)
+    def _conn_globalInfo(self):
+        conn = sq.connect(self.globalInfo_path)
         cursor = conn.cursor()
 
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -30,7 +30,7 @@ class FeedbackPerformance:
         return conn, cursor
 
     def createfeedbackPerformance(self):
-        conn,cursor = self._conn_perf()
+        conn,cursor = self._conn_globalInfo()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Performance(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,7 +56,7 @@ class FeedbackPerformance:
         conn.commit()
         conn.close()
         
-FP_Handler = FeedbackPerformance(CompanyUserPath,CredentialsPath,PerformancePath)
+FP_Handler = FeedbackPerformance(CompanyUserPath,CredentialsPath,GlobalInfoPath)
 
 def FeedbackPerformanceSetup():
     FP_Handler.createfeedbackPerformance()
