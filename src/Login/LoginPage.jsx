@@ -51,6 +51,7 @@ export default function AccountLogin() {
         }
       } else {
         alert(JSON.stringify(userSession));
+        return;
       }
     } catch (error) {
       console.error("❌ Login error:", error);

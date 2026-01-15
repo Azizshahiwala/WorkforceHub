@@ -32,7 +32,8 @@ class Activity:
         CREATE TABLE IF NOT EXISTS Activity(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         activity TEXT NOT NULL,
-        givenBy TEXT NOT NULL,
+        givenById TEXT NOT NULL,
+        givenByRole TEXT NOT NULL,
         dateCreated TEXT NOT NULL
         );
         ''')
@@ -44,12 +45,15 @@ activityManager = Activity(CompanyUserPath,CredentialsPath,GlobalInfoPath)
 def createActivity():
     activityManager.createActivityTables()
     
-@activity.route()
+@activity.route("/fetchAnnouncements",methods=["GET"])
 def fetchAnnouncements():
     pass 
 
-@activity.route()
-def insertAccouncement():
-    pass
+@activity.route("/insertAnnouncement/<string:givenById>",methods=["POST"])
+def insertAccouncement(givenById):
+
+    if int(givenById) == None:
+        return jsonify([])
+    
 
 

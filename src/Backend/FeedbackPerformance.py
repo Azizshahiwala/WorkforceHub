@@ -71,7 +71,7 @@ def submitFeedBack(employeeId):
     givenBy = data.get("givenBy")
     createdAt = datetime.now()
     print(name,rating,comment,givenBy,createdAt,givenBy)
-    conn,cursor = FP_Handler._conn_perf()
+    conn,cursor = FP_Handler._conn_globalInfo()
 
     cursor.execute("""
     insert into Feedback(empId, name, rating, comment, givenBy, createdAt) values(?,?,?,?,?,?);
@@ -115,7 +115,7 @@ def fetch_reviewers():
 @feedbackandperformance.route('/myPeformancesAndFeedbacks/<string:employeeID>', methods=['GET'])
 def myPeformancesandFeedbacks(employeeID):
     try:
-        conn,cursor = FP_Handler._conn_perf()
+        conn,cursor = FP_Handler._conn_globalInfo()
         cursor.execute("""select id,empId,name,rating,comment,givenBy,
                 createdAt from Feedback where empId = ? ORDER BY createdAt DESC;""",(employeeID,))
         
@@ -135,6 +135,7 @@ def myPeformancesandFeedbacks(employeeID):
                 "givenBy": field[5],
                 "createdAt": field[6]
             })
+            print(result)
         conn.close()
         return jsonify(result)
     except Exception as e:

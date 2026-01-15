@@ -14,7 +14,7 @@ useEffect(() => {
 
 useEffect(() => {
   if (!loggedInEmployee?.employeeId) return;
-
+  console.log(loggedInEmployee);
   fetch(`http://localhost:5000/api/myPeformancesAndFeedbacks/${loggedInEmployee.employeeId}`)
     .then(res => res.json())
     .then(data => {
@@ -45,7 +45,7 @@ useEffect(() => {
             <p><strong>Rating:</strong> {feed.rating} ⭐</p>
             <p><strong>Comment:</strong> {feed.comment}</p>
             <p className="date">
-              Updated on: {feed.lastUpdated}
+              Updated on: {feed.createdAt}
             </p>
           </div>
         ))
