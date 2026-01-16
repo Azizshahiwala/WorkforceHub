@@ -1,18 +1,17 @@
 import React, { useState,useEffect } from "react";
-import "../HR/Activity.css";
+import "../../styles/HR/Activity.css";
 import { Navigate } from "react-router-dom";
 
 function Activity() {
   const [activities, setActivities] = useState([]);
-  const [newTask, setNewTask] = useState("");
+  const [message, setNewTask] = useState("");
   const [showModal, setShowModal] = useState(false);
   const AdminSession = JSON.parse(localStorage.getItem("loggedInAdmin")); 
   const HRSession = JSON.parse(localStorage.getItem("loggedInHR"));
 
-  if(!AdminSession || !HRSession){
-    alert("Error: Please login to continue.");
-    Navigate("/");
-  } 
+  if (!AdminSession && !HRSession) {
+  return <Navigate to="/" />;
+}
 
   //This fetches announcements from database, instead of localstorage.
   useEffect(() => {
@@ -30,25 +29,13 @@ function Activity() {
       loadActivities();
     }, []);
 
-  let newActivity = {};
   const givenById = AdminSession?.employeeId ?? HRSession?.employeeId;
-  const addNewTask = () => {
-    if (!newTask.trim()) return;
-
-     newActivity = {
-      dateCreated,
-      message : newTask,
-      givenById,
-      givenByRole
-    };
-
+  const addNewTask = (newActivity) => {
     setActivities(prev => {
       const updated = [newActivity, ...prev];
-      
-      // trigger notification flag
-      localStorage.setItem("hasNewNotification", "true");
       return updated;
     });
+
     setNewTask("");
     setShowModal(false);
   };
@@ -56,11 +43,29 @@ function Activity() {
   const sendActivity = async (e) => {
     try{
       e.preventDefault();
+
+      if (!message.trim()) return;
+
       const response = await fetch(`http://localhost:5000/api/insertAnnouncement/${givenById}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newActivity),
+        body: JSON.stringify(message),
       });
+
+      if(response.ok){
+        const data = await response.json(); 
+        const dataCreated = data.dateCreated;
+        const givenById = data.givenById;
+        const givenByRole = data.givenByRole;
+
+        const newActivity = {
+        dateCreated : dataCreated,
+        message : message,
+        givenById : givenById,
+        givenByRole : givenByRole
+      };
+      addNewTask(newActivity);
+      }
     }
     catch(error){
       console.error("❌ error:", error);
@@ -84,8 +89,8 @@ function Activity() {
               <div className="activity-line"></div>
             )}
             <div className="activity-content">
-              <span className="activity-time">{item.time}</span>
-              <p className="activity-text">{item.text}</p>
+              <span className="activity-time">{item.dateCreated}</span>
+              <p className="activity-text">{item.message}</p>
             </div>
           </div>
         ))}
@@ -100,7 +105,7 @@ function Activity() {
             <textarea
               className="modal-textarea"
               placeholder="Enter activity..."
-              value={newTask}
+              value={message}
               onChange={(e) => setNewTask(e.target.value)}
             />
             <div className="modal-actions">
@@ -110,7 +115,7 @@ function Activity() {
               >
                 Cancel
               </button>
-              <button className="modal-add" onClick={addNewTask}>
+              <button type="submit" className="modal-add">
                 Add
               </button>
             </div>

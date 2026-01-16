@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./FeedbackEmployees.css";
-
+import "../../styles/HR/FeedbackEmployees.css";
 function FeedbackEmployees() {
   const [reviewers, setReviewers] = useState([]);
   const [employees, setEmployees] = useState([]);

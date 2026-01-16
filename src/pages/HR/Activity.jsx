@@ -1,5 +1,5 @@
 import React, { useState,useEffect} from "react";
-import "../HR/Activity.css";
+import "../../styles/HR/Activity.css";
 
 function Activity() {
   const [activities, setActivities] = useState([]);

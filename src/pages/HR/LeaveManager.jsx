@@ -1,6 +1,6 @@
 // src/pages/LeaveManager.jsx
 import React from "react";
-import "../HR/LeaveManager.css";
+import "../../styles/HR/LeaveManager.css";
 import { useState,useEffect } from "react";
 
 

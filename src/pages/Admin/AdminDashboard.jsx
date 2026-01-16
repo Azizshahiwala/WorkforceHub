@@ -9,8 +9,7 @@ import {
   Tooltip, 
   Legend 
 } from "chart.js";
-import "./AdminDashboard.css";
-
+import "../../styles/Admin/AdminDashboard.css";
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function AdminDashboard() {

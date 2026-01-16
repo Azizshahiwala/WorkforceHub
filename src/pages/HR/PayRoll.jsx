@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import '../HR/PayRoll.css';
-
+import "../../styles/HR/Payroll.css";
 function PayRoll() {
   const [Window, setWindow] = useState(false);
   const [salBreakup, setSalBreakup] = useState(null);

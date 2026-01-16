@@ -39,6 +39,14 @@ class Activity:
         ''')
         conn.commit()
         conn.close()
+    def insertAnnouncement(self,message,givenById,givenByRole,dateCreated):
+        conn,cursor = self._conn_globalInfo()
+
+        insertQuery = """insert into Activity(activity,givenById,givenByRole,dateCreated) values(?,?,?,?);"""
+        cursor.execute(insertQuery,(message,givenById,givenByRole,dateCreated,))
+        conn.commit()
+        conn.close()
+        return None
     
 activityManager = Activity(CompanyUserPath,CredentialsPath,GlobalInfoPath)
 
@@ -47,13 +55,56 @@ def createActivity():
     
 @activity.route("/fetchAnnouncements",methods=["GET"])
 def fetchAnnouncements():
-    pass 
+    conn, cursor = activityManager._conn_globalInfo()
+    cursor.execute("""
+        SELECT activity, givenById, givenByRole, dateCreated
+        FROM Activity
+        ORDER BY id DESC
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+
+    return jsonify([
+        {
+            "message": r[0],
+            "givenById": r[1],
+            "givenByRole": r[2],
+            "dateCreated": r[3]
+        } for r in rows
+    ])
 
 @activity.route("/insertAnnouncement/<string:givenById>",methods=["POST"])
 def insertAccouncement(givenById):
 
-    if int(givenById) == None:
+    if givenById == None:
         return jsonify([])
+    
+    dataReq = rq.get_json()
+    message = dataReq
+
+    conn,curosr = activityManager._conn_globalInfo()
+    
+    CurrentTimeStamp = datetime.now().strftime("%y-%m-%d %I:%M:%S %p")
+    CurrentRoleQuery = """select department from comp_db.user where employeeId = ?;"""
+    
+    curosr.execute(CurrentRoleQuery,(givenById,))
+
+    fetchedData = curosr.fetchone()
+
+    if not fetchedData:
+        return jsonify({"error": "Invalid user"}), 400
+
+    givenByRole = fetchedData[0]
+    
+    conn.close()
+    activityManager.insertAnnouncement(message,givenById,givenByRole,CurrentTimeStamp)
+    
+    return jsonify({
+    "dateCreated": CurrentTimeStamp,
+    "message": message,
+    "givenById": givenById,
+    "givenByRole": givenByRole
+}), 200  
     
 
 

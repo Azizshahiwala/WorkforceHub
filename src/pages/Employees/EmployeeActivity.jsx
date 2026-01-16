@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
-import "../HR/Activity.css";
-
+import "../../styles/HR/Activity.css";
 function Activity() {
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
-  const stored = JSON.parse(localStorage.getItem("activities")) || [];
-  setActivities(stored);
-
-  const handleStorageChange = (event) => {
-    if (event.key === "activities") {
-      setActivities(JSON.parse(event.newValue));
-    }
-  };
-
-  window.addEventListener("storage", handleStorageChange);
-  return () => window.removeEventListener("storage", handleStorageChange);
-}, []);
-
+        const loadActivities = async () => {
+          try {
+            const response = await fetch(
+              "http://localhost:5000/api/fetchAnnouncements");
+            const data = await response.json();
+            setActivities(data)
+          } catch (error) {
+            console.error("Error loading announcements:", error);
+          }
+        };
+    
+        loadActivities();
+      }, []);
 
   return (
     <div className="activity-page">
@@ -33,8 +32,8 @@ function Activity() {
               <div className="activity-line"></div>
             )}
             <div className="activity-content">
-              <span className="activity-time">{item.time}</span>
-              <p className="activity-text">{item.text}</p>
+              <span className="activity-time">{item.dateCreated}</span>
+              <p className="activity-text">{item.message}</p>
             </div>
           </div>
         ))}

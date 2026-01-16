@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../HR/EmployeePerformance.css";
+import "../../styles/HR/EmployeePerformance.css";
 //THIS file is for individual Employee ONLY
 
 function EmployeePersonalPerformance() {

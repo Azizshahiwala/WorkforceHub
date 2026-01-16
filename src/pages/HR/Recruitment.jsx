@@ -1,6 +1,5 @@
 import React, { useState,useEffect } from "react";
-import "../HR/Recruitment.css";
-
+import "../../styles/HR/Recruitment.css";
 function Recruitment() {
 
 const [applications, setApplications] = useState([]);
