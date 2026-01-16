@@ -85,7 +85,7 @@ class Payroll:
         """
         cursor.execute(fetchEmpTotalDay,(empId,MonthYear+"%"))
         TotalDays = cursor.fetchone()[0]
-        print("Payroll.py TotalDays fetch:",TotalDays)
+        #print("Payroll.py TotalDays fetch:",TotalDays)
         
         taxamount = 0.0
         ProvidentFund = 0.0

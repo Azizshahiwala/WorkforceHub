@@ -44,7 +44,7 @@ class Notification:
             ''')
             conn.commit()
             conn.close()
-            print("✅ Database Notifs ready")
+            #print("✅ Database Notifs ready")
             return True
         except Exception as e:
             print(f"❌ DB Error: {e}")

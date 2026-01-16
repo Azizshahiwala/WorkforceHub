@@ -85,7 +85,7 @@ class LeaveHandler:
             cursor.execute(query,(Leaveid,))
             res = cursor.fetchone()
             conn.close()    
-            print(res)
+            #print(res)
             return res
         except Exception as e:
             print("Error createLeaverq",e)

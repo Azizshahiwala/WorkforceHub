@@ -90,7 +90,7 @@ def login():
         email = data.get("email")
         password = data.get("password")
         
-        print(f"🔍 Login attempt: {email}")
+        #print(f"🔍 Login attempt: {email}")
         
         conn = sq.connect(databasePath)
         cursor = conn.cursor()
@@ -153,7 +153,7 @@ def login():
                 "message": "Login successful"
             }), 200
         else:
-            print(f"❌ No user found for {email}")
+            #print(f"❌ No user found for {email}")
             return jsonify({"success": False,"message": "Invalid credentials"}), 200
             
     except Exception as e:
@@ -173,7 +173,7 @@ def deleteAccount(auth_id):
         ); """
         cursor.execute(delQuery,(auth_id,))
         data = cursor.fetchone()
-        print(f"Deleted {auth_id}:",data)
+        #print(f"Deleted {auth_id}:",data)
         conn.commit()
         conn.close()
         return jsonify({"status":"success"}),200

@@ -70,7 +70,7 @@ def submitFeedBack(employeeId):
     comment = data.get("comment")
     givenBy = data.get("givenBy")
     createdAt = datetime.now()
-    print(name,rating,comment,givenBy,createdAt,givenBy)
+    #print(name,rating,comment,givenBy,createdAt,givenBy)
     conn,cursor = FP_Handler._conn_globalInfo()
 
     cursor.execute("""
@@ -79,7 +79,7 @@ def submitFeedBack(employeeId):
     
     conn.commit()
     conn.close()
-    print(f"Feedback given to {employeeId}.")
+    #print(f"Feedback given to {employeeId}.")
     return jsonify({"status":"success"}),200
 
 @feedbackandperformance.route('/fetchReviewers', methods=['GET'])
@@ -108,7 +108,7 @@ def fetch_reviewers():
         ]), 200
 
     except Exception as e:
-        print("fetchReviewers ERROR:", e)
+        #print("fetchReviewers ERROR:", e)
         return jsonify({"error": str(e)}), 500
     
 #Fetch emp performance for individual employees.    
@@ -135,11 +135,10 @@ def myPeformancesandFeedbacks(employeeID):
                 "givenBy": field[5],
                 "createdAt": field[6]
             })
-            print(result)
+            #print(result)
         conn.close()
         return jsonify(result)
     except Exception as e:
-        traceback.print_exc()
         print(e)
         return jsonify({"status":"error"})
         

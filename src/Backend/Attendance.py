@@ -73,7 +73,7 @@ def get_attendance_dashboard():
                 "date": r[3], "role": r[4], "status": r[5]
             } for r in data
         ]
-        print("Sample data from attendance.py: ",result)
+        #print("Sample data from attendance.py: ",result)
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
