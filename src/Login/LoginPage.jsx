@@ -30,27 +30,25 @@ export default function AccountLogin() {
             name: data.name,
             email: data.email,
             role: data.role,
+            permission: data.Permission
           }
-      // staff (EMPLOYEE)
-      if (data.Permission === 2 || data.Permission === 3) {
-        localStorage.setItem("loggedInEmployee",JSON.stringify(userSession));
-        navigate("/dashboardEmployee");
       
+          localStorage.setItem("MySession",JSON.stringify(userSession));
+      // staff (EMPLOYEE)
+      if (data.Permission === 2 || data.Permission === 3) {  
+        navigate("/dashboardEmployee");
       }
       // nonstaff (HR / ADMIN / CEO / INTERVIEWER)
       else if (data.Permission === 1) {
-    
         if (data.role.toLowerCase() === "hr") {
-          localStorage.setItem("loggedInHR", JSON.stringify(userSession));
           navigate("/dashboard");
         } else if (data.role.toLowerCase() === "admin" || data.role.toLowerCase() === "ceo") {
-          localStorage.setItem("loggedInAdmin", JSON.stringify(userSession));
           navigate("/dashboardAdmin");
         } else {
           navigate("/interviewer");
         }
       } else {
-        alert(JSON.stringify(userSession));
+        alert("Invalid role.");
         return;
       }
     } catch (error) {

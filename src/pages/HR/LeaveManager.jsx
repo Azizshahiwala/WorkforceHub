@@ -2,15 +2,17 @@
 import React from "react";
 import "../../styles/HR/LeaveManager.css";
 import { useState,useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 
 // Getting existing leave data from [Employee ApplyLeave.jsx] localStorage
 
 const data=JSON.parse(localStorage.getItem("leaveData")) || [];
 
 function LeaveManager() {
+  const navigate = useNavigate();
   const [leaveRequests, setLeaveRequests] = useState([]);
 
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
   //This use effects fetches all emp rq leaves
   useEffect(() => {
         fetch(`http://localhost:5000/api/fetchAllRq`)

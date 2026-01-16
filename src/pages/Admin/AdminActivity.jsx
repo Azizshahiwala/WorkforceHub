@@ -1,18 +1,15 @@
 import React, { useState,useEffect } from "react";
 import "../../styles/HR/Activity.css";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Activity() {
   const [activities, setActivities] = useState([]);
   const [message, setNewTask] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const AdminSession = JSON.parse(localStorage.getItem("loggedInAdmin")); 
-  const HRSession = JSON.parse(localStorage.getItem("loggedInHR"));
-
-  if (!AdminSession && !HRSession) {
-  return <Navigate to="/" />;
-}
-
+  
+  const navigate = useNavigate();
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+  
   //This fetches announcements from database, instead of localstorage.
   useEffect(() => {
       const loadActivities = async () => {
@@ -29,7 +26,6 @@ function Activity() {
       loadActivities();
     }, []);
 
-  const givenById = AdminSession?.employeeId ?? HRSession?.employeeId;
   const addNewTask = (newActivity) => {
     setActivities(prev => {
       const updated = [newActivity, ...prev];

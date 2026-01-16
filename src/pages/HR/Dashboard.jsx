@@ -1,5 +1,6 @@
 import {React,useEffect,useState} from 'react';
 import { Pie, Bar } from "react-chartjs-2";
+import { useNavigate } from 'react-router-dom';
 import { 
   Chart as ChartJS, 
   ArcElement, 
@@ -14,6 +15,10 @@ import "../../styles/HR/Dashboard.css";
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Dashboard() {
+
+  const navigate = useNavigate();
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+  
   const [employees,setEmployees] = useState([])
   
   useEffect(() => {
@@ -45,7 +50,7 @@ export default function Dashboard() {
   // Staff data  
   const NonstaffCount = employees.filter(e => ["Admin", "CEO", "Interviewer","HR"].includes(e.department)).length;
   const staffCount = employees.filter(e => !["Admin", "CEO", "Interviewer","HR"].includes(e.department)).length;
-  console.log("Non staff: "+NonstaffCount+", Staff: "+staffCount)
+  console.log("Non staff Department: "+NonstaffCount+", Staff Department: "+staffCount)
   const PieData = {
     labels: ["Staff", "Non-Staff"],
     datasets: [{ 

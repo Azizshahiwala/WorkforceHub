@@ -5,17 +5,9 @@ function EmployeeDashboard() {
   const [employee, setEmployee] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-     const selectedEmp = JSON.parse(
-    localStorage.getItem("loggedInEmployee")
-  );
-
-    if (!selectedEmp) {
-      navigate("/");
-    } else {
-      setEmployee(selectedEmp);
-    }
-  }, [navigate]);
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+  
+  setEmployee(MySession);
 
   if (!employee) return <h2>Loading...</h2>;
 

@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/HR/Activity.css";
+import { useNavigate } from "react-router-dom";
 function Activity() {
+  const navigate = useNavigate();
   const [activities, setActivities] = useState([]);
 
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+    
   useEffect(() => {
         const loadActivities = async () => {
           try {

@@ -4,8 +4,17 @@ import Navbar from "../Admin/AdminNavbar";
 import Sidebar from "../Admin/AdminSidebar";
 import "./AdminLayout.css";
 import { useState,useEffect, Children } from "react";
+import { Navigate } from "react-router-dom";
 function AdminLayout() {
 
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+
+  // If no session or wrong permission, return the Navigate component
+  if (!MySession || MySession.permission !== 1) {
+    alert("You do not have permission to visit this content.");
+    return <Navigate to="/" replace />;
+  }
+  
   const [darkMode, setDarkMode] = useState(()=>{
     localStorage.getItem("theme") === "dark"
   });

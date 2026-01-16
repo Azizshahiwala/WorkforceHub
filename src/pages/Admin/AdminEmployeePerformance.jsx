@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../styles/HR/EmployeePerformance.css";
 function AdminEmployeePerformance() {
+
+  const navigate = useNavigate();
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+  
   const [feedback, setFeedback] = useState([]);
 
   useEffect(() => {

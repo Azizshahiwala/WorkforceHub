@@ -68,10 +68,20 @@ authlogin = Blueprint('Auth',__name__,url_prefix='/api')
 #os.getcwd() Returns the current working directory
 databaseDir = os.path.join(os.getcwd(),"src","Database")
 #Returns: HOME/src/Database/
-databasePath = os.path.join(databaseDir,"Credentials.db")
+CredentialsPath = os.path.join(databaseDir,"Credentials.db")
 #Returns: HOME/src/Database/Credentials.db
-
 CompanyUserPath = os.path.join(databaseDir,"CompanyUsers.db")
+
+class Login:
+    def __init__(self,cred_path,comp_path):
+        self.cred_path = cred_path
+        self.comp_path = comp_path
+    def _conn_get(self):
+        conn = sq.connect(self.cred_path)
+        cursor = conn.cursor()
+
+        cursor.execute(f"ATTACH DATABASE '{self.comp_path}' AS emp")
+        return conn, cursor 
 
 @authlogin.route("/Login", methods=['POST'])
 def login():
@@ -149,3 +159,23 @@ def login():
     except Exception as e:
         print(f"❌ Error: {e}")
         return jsonify({"success": False,"message": str(e)}), 500
+    
+LoginHandler = Login(CredentialsPath,CompanyUserPath)
+@authlogin.route("/deleteAccount/<string:auth_id>", methods=['POST'])
+def deleteAccount(auth_id):
+    try:
+        
+        conn,cursor = LoginHandler._conn_get()
+        delQuery = """delete from login where id in(
+        select login.id from login
+        inner join "user" as emp on login.id = emp.auth_id
+        where emp.auth_id = ?
+        ); """
+        cursor.execute(delQuery,(auth_id,))
+        data = cursor.fetchone()
+        print(f"Deleted {auth_id}:",data)
+        conn.commit()
+        conn.close()
+        return jsonify({"status":"success"}),200
+    except Exception as e:
+        print(e)

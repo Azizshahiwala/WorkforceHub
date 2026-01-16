@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/HR/FeedbackEmployees.css";
+import { useNavigate } from "react-router-dom";
 function FeedbackEmployees() {
+  
+  const navigate = useNavigate();
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+  
+
   const [reviewers, setReviewers] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
@@ -8,11 +14,9 @@ function FeedbackEmployees() {
   const [feedback, setFeedback] = useState("");
   const [rate, setRate] = useState(0);
 
-  const adminSession = JSON.parse(localStorage.getItem("loggedInAdmin"));
-
   //Auto fill if logged in by admin
   const [givenBy, setGivenBy] = useState(
-  adminSession ? adminSession.employeeId : ""
+  MySession ? MySession.employeeId : ""
   );
 
   useEffect(() => {

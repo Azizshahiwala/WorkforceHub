@@ -1,8 +1,11 @@
 import React, { useState,useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../styles/HR/Recruitment.css";
 function Recruitment() {
-
+const navigate = useNavigate();
 const [applications, setApplications] = useState([]);
+
+const MySession = JSON.parse(localStorage.getItem("MySession"));
 
   useEffect(() => {
   fetch("http://localhost:5000/api/RegisterForm/applications")

@@ -46,13 +46,12 @@ class UserDB:
         
         query = """
    SELECT emp.name, emp.employeeId, emp.department, emp.status, emp.lastLogin, 
-   login.role, login.gender, login.phoneNumber, emp.BaseSalary 
+   login.role, login.gender, login.phoneNumber, emp.BaseSalary, emp.auth_id
    FROM "user" AS emp 
    LEFT JOIN cred_db.login AS login ON emp.auth_id = login.id
     """
         cursor.execute(query)
         data = cursor.fetchall()
-        print("cred_db.login:", data[0])
         conn.close()
         return data
 
@@ -71,11 +70,10 @@ def get_company_users():
             {
                 "name": r[0], "employeeId": r[1], "department": r[2], 
                 "status": r[3], "lastLogin": r[4], "role": r[5], 
-                "gender": r[6], "phoneNumber": r[7],"BaseSalary": r[8]
+                "gender": r[6], "phoneNumber": r[7],"BaseSalary": r[8],
+                "auth_id":r[9]
             } for r in data
         ]
-        print("RAW USERS ROW:", result[0])
-        print("ROW LENGTH:", len(result[0]))
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -4,18 +4,16 @@ import "../../styles/Employees/ApplyLeave.css";
 function ApplyLeave() {
   const navigate = useNavigate();
 
-  const selectedEmp = JSON.parse(
-    localStorage.getItem("loggedInEmployee")
-  );
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+  
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [reason, setReason] = useState("");
-  const [fetchedLeave,updateFetchedLeaves] = useState([])
 
   const leaveData = {
-      empId: selectedEmp.employeeId,
-      name: selectedEmp.name,
-      department: selectedEmp.role,
+      empId: MySession.employeeId,
+      name: MySession.name,
+      department: MySession.role,
       startDate,
       endDate,
       reason,
@@ -24,17 +22,17 @@ function ApplyLeave() {
     };
   // 🔐 Protect route
   useEffect(() => {
-    if (!selectedEmp) {
+    if (!MySession) {
       alert("Session expired. Please login again.");
       navigate("/");
     }
-  }, [selectedEmp, navigate]);
+  }, [MySession, navigate]);
 
   const handleLeave = async (e) => {
 
     e.preventDefault()    
 
-    if (!selectedEmp) {
+    if (!MySession) {
       alert("Please login again");
       return;
     }
@@ -46,7 +44,7 @@ function ApplyLeave() {
     
     try{
       
-      const response = await fetch(`http://localhost:5000/api/postLeaveRq/${selectedEmp.employeeId}/${selectedEmp.auth_id}`, {
+      const response = await fetch(`http://localhost:5000/api/postLeaveRq/${MySession.employeeId}/${MySession.auth_id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(leaveData),
@@ -66,8 +64,7 @@ function ApplyLeave() {
         // Refresh local list after successful post
         
         updateFetchedLeaves(prev => [...prev, { ...leaveData, leaveData}]);
-        
-
+      
         alert("Leave applied successfully");
 
         setStartDate("");
@@ -92,10 +89,10 @@ function ApplyLeave() {
       <form className="apply-leave-card" onSubmit={handleLeave}>
         <h2>Apply Leave</h2>
 
-        {selectedEmp && (
+        {MySession && (
             <p className="emp-info">
-              Logged in as <b>{selectedEmp.name}</b> (
-              {selectedEmp.employeeId})
+              Logged in as <b>{MySession.name}</b> (
+              {MySession.employeeId})
             </p>
         )}
 

@@ -11,8 +11,9 @@ CredentialsPath = os.path.join(databaseDir, "Credentials.db")
 CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
 
 # ===============================
-# LOGIN DATA (20 USERS)
+# LOGIN DATA (22 USERS)
 # ===============================
+# Format: (email, password, role, gender, phoneNumber)
 login_data = [
     ("admin@workforce.com", "admin123", "Admin", "Male", "+911111111111"),
     ("ceo@workforce.com", "ceo999", "CEO", "Female", "+912222222222"),
@@ -45,13 +46,15 @@ login_data = [
 ]
 
 # ===============================
-# USER DATA (NO auth_id HERE)
+# USER DATA (22 USERS)
 # ===============================
+# Updated 'department' names to match Dashboard.jsx filter strings
+# Format: (name, employeeId, department, status, BaseSalary, lastLogin)
 company_user_data = [
-    ("System Admin", "LA-0001", "IT Management", "Logged In", 90000, "2025-12-20 09:00 AM"),
-    ("Jane Executive", "LA-0002", "Executive Office", "Logged In", 150000, "2025-12-21 10:30 AM"),
-    ("John HR", "LA-0003", "Human Resources", "Logged In", 60000, "2025-12-21 08:45 AM"),
-    ("Alice Interviewer", "LA-0004", "Recruitment", "Logged Out", 50000, "2025-12-19 05:15 PM"),
+    ("System Admin", "LA-0001", "Admin", "Logged In", 90000, "2025-12-20 09:00 AM"),
+    ("Jane Executive", "LA-0002", "CEO", "Logged In", 150000, "2025-12-21 10:30 AM"),
+    ("John HR", "LA-0003", "HR", "Logged In", 60000, "2025-12-21 08:45 AM"),
+    ("Alice Interviewer", "LA-0004", "Interviewer", "Logged Out", 50000, "2025-12-19 05:15 PM"),
     ("Frank Finance", "LA-0005", "Finance", "Logged In", 80000, "2025-12-21 11:00 AM"),
 
     ("Dev One", "LA-0011", "Engineering", "Logged In", 70000, "2025-12-21 09:00 AM"),
@@ -63,21 +66,25 @@ company_user_data = [
     ("Designer Two", "LA-0016", "Design", "Logged In", 55000, "2025-12-21 10:10 AM"),
     ("Designer Three", "LA-0017", "Design", "Logged In", 55000, "2025-12-21 10:20 AM"),
 
-    ("Tester One", "LA-0018", "Tester", "Logged In", 45000, "2025-12-21 11:00 AM"),
-    ("Tester Two", "LA-0019", "Tester", "Logged In", 45000, "2025-12-21 11:10 AM"),
-    ("Tester Three", "LA-0020", "Tester", "Logged In", 45000, "2025-12-21 11:20 AM"),
+    ("Tester One", "LA-0018", "QA", "Logged In", 45000, "2025-12-21 11:00 AM"),
+    ("Tester Two", "LA-0019", "QA", "Logged In", 45000, "2025-12-21 11:10 AM"),
+    ("Tester Three", "LA-0020", "QA", "Logged In", 45000, "2025-12-21 11:20 AM"),
 
-    ("Sales One", "LA-0021", "Sales manager", "Logged In", 65000, "2025-12-21 12:00 PM"),
-    ("Sales Two", "LA-0022", "Sales manager", "Logged In", 65000, "2025-12-21 12:10 PM"),
-    ("Sales Three", "LA-0023", "Sales manager", "Logged In", 65000, "2025-12-21 12:20 PM"),
+    ("Sales One", "LA-0021", "Sales", "Logged In", 65000, "2025-12-21 12:00 PM"),
+    ("Sales Two", "LA-0022", "Sales", "Logged In", 65000, "2025-12-21 12:10 PM"),
+    ("Sales Three", "LA-0023", "Sales", "Logged In", 65000, "2025-12-21 12:20 PM"),
 
     ("Support One", "LA-0024", "Support", "Logged In", 35000, "2025-12-21 01:00 PM"),
     ("Support Two", "LA-0025", "Support", "Logged In", 35000, "2025-12-21 01:10 PM"),
+
+    ("Intern One", "LA-0026", "Engineering", "Logged In", 25000, "2025-12-21 02:00 PM"),
+    ("Intern Two", "LA-0027", "Engineering", "Logged In", 25000, "2025-12-21 02:10 PM"),
 ]
 
 # ===============================
 # STAFF EMP IDS (ATTENDANCE ONLY)
 # ===============================
+# Identifies employees (Staff) for whom we generate random attendance data
 STAFF_EMP_IDS = [u[1] for u in company_user_data[5:]]
 
 # ===============================
@@ -86,11 +93,16 @@ STAFF_EMP_IDS = [u[1] for u in company_user_data[5:]]
 def generate_attendance(year, month):
     records = []
     start = date(year, month, 1)
-    end = (start.replace(day=28) + timedelta(days=4)).replace(day=1)
+    # Get the last day of the month
+    if month == 12:
+        end = date(year + 1, 1, 1)
+    else:
+        end = date(year, month + 1, 1)
 
     for emp in STAFF_EMP_IDS:
         current = start
         while current < end:
+            # Skip weekends (Saturday=5, Sunday=6)
             if current.weekday() < 5:
                 status = random.choices(
                     ["Present", "Leave", "Absent"],
@@ -104,7 +116,6 @@ def generate_attendance(year, month):
 # MAIN SEED FUNCTION
 # ===============================
 def populate_databases():
-
     # ---------- LOGIN ----------
     conn_c = sq.connect(CredentialsPath)
     cur_c = conn_c.cursor()
@@ -117,6 +128,7 @@ def populate_databases():
     """
 
     login_id_map = []
+    # Use the full length of login_data
     for login_row, user_row in zip(login_data, company_user_data):
         cur_c.execute(login_insert, login_row)
         login_id = cur_c.lastrowid
@@ -157,7 +169,7 @@ def populate_databases():
     conn_u.commit()
     conn_u.close()
 
-    print("✓ Seed data generated successfully (Users, Attendance, Payroll-ready)")
+    print(f"✓ Seed data generated successfully ({len(user_rows)} Users, Attendance records added)")
 
 # ===============================
 if __name__ == "__main__":

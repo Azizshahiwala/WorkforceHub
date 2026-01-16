@@ -6,7 +6,12 @@ import interactionPlugin from '@fullcalendar/interaction'; // Necessary for sele
 import {UserInfo} from "./CompanyUser";
 import "../../styles/HR/AttendanceOverview.css";
 import {useState,useEffect} from 'react';
+import { useNavigate } from "react-router-dom";
 export function AttendanceOverview() {
+
+    const navigate = useNavigate();
+    const MySession = JSON.parse(localStorage.getItem("MySession"));
+   
     const [employees, setEmployees] = useState([]);
 
     const fetchEmployees = () => {

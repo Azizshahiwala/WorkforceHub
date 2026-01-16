@@ -3,8 +3,12 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "../../styles/HR/AttendanceDashboard.css";
 import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 function AttendanceDashboard() {
+  const navigate = useNavigate();
+
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+  
   const [employees, setEmployees] = useState([]);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [selectedEmp, setSelectedEmp] = useState("");

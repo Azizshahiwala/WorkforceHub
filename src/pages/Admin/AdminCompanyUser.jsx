@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from "react";
 import "../../styles/HR/CompanyUser.css";
+import { useNavigate } from "react-router-dom";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -21,6 +22,10 @@ export function UserInfo(empID, name, lastLogin) {
 }
 
 function CompanyUser() {
+
+  const navigate = useNavigate();
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+  
   const [employees, setEmployees] = useState(() => {
     const saved = localStorage.getItem("employees");
     return saved ? JSON.parse(saved) : [];

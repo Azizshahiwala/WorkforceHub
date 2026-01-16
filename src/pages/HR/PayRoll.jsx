@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import "../../styles/HR/Payroll.css";
+import { useNavigate } from 'react-router-dom';
 function PayRoll() {
+  const navigate = useNavigate();
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+
   const [Window, setWindow] = useState(false);
   const [salBreakup, setSalBreakup] = useState(null);
   const [Employee, setEmployee] = useState([]);

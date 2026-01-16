@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from "react";
 import "../../styles/HR/CompanyUser.css";
+import { useNavigate } from "react-router-dom";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -20,6 +21,9 @@ export function UserInfo(empID, name, lastLogin) {
 }
 
 function CompanyUser() {
+  const navigate = useNavigate(); 
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+ 
   const [employees, setEmployees] = useState(() => {
     const saved = localStorage.getItem("employees");
     return saved ? JSON.parse(saved) : [];
@@ -42,7 +46,6 @@ function CompanyUser() {
   
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
-
   const [newEmployee, setNewEmployee] = useState({
     name: "",
     department: "",
@@ -90,16 +93,37 @@ function CompanyUser() {
     setShowModal(false);
   };
 
-  const removeEmployee = (id) => {
-    if (window.confirm("Are you sure you want to remove this employee?")) {
-      const updated = employees.filter((emp) => emp.id !== id);
-      setEmployees(updated);
-      localStorage.setItem("employees", JSON.stringify(updated));
+  const deleteAccount = async (auth_id,role,employeeId) => {
+    console.log(auth_id+","+role+","+employeeId);
+    if(auth_id == "undefined" || role == "undefined" || employeeId == "undefined"){
+      alert("Un-identified attempt to remove an account");
+      return;
+    }
+    try {
+      if (window.confirm("Are you sure you want to remove this account?")) {
+
+        const response = await fetch(`http://localhost:5000/api/deleteAccount/${auth_id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({auth_id,role,employeeId}),
+      });
+
+        if (response.ok) {
+          const updated = employees.filter((emp) => emp.auth_id !== auth_id);
+          setEmployees(updated);
+        } 
+      }
+    } catch (error) {
+      alert("Cannot remove Employee: ", error);
     }
   };
 
   const staffCount = employees.filter(
-    (emp) => emp.department !== "Admin" && emp.department !== "CEO"
+    (emp) => emp.department !== "Admin" && 
+    emp.department !== "CEO" && 
+    emp.department !== "HR" && 
+    emp.department !== "HR" && 
+    emp.department !== "Interviewer"
   ).length;
 
   const nonStaffCount = employees.length - staffCount;
@@ -115,17 +139,12 @@ function CompanyUser() {
     ],
   };
 
-  const resetEmployees = () => {
-  localStorage.removeItem("employees");   // 👈 this line (you add)
-  setEmployees(employees);
-};
 
   return (
     <div className="leave-page">
       <div className="leave-header">
         <h2>Users</h2>
-        <button type="button" className="reset-btn " onClick={resetEmployees}>Reset Data</button>
-      </div>
+       </div>
 
       <div className="emp-summary">
         <div className="pie-wrapper">
@@ -160,10 +179,10 @@ function CompanyUser() {
               emp.name.toLowerCase().includes(search.toLowerCase())
             )
             .map((emp) => (
-              <div className="emp-card" key={emp.employeeId}>
+              <div className="emp-card" key={emp.auth_id}>
                 <button
                   className="remove-icon-btn"
-                  onClick={() => removeEmployee(emp.id)}
+                  onClick={() => deleteAccount(emp.auth_id,emp.role,emp.employeeId)}
                 >
                   ✖
                 </button>
@@ -214,6 +233,14 @@ function CompanyUser() {
                 name="department"
                 placeholder="Department"
                 value={newEmployee.department}
+                onChange={handleChange}
+              />
+
+              <input
+                type="text"
+                name="role"
+                placeholder="Role"
+                value={newEmployee.role}
                 onChange={handleChange}
               />
 

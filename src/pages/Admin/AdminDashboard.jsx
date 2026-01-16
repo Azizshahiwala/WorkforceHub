@@ -1,5 +1,6 @@
 import {React,useEffect,useState} from 'react';
 import { Pie, Bar } from "react-chartjs-2";
+import { useNavigate } from 'react-router-dom';
 import { 
   Chart as ChartJS, 
   ArcElement, 
@@ -13,6 +14,10 @@ import "../../styles/Admin/AdminDashboard.css";
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function AdminDashboard() {
+
+  const navigate = useNavigate();
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+  
   const [employees,setEmployees] = useState([])
     
     useEffect(() => {

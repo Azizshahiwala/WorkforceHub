@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HR/EmployeePerformance.css";
 //THIS file is for individual Employee ONLY
-
+import { useNavigate } from "react-router-dom";
 function EmployeePersonalPerformance() {
+  
+const navigate = useNavigate();
 const [performance, setPerformance] = useState([]);
 const [loggedInEmployee, setLoggedInEmployee] = useState(null);
 const [loading, setLoading] = useState(true);
 
+const MySession = JSON.parse(localStorage.getItem("MySession"));
+
 useEffect(() => {
-  const emp = JSON.parse(localStorage.getItem("loggedInEmployee"));
-  setLoggedInEmployee(emp);
+  setLoggedInEmployee(MySession);
 }, []);
 
 useEffect(() => {
