@@ -133,6 +133,7 @@ def fetchApplications():
 
 @recruitment.route('/RegisterForm/applications/upload', methods=['POST'])
 def resumeProcess():
+    print("RESUME UPLOAD FORM SELECTEDDD")
     #We use rq.form and rq.file because we used formData
     email = rq.form.get('email')
     phoneNumber = rq.form.get('phoneNumber')
