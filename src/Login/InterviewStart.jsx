@@ -67,8 +67,8 @@ export default function InterviewStart() {
 
         <button
             className="control-btn end"
-            onClick={endCall}
-        >
+            onClick={endCall}>
+        
             📞 End Call
         </button>
         </div>
