@@ -3,14 +3,11 @@ from flask import Blueprint,jsonify
 import os 
 import sqlite3 as sq
 from datetime import datetime, date, time, timezone
+from PathConfig import CompanyUserPath,CredentialsPath
 #Now we use NotifManager (send , update, recieve notification)
 from Notification import notifManager
 leaveManager = Blueprint('Leave', __name__, url_prefix='/api')
 
-# Paths
-databaseDir = os.path.join(os.getcwd(), "src", "Database")
-CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
-CredentialsPath = os.path.join(databaseDir, "Credentials.db")
 class LeaveHandler:
     def __init__(self, compUser_path, cred_path):
         self.compUser_path = compUser_path
@@ -77,6 +74,9 @@ class LeaveHandler:
         except Exception as e:
             print("Error createLeaverq",e)
             return "error"
+        finally:
+            if conn:
+                conn.close() # This runs even if the code crashes
     def fetchData(self,Leaveid):
         try:
             conn,cursor = self._get_connection()
@@ -92,7 +92,9 @@ class LeaveHandler:
         except Exception as e:
             print("Error createLeaverq",e)
             return jsonify(e)
-    
+        finally:
+            if conn:
+                conn.close() # This runs even if the code crashes
     def LeavesChecker(self):
         conn, cursor = self._get_connection()
         today = date.today()
@@ -165,6 +167,9 @@ def FetchAllLeaves():
     except Exception as e:
         print(e)
         return jsonify({"status":"error"}) ,500
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes
 
 @leaveManager.route('/postLeaveRq/<string:empId>/<string:auth_id>',methods=['POST'])
 def PostLeave(empId,auth_id):
@@ -192,7 +197,7 @@ def PostLeave(empId,auth_id):
     except Exception as e:
         print(e)
         return jsonify({"message":f"{e}","status":"error"})
-
+    
     #When leave application is created, store it in incomingLeaves (yet to accept). 
     
 
@@ -236,7 +241,9 @@ def AcceptLeave(leaveID):
     except Exception as e:
         print(e)
         return jsonify({"message":f"{e}","status":"error"})
-    
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes
 
 @leaveManager.route('/rejectLeave/<string:leaveID>',methods=['POST'])
 def RejectLeave(leaveID):
@@ -267,6 +274,9 @@ def RejectLeave(leaveID):
     except Exception as e:
         print(e)
         return jsonify({"message":f"{e}","status":"error"})
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes
 @leaveManager.route('/CloseLeaveDuration/',methods=['GET'])
 def CloseLeaveDuration():
     closedCount = leavehandler.LeavesChecker()

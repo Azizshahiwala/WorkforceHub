@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/HR/Activity.css";
+//This API is for dynamic url instead of having to hardcode in every single jsx
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function Activity() {
   const [activities, setActivities] = useState([]);
@@ -10,7 +12,7 @@ function Activity() {
 
   const loadActivities = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/fetchAnnouncements");
+      const response = await fetch(`${API_BASE_URL}/fetchAnnouncements`);
       const data = await response.json();
       setActivities(data);
     } catch (error) {

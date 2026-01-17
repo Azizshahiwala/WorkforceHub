@@ -2,20 +2,18 @@
 import React from "react";
 import "../../styles/HR/LeaveManager.css";
 import { useState,useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-
 // Getting existing leave data from [Employee ApplyLeave.jsx] localStorage
 
 const data=JSON.parse(localStorage.getItem("leaveData")) || [];
 
 function LeaveManager() {
-  const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [leaveRequests, setLeaveRequests] = useState([]);
 
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   //This use effects fetches all emp rq leaves
   useEffect(() => {
-        fetch(`http://localhost:5000/api/fetchAllRq`)
+        fetch(`${API_BASE_URL}/fetchAllRq`)
           .then(res => res.json())
           .then(data => setLeaveRequests(data))
           .catch(err => console.error("Error loading personal leaves:", err));
@@ -24,7 +22,7 @@ function LeaveManager() {
   const handleLeaveOption = async (Leaveid,option,employeeId) => {
     try{
       if(option === "accept"){
-        const response = await fetch(`http://localhost:5000/api/acceptLeave/${Leaveid}`, {
+        const response = await fetch(`${API_BASE_URL}/acceptLeave/${Leaveid}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({employeeId, Leaveid}),
@@ -40,7 +38,7 @@ function LeaveManager() {
         }
       }
       else if(option == "reject"){
-        const response = await fetch(`http://localhost:5000/api/rejectLeave/${Leaveid}`, {
+        const response = await fetch(`${API_BASE_URL}/rejectLeave/${Leaveid}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({employeeId, Leaveid}),

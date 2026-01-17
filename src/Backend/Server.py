@@ -3,7 +3,7 @@
 #pip install flask
 #pip install flask-cors
 
-from flask import Flask,session,make_response,jsonify
+from flask import Flask,jsonify
 from flask_cors import CORS
 
 #Get blueprint
@@ -17,7 +17,7 @@ from Notification import notification,createNotifs
 from FeedbackPerformance import feedbackandperformance,FeedbackPerformanceSetup
 from Activity import activity,createActivity
 from DummyDataFiller import populate_databases
-
+from PathConfig import setupPaths
 #render_template -> imports function which is used to load html
 #redirect -> used to redirect browser to a path
 #session -> processing of Sessions
@@ -43,10 +43,12 @@ app.register_blueprint(activity)
 
 # Enables communication between your React app and this Flask server
 CORS(app)  
-
 @app.route("/api/init-db",methods=['GET'])
 def createDatabases():
     try:
+
+        #Setup paths
+        setupPaths()
         #Credentials.db
 
         #Creates main login table
@@ -89,6 +91,7 @@ def createDatabases():
     except Exception as e:
         print(f"Global Init Error: {e}") 
         return jsonify({"error": str(e)}), 500
+    
 #Run app
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000,debug=False)

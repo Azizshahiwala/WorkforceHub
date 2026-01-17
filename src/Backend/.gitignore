@@ -2,7 +2,7 @@
 *.db
 
 # Environment variables (API Keys)
-.env
+*.env
 
 # Python artifacts
 __pycache__/

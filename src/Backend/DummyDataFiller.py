@@ -6,10 +6,7 @@ from datetime import date, timedelta
 # ===============================
 # DATABASE PATHS
 # ===============================
-databaseDir = os.path.join(os.getcwd(), "src", "Database")
-CredentialsPath = os.path.join(databaseDir, "Credentials.db")
-CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
-
+from PathConfig import CompanyUserPath,CredentialsPath
 # ===============================
 # LOGIN DATA (22 USERS)
 # ===============================

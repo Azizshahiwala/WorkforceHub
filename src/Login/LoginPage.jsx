@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 import { Link } from "react-router-dom";
 export default function AccountLogin() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function AccountLogin() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/api/Login", {
+      const response = await fetch(`${API_BASE_URL}/Login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

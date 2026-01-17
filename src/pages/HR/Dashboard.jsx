@@ -1,6 +1,5 @@
 import {React,useEffect,useState} from 'react';
 import { Pie, Bar } from "react-chartjs-2";
-import { useNavigate } from 'react-router-dom';
 import { 
   Chart as ChartJS, 
   ArcElement, 
@@ -15,14 +14,14 @@ import "../../styles/HR/Dashboard.css";
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Dashboard() {
-
-  const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   
   const [employees,setEmployees] = useState([])
   
   useEffect(() => {
-    fetch("http://localhost:5000/api/getCompanyUsers")
+    fetch(`${API_BASE_URL}/getCompanyUsers`)
       .then(res => res.json())
       .then(data => setEmployees(data))
       .catch(err => console.error("Dashboard load error:", err));
@@ -30,7 +29,7 @@ export default function Dashboard() {
 
   //This use effects checks if leave is expired or not.
   useEffect(() => {
-        fetch(`http://localhost:5000/api/CloseLeaveDuration`)
+        fetch(`${API_BASE_URL}/CloseLeaveDuration`)
           .then(res => res.json())
           .then(data => console.log(data.closedCount));
       }, []);
