@@ -8,10 +8,11 @@ import { Navigate } from "react-router-dom";
 function AdminLayout() {
 
   const MySession = JSON.parse(localStorage.getItem("MySession"));
-
+  const isAuthorized = MySession?.permission === 1
+  
   // If no session or wrong permission, return the Navigate component
-  if (!MySession || MySession.permission !== 1) {
-    alert("You do not have permission to visit this content.");
+  if (!MySession || !isAuthorized) {
+    alert("You do not have permission to visit this content. Please Login.");
     return <Navigate to="/" replace />;
   }
   
@@ -35,6 +36,7 @@ function AdminLayout() {
       <div className="layout-body">
         <Sidebar darkMode={darkMode}/>
         <main className="layout-content">
+          
           <Outlet />
         </main>
       </div>

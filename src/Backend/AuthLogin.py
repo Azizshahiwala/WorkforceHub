@@ -79,7 +79,8 @@ class Login:
     def _conn_get(self):
         conn = sq.connect(self.cred_path)
         cursor = conn.cursor()
-
+        
+        conn.execute("PRAGMA foreign_keys = ON;")
         cursor.execute(f"ATTACH DATABASE '{self.comp_path}' AS emp")
         return conn, cursor 
 
@@ -166,14 +167,15 @@ def deleteAccount(auth_id):
     try:
         
         conn,cursor = LoginHandler._conn_get()
-        delQuery = """delete from login where id in(
-        select login.id from login
-        inner join "user" as emp on login.id = emp.auth_id
-        where emp.auth_id = ?
-        ); """
-        cursor.execute(delQuery,(auth_id,))
-        data = cursor.fetchone()
-        #print(f"Deleted {auth_id}:",data)
+        #Using the rule of on delete cascade, IF auth_id from user is deleted, 
+        #ALL the user database table using the cascade will automatically delete the row containing matching empid.
+        #Hence i do not need to use JOIN
+
+        cursor.execute("DELETE FROM emp.user WHERE auth_id = ?", (auth_id,))
+        
+        #But login table is in credentials db. so i need to delete this manually. delete cascade does not support cross conn.
+        cursor.execute("DELETE FROM login WHERE id = ?", (auth_id,))
+        
         conn.commit()
         conn.close()
         return jsonify({"status":"success"}),200

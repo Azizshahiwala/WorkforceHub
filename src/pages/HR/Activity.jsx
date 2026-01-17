@@ -1,40 +1,57 @@
-import React, { useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/HR/Activity.css";
-import { useNavigate } from "react-router-dom";
+
 function Activity() {
-  const navigate = useNavigate();
-  const MySession = JSON.parse(localStorage.getItem("MySession"));
-  
   const [activities, setActivities] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [showModal, setShowModal] = useState(false);
-      // Getting data from localStorage
-    useEffect(() => {
-      const stored = JSON.parse(localStorage.getItem("activities")) || [];
-      
-      setActivities(stored);
-    }, []);
+  
+  // Get session to identify the user
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
 
-  const addNewTask = () => {
+  // Fetch announcements from the database on load
+  const loadActivities = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/fetchAnnouncements");
+      const data = await response.json();
+      setActivities(data);
+    } catch (error) {
+      console.error("Error loading announcements:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadActivities();
+  }, []);
+
+  const addNewActivity = async (e) => {
+    e.preventDefault();
     if (!newTask.trim()) return;
 
-    const newActivity = {
-      time: new Date().toLocaleString(),
-      text: newTask,
-    };
-    setActivities(prev => {
-      const updated = [newActivity, ...prev];
-      localStorage.setItem("activities", JSON.stringify(updated));
-      return updated;
-    });
-    setNewTask("");
-    setShowModal(false);
+    try {
+      // Post new announcement to backend using employeeId from session
+      const response = await fetch(`http://localhost:5000/api/insertAnnouncement/${MySession.employeeId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newTask), // Backend expects the message directly as the JSON body
+      });
+
+      if (response.ok) {
+        setNewTask("");
+        setShowModal(false);
+        loadActivities(); // Refresh list to show new post
+      } else {
+        alert("Failed to post announcement");
+      }
+    } catch (error) {
+      console.error("Post Activity Error:", error);
+    }
   };
 
   return (
     <div className="activity-page">
       <div className="activity-header">
-        <h2>Activity Dashboard</h2>
+        <h2>HR Activity Dashboard</h2>
         <button className="activity-btn" onClick={() => setShowModal(true)}>
           + New Activity
         </button>
@@ -48,36 +65,38 @@ function Activity() {
               <div className="activity-line"></div>
             )}
             <div className="activity-content">
-              <span className="activity-time">{item.time}</span>
-              <p className="activity-text">{item.text}</p>
+              <span className="activity-time">{item.dateCreated}</span>
+              <p className="activity-text">{item.message}</p>
+              <small className="activity-sender">Posted by: {item.givenByRole}</small>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Modal */}
       {showModal && (
         <div className="modal-overlay">
-          <div className="modal-box">
+          <form className="modal-box" onSubmit={addNewActivity}>
             <h4>Add New Activity</h4>
             <textarea
               className="modal-textarea"
-              placeholder="Enter activity..."
+              placeholder="Enter announcement for staff..."
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
+              required
             />
             <div className="modal-actions">
               <button
+                type="button"
                 className="modal-cancel"
                 onClick={() => setShowModal(false)}
               >
                 Cancel
               </button>
-              <button className="modal-add" onClick={addNewTask}>
+              <button type="submit" className="modal-add">
                 Add
               </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
     </div>

@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HR/EmployeePerformance.css";
 //THIS file is for individual Employee ONLY
-import { useNavigate } from "react-router-dom";
 function EmployeePersonalPerformance() {
-  
-const navigate = useNavigate();
 const [performance, setPerformance] = useState([]);
 const [loggedInEmployee, setLoggedInEmployee] = useState(null);
 const [loading, setLoading] = useState(true);
@@ -16,8 +13,6 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  if (!loggedInEmployee?.employeeId) return;
-  console.log(loggedInEmployee);
   fetch(`http://localhost:5000/api/myPeformancesAndFeedbacks/${loggedInEmployee.employeeId}`)
     .then(res => res.json())
     .then(data => {

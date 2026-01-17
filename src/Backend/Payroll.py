@@ -40,7 +40,7 @@ class Payroll:
         ProfessionalTax real,
         GrossSalary real,
         NetSalary real,
-        foreign key (empId) references "user"(employeeId));
+        foreign key (empId) references "user"(employeeId) ON DELETE CASCADE);
         """
         cursor.execute(Payrolltable)
         conn.commit()

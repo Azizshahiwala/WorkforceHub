@@ -30,7 +30,7 @@ class AttendanceDB:
             empId TEXT NOT NULL,
             date TEXT NOT NULL,
             status TEXT NOT NULL,
-            FOREIGN KEY (empId) REFERENCES user(employeeId)
+            FOREIGN KEY (empId) REFERENCES user(employeeId) ON DELETE CASCADE
         );            
         """
         cursor.execute(query)

@@ -44,7 +44,7 @@ login_data = [
     ("intern1@workforce.com", "freelance", "Intern", "Female", "+910101010103"),
     ("intern2@workforce.com", "freelance", "Intern", "Female", "+910101010104"),
 ]
-
+print(login_data)
 # ===============================
 # USER DATA (22 USERS)
 # ===============================

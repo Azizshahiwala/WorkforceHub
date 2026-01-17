@@ -10,6 +10,7 @@ function EmpSidebar({ darkMode }) {
         style={{
           color: darkMode ? "#ffffff" : "#000000"}}>
       </h2>
+      
         <li>
           <NavLink
                 to="/dashboardEmployee"

@@ -1,5 +1,7 @@
 import logo from "../images/logo.jpeg";
+import Logout from "../Login/Logout";
 import "../HR/Navbar.css";
+
 import { useState, useEffect,useRef } from "react";
 
 function Navbar({ darkMode, setDarkMode }) {
@@ -25,7 +27,7 @@ const clearNotification = () => {
           ></i>
            {RedDot && <span className="notification-dot"></span>}
         </button>
-
+      </div>
         <button
           className="theme-toggle"
           onClick={() => setDarkMode(prev => !prev)}
@@ -37,7 +39,7 @@ const clearNotification = () => {
             {darkMode ? "Dark" : "Light"}
           </span>
         </button>
-      </div>
+      <Logout SessionName={"MySession"}></Logout>
     </div>
   );
 }

@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
 function EmployeeDashboard() {
-  const [employee, setEmployee] = useState(null);
-  const navigate = useNavigate();
+  const [employee, setEmployee] = useState(() => {
+    const savedSession = localStorage.getItem("MySession");
+    return savedSession ? JSON.parse(savedSession) : null;
+  });
 
-  const MySession = JSON.parse(localStorage.getItem("MySession"));
+  if (!employee) {
+    return (
+      <div className="dashboard-error">
+        <h2>Session not found. Please log in again.</h2>
+      </div>
+    );
+  }
   
-  setEmployee(MySession);
-
-  if (!employee) return <h2>Loading...</h2>;
-
   return (
     <div>
       <h1>Welcome, {employee.name}!</h1>

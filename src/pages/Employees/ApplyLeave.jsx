@@ -20,14 +20,7 @@ function ApplyLeave() {
       status: 'Not reviewed',
       dateSubmitted : Date.now()
     };
-  // 🔐 Protect route
-  useEffect(() => {
-    if (!MySession) {
-      alert("Session expired. Please login again.");
-      navigate("/");
-    }
-  }, [MySession, navigate]);
-
+    
   const handleLeave = async (e) => {
 
     e.preventDefault()    

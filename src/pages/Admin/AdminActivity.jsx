@@ -1,77 +1,65 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/HR/Activity.css";
-import { useNavigate } from "react-router-dom";
 
 function Activity() {
   const [activities, setActivities] = useState([]);
-  const [message, setNewTask] = useState("");
+  const [message, setMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
   
-  const navigate = useNavigate();
   const MySession = JSON.parse(localStorage.getItem("MySession"));
-  
-  //This fetches announcements from database, instead of localstorage.
-  useEffect(() => {
-      const loadActivities = async () => {
-        try {
-          const response = await fetch(
-            "http://localhost:5000/api/fetchAnnouncements");
-          const data = await response.json();
-          setActivities(data)
-        } catch (error) {
-          console.error("Error loading announcements:", error);
-        }
-      };
-  
-      loadActivities();
-    }, []);
 
-  const addNewTask = (newActivity) => {
-    setActivities(prev => {
-      const updated = [newActivity, ...prev];
-      return updated;
-    });
-
-    setNewTask("");
-    setShowModal(false);
+  const loadActivities = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/fetchAnnouncements");
+      const data = await response.json();
+      setActivities(data);
+    } catch (error) {
+      console.error("Error loading announcements:", error);
+    }
   };
 
+  useEffect(() => {
+    loadActivities();
+  }, []);
+
   const sendActivity = async (e) => {
-    try{
-      e.preventDefault();
+    e.preventDefault();
+    if (!message.trim()) return;
 
-      if (!message.trim()) return;
-
-      const response = await fetch(`http://localhost:5000/api/insertAnnouncement/${givenById}`, {
+    try {
+      // FIXED: Corrected the URL parameter to use MySession.employeeId
+      const response = await fetch(`http://localhost:5000/api/insertAnnouncement/${MySession.employeeId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(message),
       });
 
-      if(response.ok){
+      if (response.ok) {
         const data = await response.json(); 
-        const dataCreated = data.dateCreated;
-        const givenById = data.givenById;
-        const givenByRole = data.givenByRole;
+        
+        // Update local state with the complete record from backend
+        setActivities(prev => [{
+          dateCreated: data.dateCreated,
+          message: data.message,
+          givenById: data.givenById,
+          givenByRole: data.givenByRole
+        }, ...prev]);
 
-        const newActivity = {
-        dateCreated : dataCreated,
-        message : message,
-        givenById : givenById,
-        givenByRole : givenByRole
-      };
-      addNewTask(newActivity);
+        setMessage("");
+        setShowModal(false);
+      } else {
+        alert("Failed to upload announcement");
       }
-    }
-    catch(error){
+    } catch (error) {
       console.error("❌ error:", error);
-      alert("Failed to upload announcement");
+      alert("Server error during upload");
     }
-  }
+  };
+
   return (
     <div className="activity-page">
       <div className="activity-header">
-        <h2>Activity Dashboard</h2>
+        <h2>Admin Activity Dashboard</h2>
         <button className="activity-btn" onClick={() => setShowModal(true)}>
           + New Activity
         </button>
@@ -87,25 +75,26 @@ function Activity() {
             <div className="activity-content">
               <span className="activity-time">{item.dateCreated}</span>
               <p className="activity-text">{item.message}</p>
+              <small>ID: {item.givenById} ({item.givenByRole})</small>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Modal */}
       {showModal && (
-        <form onSubmit={sendActivity}>
         <div className="modal-overlay">
-          <div className="modal-box">
+          <form className="modal-box" onSubmit={sendActivity}>
             <h4>Add New Activity</h4>
             <textarea
               className="modal-textarea"
-              placeholder="Enter activity..."
+              placeholder="Post a company-wide update..."
               value={message}
-              onChange={(e) => setNewTask(e.target.value)}
+              onChange={(e) => setMessage(e.target.value)}
+              required
             />
             <div className="modal-actions">
               <button
+                type="button"
                 className="modal-cancel"
                 onClick={() => setShowModal(false)}
               >
@@ -115,9 +104,8 @@ function Activity() {
                 Add
               </button>
             </div>
-          </div>
+          </form>
         </div>
-        </form>
       )}
     </div>
   );

@@ -36,7 +36,8 @@ class LeaveHandler:
             enddate TEXT not null,
             reason TEXT not null,
             status TEXT default 'Not reviewed.',
-            dateSubmitted TEXT not null
+            dateSubmitted TEXT not null,
+            FOREIGN KEY (employeeId) REFERENCES "user"(employeeId) ON DELETE CASCADE
         );
         """
         cursor.execute(query)
@@ -52,7 +53,8 @@ class LeaveHandler:
             enddate TEXT not null,
             reason TEXT not null,
             status TEXT not null,
-            dateSubmitted TEXT not null
+            dateSubmitted TEXT not null,
+            FOREIGN KEY (employeeId) REFERENCES user(employeeId) ON DELETE CASCADE
         );
         """
         cursor.execute(query)

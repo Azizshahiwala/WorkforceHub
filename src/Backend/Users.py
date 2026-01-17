@@ -34,7 +34,6 @@ class UserDB:
             status TEXT DEFAULT 'Logged Out',
             lastLogin TEXT,
             BaseSalary REAL DEFAULT 0.0
-            -- Note: Cross-db foreign keys are logical only in SQLite
         );
         """
         cursor.execute(query)
