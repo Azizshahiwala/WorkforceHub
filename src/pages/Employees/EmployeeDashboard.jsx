@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 function EmployeeDashboard() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [employee, setEmployee] = useState(() => {
     const savedSession = localStorage.getItem("MySession");
     return savedSession ? JSON.parse(savedSession) : null;

@@ -6,16 +6,16 @@ import interactionPlugin from '@fullcalendar/interaction'; // Necessary for sele
 import {UserInfo} from "./CompanyUser";
 import "../../styles/HR/AttendanceOverview.css";
 import {useState,useEffect} from 'react';
-import { useNavigate } from "react-router-dom";
 export function AttendanceOverview() {
 
-    const navigate = useNavigate();
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+   
     const MySession = JSON.parse(localStorage.getItem("MySession"));
    
     const [employees, setEmployees] = useState([]);
 
     const fetchEmployees = () => {
-        fetch("http://localhost:5000/api/getCompanyUsers")
+        fetch(`${API_BASE_URL}/getCompanyUsers`)
           .then(res => res.json())
           .then(data => setEmployees(data))
           .catch(err => console.error("data from dashboard load error:", err));

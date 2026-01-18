@@ -21,7 +21,7 @@ export function UserInfo(empID, name, lastLogin) {
 }
 
 function CompanyUser() {
-  const navigate = useNavigate(); 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const MySession = JSON.parse(localStorage.getItem("MySession"));
  
   const [employees, setEmployees] = useState(() => {
@@ -34,7 +34,7 @@ function CompanyUser() {
     const loadUser = async () => {
       try {
         //Get response into 'response'
-        const response = await fetch("http://localhost:5000/api/getCompanyUsers");
+        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
         //convert response to json
         const data = await response.json();
         setEmployees(data)
@@ -102,7 +102,7 @@ function CompanyUser() {
     try {
       if (window.confirm("Are you sure you want to remove this account?")) {
 
-        const response = await fetch(`http://localhost:5000/api/deleteAccount/${auth_id}`, {
+        const response = await fetch(`${API_BASE_URL}/deleteAccount/${auth_id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({auth_id,role,employeeId}),

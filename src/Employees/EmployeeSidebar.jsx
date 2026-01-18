@@ -28,7 +28,7 @@ function EmpSidebar({ darkMode }) {
         </li>
         <li>
           <NavLink to="/dashboardEmployee/performanceEmployee" className="sidebar-item">
-            Check My Performance
+            Check Assigned Task
           </NavLink>
         </li>
         <li>

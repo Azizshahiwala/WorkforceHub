@@ -8,7 +8,7 @@ from flask import request as rq
 from flask import Blueprint,jsonify
 import os 
 import sqlite3 as sq
-
+from PathConfig import CompanyUserPath,CredentialsPath,RecruitmentPath
 #For pdf viewing, we need
 import io
 from flask import send_file
@@ -16,14 +16,6 @@ from flask import send_file
 #For unique user profile id. NOT auth_id
 from datetime import datetime, date, time, timezone
 recruitment = Blueprint('Recruitment', __name__, url_prefix='/api')
-
-# Paths
-databaseDir = os.path.join(os.getcwd(), "src", "Database")
-CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
-CredentialsPath = os.path.join(databaseDir, "Credentials.db")
-#This is where our resume will be stored.
-#This will be, Document Repository
-RecruitmentPath = os.path.join(databaseDir, "Recruitment.db")
 
 class Recruitment:
     def __init__(self, compPath, credPath, recPath):
@@ -130,9 +122,13 @@ def fetchApplications():
     except Exception as e:
         print("Error from fetchApplications:",e)
         return jsonify({"error": str(e), "status": "error"}), 500
-
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes
+            
 @recruitment.route('/RegisterForm/applications/upload', methods=['POST'])
 def resumeProcess():
+    print("RESUME UPLOAD FORM SELECTEDDD")
     #We use rq.form and rq.file because we used formData
     email = rq.form.get('email')
     phoneNumber = rq.form.get('phoneNumber')
@@ -157,7 +153,10 @@ def resumeProcess():
         return jsonify({"message": "Application uploaded. Please wait for approval.", "status": "success"}), 200
     except Exception as e:
         return jsonify({"message": f"Error uploading resume: {e}", "status": "error"}), 500
-    
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes
+
 @recruitment.route('/RegisterConfirm/<int:Tempid>', methods=['POST'])
 def admitEmployee(Tempid):
 
@@ -209,6 +208,9 @@ def admitEmployee(Tempid):
     except Exception as e:
         if 'conn' in locals(): conn.close()
         return jsonify({"message": f"Error during admission process: {e}", "status": "error"}), 500
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes
 
 @recruitment.route("/recruitment/reject/<int:id>", methods=["DELETE"])
 def reject_candidate(id):
@@ -235,4 +237,7 @@ def get_resume(id):
         else:
             return jsonify({"message": "Resume not found"}), 404
     except Exception as e:
-        return jsonify({"error": str(e)}), 500    
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes    

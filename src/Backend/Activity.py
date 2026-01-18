@@ -3,12 +3,8 @@ from flask import Blueprint,jsonify
 import os 
 import sqlite3 as sq
 from datetime import datetime, date, time, timezone
-
+from PathConfig import CompanyUserPath,CredentialsPath,GlobalInfoPath
 activity = Blueprint('activity', __name__, url_prefix='/api')
-databaseDir = os.path.join(os.getcwd(), "src", "Database")
-CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
-CredentialsPath = os.path.join(databaseDir, "Credentials.db")
-GlobalInfoPath = os.path.join(databaseDir, "GlobalInfo.db")
 
 class Activity:
     def __init__(self, compUser_path, cred_path, globalInfo_path):

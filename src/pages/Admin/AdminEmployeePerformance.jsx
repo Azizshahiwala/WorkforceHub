@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "../../styles/HR/EmployeePerformance.css";
 function AdminEmployeePerformance() {
-
-  const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   
   const [feedback, setFeedback] = useState([]);

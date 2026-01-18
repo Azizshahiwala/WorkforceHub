@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/HR/FeedbackEmployees.css";
-import { useNavigate } from "react-router-dom";
+
 function FeedbackEmployees() {
-  const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [reviewers, setReviewers] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
@@ -13,7 +13,7 @@ function FeedbackEmployees() {
   
   const [givenBy, setGivenBy] = useState(MySession);
   useEffect(() => {
-  fetch("http://localhost:5000/api/fetchReviewers")
+  fetch(`${API_BASE_URL}/fetchReviewers`)
     .then(res => res.json())
     .then(data => setReviewers(data))
     .catch(err => console.error("Reviewer fetch error:", err));
@@ -22,7 +22,7 @@ function FeedbackEmployees() {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/getCompanyUsers");
+        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
         const data = await response.json();
         setEmployees(data);
       } catch (error) {
@@ -55,7 +55,7 @@ function FeedbackEmployees() {
     };
 
     try {
-      const response = await fetch(`http://localhost:5000/api/submitFeedback/${submissionData.empId}`, {
+      const response = await fetch(`${API_BASE_URL}/submitFeedback/${submissionData.empId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(submissionData),

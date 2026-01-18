@@ -6,12 +6,7 @@
 import sqlite3 as sq
 from flask import Blueprint,jsonify,request as rq
 import os
-
-# Paths
-databaseDir = os.path.join(os.getcwd(), "src", "Database")
-CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
-CredentialsPath = os.path.join(databaseDir, "Credentials.db")
-
+from PathConfig import CompanyUserPath,CredentialsPath
 payroll = Blueprint('Payroll',__name__,url_prefix='/api')
 
 class Payroll:
@@ -226,4 +221,5 @@ def payrollprocess(empId):
         return jsonify(result),200
     except Exception as e:
         return jsonify({"error":str(e)}),500
+    
     

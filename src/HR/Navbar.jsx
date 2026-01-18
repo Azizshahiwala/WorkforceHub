@@ -6,12 +6,58 @@ import { useState, useEffect,useRef } from "react";
 
 function Navbar({ darkMode, setDarkMode }) {
 
-  const [Notifs, setNotifs] = useState([]);
   const [RedDot, SetRedDot] = useState(false);
-  
-  const audio = new Audio("/notification.wav");
-const clearNotification = () => {
-    new Audio("/notification.mp3").play();
+  const audioRef = useRef(null);
+
+  // Notification listener for Admin activities
+  const [hasNotification, setHasNotification] = useState(false);
+  useEffect(() => {
+    const audio = new Audio("/notification.wav");
+
+    // show dot if already exists
+    if (localStorage.getItem("hasNewNotification") === "true") {
+      setHasNotification(true);
+    }
+
+    const handleStorageChange = (event) => {
+      if (event.key === "activities") {
+        setHasNotification(true);
+        audio.play().catch(() => { });
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+
+
+  }, []);
+
+  // Notification bell logic and Sound Logic
+  useEffect(() => {
+    audioRef.current = new Audio("/notification.wav");
+
+    const checkNotification = () => {
+      if (
+        localStorage.getItem("hasNewNotification") === "true" &&
+        !RedDot
+      ) {
+        SetRedDot(true);
+        audioRef.current?.play();
+      }
+    };
+
+    checkNotification();
+    window.addEventListener("focus", checkNotification);
+
+    return () => window.removeEventListener("focus", checkNotification);
+  }, [RedDot]);
+
+  const clearNotification = () => {
+    SetRedDot(false);
+    localStorage.removeItem("hasNewNotification");
   };
 
   return (
