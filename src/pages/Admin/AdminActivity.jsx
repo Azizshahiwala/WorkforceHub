@@ -32,7 +32,7 @@ function AdminActivity() {
 
     try {
       // Post new announcement to backend using employeeId from session
-      const response = await fetch(`http://localhost:5000/api/insertAnnouncement/${MySession.employeeId}`, {
+      const response = await fetch(`${API_BASE_URL}/insertAnnouncement/${MySession.employeeId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTask), // Backend expects the message directly as the JSON body
