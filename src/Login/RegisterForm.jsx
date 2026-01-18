@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RegisterForm.css";
 import { Link } from "react-router-dom";
-const UploadToUrl = "http://localhost:5000/api/RegisterForm/applications/upload";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const roles = [
   { id: "Employee", label: "Employees"},
   { id: "Interviewer", label: "Interviewer"},
@@ -53,7 +53,7 @@ export default function RegisterForm() {
     formData.append('name', name);
     formData.append('personExperience', personExperience);
 
-    const response = await fetch(UploadToUrl, {
+    const response = await fetch(`${API_BASE_URL}/RegisterForm/applications/upload`, {
       method: "POST",
       body: formData,
       });

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import "../../styles/HR/Payroll.css";
-import { useNavigate } from 'react-router-dom';
 function PayRoll() {
-  const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const MySession = JSON.parse(localStorage.getItem("MySession"));
 
   const [Window, setWindow] = useState(false);
@@ -20,7 +19,7 @@ function PayRoll() {
   async function SendMail(empId) {
     const currentMonth = getCurrentMonthYear();
     try{
-      const response = await fetch(`http://localhost:5000/api/pay-gateway/${empId}`, {
+      const response = await fetch(`${API_BASE_URL}/pay-gateway/${empId}`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body : JSON.stringify({ MonthYear : currentMonth }),
@@ -44,7 +43,7 @@ function PayRoll() {
   async function SalaryBreakupCard(empId) {
     const currentMonth = getCurrentMonthYear();
     try {
-      const response = await fetch(`http://localhost:5000/api/pay-Salarybreakup/${empId}/${currentMonth+"%"}`);
+      const response = await fetch(`${API_BASE_URL}/pay-Salarybreakup/${empId}/${currentMonth+"%"}`);
       const data = await response.json();
       if (response.ok) {
         setSalBreakup(data[0]);
@@ -60,7 +59,7 @@ function PayRoll() {
   useEffect(() => {
     const loadEmployees = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/getCompanyUsers");
+        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
         const empdata = await response.json();
         if (Array.isArray(empdata)) {
           console.log("Employee Data Loaded:", empdata);

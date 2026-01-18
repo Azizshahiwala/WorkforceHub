@@ -1,14 +1,10 @@
 # src/Database/Users.py
 import sqlite3 as sq 
+from PathConfig import CompanyUserPath,CredentialsPath
 from flask import Blueprint, jsonify
 import os
 
 users = Blueprint('CentralUserBase', __name__, url_prefix='/api')
-
-# Paths
-databaseDir = os.path.join(os.getcwd(), "src", "Database")
-CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
-CredentialsPath = os.path.join(databaseDir, "Credentials.db")
 
 class UserDB:
     def __init__(self, db_path, cred_path):
@@ -76,3 +72,4 @@ def get_company_users():
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    

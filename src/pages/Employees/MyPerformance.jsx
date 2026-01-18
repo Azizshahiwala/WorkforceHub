@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../styles/HR/EmployeePerformance.css";
 //THIS file is for individual Employee ONLY
 function EmployeePersonalPerformance() {
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const [performance, setPerformance] = useState([]);
 const [loggedInEmployee, setLoggedInEmployee] = useState(null);
 const [loading, setLoading] = useState(true);
@@ -13,7 +14,7 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  fetch(`http://localhost:5000/api/myPeformancesAndFeedbacks/${loggedInEmployee.employeeId}`)
+  fetch(`${API_BASE_URL}/myPeformancesAndFeedbacks/${loggedInEmployee.employeeId}`)
     .then(res => res.json())
     .then(data => {
       setPerformance(data);

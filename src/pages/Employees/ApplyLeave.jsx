@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "../../styles/Employees/ApplyLeave.css";
 function ApplyLeave() {
-  const navigate = useNavigate();
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   
   const [startDate, setStartDate] = useState("");
@@ -37,7 +36,7 @@ function ApplyLeave() {
     
     try{
       
-      const response = await fetch(`http://localhost:5000/api/postLeaveRq/${MySession.employeeId}/${MySession.auth_id}`, {
+      const response = await fetch(`${API_BASE_URL}/postLeaveRq/${MySession.employeeId}/${MySession.auth_id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(leaveData),

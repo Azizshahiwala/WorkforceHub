@@ -1,27 +1,27 @@
 import React, { useState,useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+
 import "../../styles/HR/Recruitment.css";
 function Recruitment() {
-const navigate = useNavigate();
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const [applications, setApplications] = useState([]);
 
 const MySession = JSON.parse(localStorage.getItem("MySession"));
 
   useEffect(() => {
-  fetch("http://localhost:5000/api/RegisterForm/applications")
+  fetch(`${API_BASE_URL}/RegisterForm/applications`)
     .then(res => res.json())
     .then(data => setApplications(data));
   }, []);
 
   function Reject(id) {
-  fetch(`http://localhost:5000/api/recruitment/reject/${id}`, {
+  fetch(`${API_BASE_URL}/recruitment/reject/${id}`, {
     method: "DELETE"
   }).then(() => {
     setApplications(prev => prev.filter(item => item.id !== id));
   }).then(()=>{alert(this.message)});
 }
   function Accept(id) {
-  fetch(`http://localhost:5000/api/RegisterConfirm/${id}`, {
+  fetch(`${API_BASE_URL}/RegisterConfirm/${id}`, {
     method: "POST"
   })
     .then(res => res.json())
@@ -44,7 +44,7 @@ const MySession = JSON.parse(localStorage.getItem("MySession"));
 }
 function showReport(id) {
     // Open the backend PDF route in a new tab
-    window.open(`http://localhost:5000/api/recruitment/resume/${id}`, '_blank');
+    window.open(`${API_BASE_URL}/recruitment/resume/${id}`, '_blank');
 } 
   return (<>
   <div>

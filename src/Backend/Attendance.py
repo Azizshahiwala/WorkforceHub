@@ -2,14 +2,8 @@
 from flask import Blueprint, jsonify
 import os 
 import sqlite3 as sq
-
+from PathConfig import CompanyUserPath,CredentialsPath
 attendance = Blueprint('Attendance', __name__, url_prefix='/api')
-
-# Paths
-databaseDir = os.path.join(os.getcwd(), "src", "Database")
-CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
-CredentialsPath = os.path.join(databaseDir, "Credentials.db")
-
 class AttendanceDB:
     def __init__(self, db_path, cred_path):
         self.db_path = db_path
@@ -77,3 +71,4 @@ def get_attendance_dashboard():
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
+   

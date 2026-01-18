@@ -5,12 +5,8 @@ from flask import Blueprint, jsonify
 import os
 import sqlite3 as sq
 from datetime import datetime, date, time, timezone
-
+from PathConfig import CompanyUserPath,CredentialsPath
 notification = Blueprint('notification',__name__,url_prefix='/api')
-
-databaseDir = os.path.join(os.getcwd(), "src", "Database")
-CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
-CredentialsPath = os.path.join(databaseDir, "Credentials.db")
 
 class Notification:
     def __init__(self, compPath, credPath):
@@ -49,6 +45,9 @@ class Notification:
         except Exception as e:
             print(f"❌ DB Error: {e}")
             return False 
+        finally:
+            if conn:
+                conn.close() # This runs even if the code crashes
     def insert_notification(self, employeeId, role, message):
         try:
             conn ,cursor = self._conn_user()
@@ -64,6 +63,9 @@ class Notification:
         except Exception as e:
             print(f"Error inserting notification: {e}")
             return False
+        finally:
+            if conn:
+                conn.close() # This runs even if the code crashes
     
 
 notifManager = Notification(CompanyUserPath,CredentialsPath)    
@@ -89,6 +91,9 @@ def get_notifications(employeeId):
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes
     
 @notification.route('/markRead/<int:notifId>', methods=['POST'])
 def mark_as_read(notifId):
@@ -100,3 +105,6 @@ def mark_as_read(notifId):
         return jsonify({"status": "success"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes

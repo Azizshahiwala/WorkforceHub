@@ -3,10 +3,8 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "../../styles/HR/AttendanceDashboard.css";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 function AttendanceDashboard() {
-  const navigate = useNavigate();
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   
   const [employees, setEmployees] = useState([]);
@@ -18,7 +16,7 @@ function AttendanceDashboard() {
   // 2. Load all attendance records from your backend
   const fetchAttendance = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/fetchdashboard");
+      const response = await fetch(`${API_BASE_URL}/fetchdashboard`);
       const attdata = await response.json();
       const demo = attdata;
       setAttendanceRecords(demo);
@@ -30,7 +28,7 @@ function AttendanceDashboard() {
 
     const loadEmployees = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/getCompanyUsers");
+        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
         const empdata = await response.json();
 
         if (Array.isArray(empdata) && empdata.length > 0) {

@@ -3,14 +3,14 @@ from flask import Blueprint, jsonify
 import os
 import sqlite3 as sq
 from datetime import datetime
-
-databaseDir = os.path.join(os.getcwd(), "src", "Database")
-databasePath = os.path.join(databaseDir, "Credentials.db")
+from PathConfig import CompanyUserPath,CredentialsPath
+#Instead of hardcoded paths, this will help in making it dynamic instead of hardcode
+#We use env file to get dynamic environment names
+#This prevents database data breach
 
 def createCredentials():
     try:
-        os.makedirs(databaseDir, exist_ok=True)
-        conn = sq.connect(databasePath)
+        conn = sq.connect(CredentialsPath)
         conn.execute("PRAGMA foreign_keys = ON;")
         cursor = conn.cursor()
         cursor.execute('''
@@ -30,7 +30,9 @@ def createCredentials():
     except Exception as e:
         print(f"❌ DB Error: {e}")
         return False
-
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes
 # ✅ FIXED: Exact role names matching your DummyDataFiller
 def isStaff(role):
     staff = ["Sales manager", "Designer", "Developer", 
@@ -93,7 +95,7 @@ def login():
         
         #print(f"🔍 Login attempt: {email}")
         
-        conn = sq.connect(databasePath)
+        conn = sq.connect(CredentialsPath)
         cursor = conn.cursor()
 
         #To support indiviual user login, we use user table.
@@ -160,7 +162,9 @@ def login():
     except Exception as e:
         print(f"❌ Error: {e}")
         return jsonify({"success": False,"message": str(e)}), 500
-    
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes
 LoginHandler = Login(CredentialsPath,CompanyUserPath)
 @authlogin.route("/deleteAccount/<string:auth_id>", methods=['POST'])
 def deleteAccount(auth_id):
@@ -181,3 +185,7 @@ def deleteAccount(auth_id):
         return jsonify({"status":"success"}),200
     except Exception as e:
         print(e)
+        return jsonify({"status":"error"}),500
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes

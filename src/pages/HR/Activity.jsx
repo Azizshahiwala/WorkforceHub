@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../styles/HR/Activity.css";
 
 function Activity() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [activities, setActivities] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -12,7 +13,7 @@ function Activity() {
   // Fetch announcements from the database on load
   const loadActivities = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/fetchAnnouncements");
+      const response = await fetch(`${API_BASE_URL}/fetchAnnouncements`);
       const data = await response.json();
       setActivities(data);
     } catch (error) {
@@ -30,7 +31,7 @@ function Activity() {
 
     try {
       // Post new announcement to backend using employeeId from session
-      const response = await fetch(`http://localhost:5000/api/insertAnnouncement/${MySession.employeeId}`, {
+      const response = await fetch(`${API_BASE_URL}/insertAnnouncement/${MySession.employeeId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTask), // Backend expects the message directly as the JSON body
