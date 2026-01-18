@@ -5,7 +5,23 @@ function Activity() {
   const [activities, setActivities] = useState([]);
 
   const MySession = JSON.parse(localStorage.getItem("MySession"));
-    
+
+  useEffect(() => {
+
+    const loadActivities = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/fetchAnnouncements");
+        const data = await response.json();
+        setActivities(data);
+        localStorage.removeItem("hasNewNotification");
+      } catch (error) {
+        console.error("Error loading announcements:", error);
+      }
+    };
+
+    loadActivities();
+  }, []);
   useEffect(() => {
         const loadActivities = async () => {
           try {
@@ -20,7 +36,6 @@ function Activity() {
     
         loadActivities();
       }, []);
-
   return (
     <div className="activity-page">
       <div className="activity-header">

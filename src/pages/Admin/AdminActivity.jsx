@@ -3,13 +3,15 @@ import "../../styles/HR/Activity.css";
 //This API is for dynamic url instead of having to hardcode in every single jsx
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-function Activity() {
+function AdminActivity() {
   const [activities, setActivities] = useState([]);
-  const [message, setMessage] = useState("");
+  const [newTask, setNewTask] = useState("");
   const [showModal, setShowModal] = useState(false);
-  
+
+  // Get session to identify the user
   const MySession = JSON.parse(localStorage.getItem("MySession"));
 
+  // Fetch announcements from the database on load
   const loadActivities = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/fetchAnnouncements`);
@@ -24,44 +26,35 @@ function Activity() {
     loadActivities();
   }, []);
 
-  const sendActivity = async (e) => {
+  const addNewActivity = async (e) => {
     e.preventDefault();
-    if (!message.trim()) return;
+    if (!newTask.trim()) return;
 
     try {
-      // FIXED: Corrected the URL parameter to use MySession.employeeId
+      // Post new announcement to backend using employeeId from session
       const response = await fetch(`http://localhost:5000/api/insertAnnouncement/${MySession.employeeId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(message),
+        body: JSON.stringify(newTask), // Backend expects the message directly as the JSON body
       });
 
       if (response.ok) {
-        const data = await response.json(); 
-        
-        // Update local state with the complete record from backend
-        setActivities(prev => [{
-          dateCreated: data.dateCreated,
-          message: data.message,
-          givenById: data.givenById,
-          givenByRole: data.givenByRole
-        }, ...prev]);
-
-        setMessage("");
+        setNewTask("");
         setShowModal(false);
+        loadActivities(); // Refresh list to show new post
+        localStorage.setItem("hasNewNotification", "true");
       } else {
-        alert("Failed to upload announcement");
+        alert("Failed to post announcement");
       }
     } catch (error) {
-      console.error("❌ error:", error);
-      alert("Server error during upload");
+      console.error("Post Activity Error:", error);
     }
   };
 
   return (
     <div className="activity-page">
       <div className="activity-header">
-        <h2>Admin Activity Dashboard</h2>
+        <h2>HR Activity Dashboard</h2>
         <button className="activity-btn" onClick={() => setShowModal(true)}>
           + New Activity
         </button>
@@ -77,7 +70,10 @@ function Activity() {
             <div className="activity-content">
               <span className="activity-time">{item.dateCreated}</span>
               <p className="activity-text">{item.message}</p>
-              <small>ID: {item.givenById} ({item.givenByRole})</small>
+
+              <small className="activity-sender">Posted by: {item.givenByRole}</small>
+
+              {/* <small className="activity-sender">Posted by: {item.givenByRole}</small> */}
             </div>
           </div>
         ))}
@@ -85,13 +81,13 @@ function Activity() {
 
       {showModal && (
         <div className="modal-overlay">
-          <form className="modal-box" onSubmit={sendActivity}>
+          <form className="modal-box" onSubmit={addNewActivity}>
             <h4>Add New Activity</h4>
             <textarea
               className="modal-textarea"
-              placeholder="Post a company-wide update..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Enter announcement for staff..."
+              value={newTask}
+              onChange={(e) => setNewTask(e.target.value)}
               required
             />
             <div className="modal-actions">
@@ -113,4 +109,4 @@ function Activity() {
   );
 }
 
-export default Activity;
+export default AdminActivity;
