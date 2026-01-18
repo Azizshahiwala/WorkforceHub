@@ -6,7 +6,7 @@ function Activity() {
   const [activities, setActivities] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [showModal, setShowModal] = useState(false);
-  
+
   // Get session to identify the user
   const MySession = JSON.parse(localStorage.getItem("MySession"));
 
@@ -41,6 +41,7 @@ function Activity() {
         setNewTask("");
         setShowModal(false);
         loadActivities(); // Refresh list to show new post
+        localStorage.setItem("hasNewNotification", "true");
       } else {
         alert("Failed to post announcement");
       }
@@ -68,7 +69,7 @@ function Activity() {
             <div className="activity-content">
               <span className="activity-time">{item.dateCreated}</span>
               <p className="activity-text">{item.message}</p>
-              <small className="activity-sender">Posted by: {item.givenByRole}</small>
+              {/* <small className="activity-sender">Posted by: {item.givenByRole}</small> */}
             </div>
           </div>
         ))}
