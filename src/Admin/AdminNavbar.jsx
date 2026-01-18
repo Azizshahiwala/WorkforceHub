@@ -1,35 +1,58 @@
 import logo from "../images/logo.jpeg";
+import Logout from "../Login/Logout";
 import "../HR/Navbar.css";
-import { useState, useEffect,useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 function Navbar({ darkMode, setDarkMode }) {
+  const [RedDot, SetRedDot] = useState(false);
+  const audioRef = useRef(null);
 
-   const [hasNotification, setHasNotification] = useState(false);
+  const [hasNotification, setHasNotification] = useState(false);
   useEffect(() => {
-  const audio = new Audio("/notification.wav");
+    const audio = new Audio("/notification.wav");
 
-  // show dot if already exists
-  if (localStorage.getItem("hasNewNotification") === "true") {
-    setHasNotification(true);
-  }
-
-  const handleStorageChange = (event) => {
-    if (event.key === "activities") {
+    // show dot if already exists
+    if (localStorage.getItem("hasNewNotification") === "true") {
       setHasNotification(true);
-      audio.play().catch(() => {});
     }
-  };
 
-  window.addEventListener("storage", handleStorageChange);
+    const handleStorageChange = (event) => {
+      if (event.key === "activities") {
+        setHasNotification(true);
+        audio.play().catch(() => { });
+      }
+    };
 
-  return () => {
-    window.removeEventListener("storage", handleStorageChange);
-  };
+    window.addEventListener("storage", handleStorageChange);
 
-  
-}, []);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
 
-const clearNotification = () => {
+
+  }, []);
+
+  // Notification bell logic and Sound Logic
+  useEffect(() => {
+    audioRef.current = new Audio("/notification.wav");
+
+    const checkNotification = () => {
+      if (
+        localStorage.getItem("hasNewNotification") === "true" &&
+        !RedDot
+      ) {
+        SetRedDot(true);
+        audioRef.current?.play();
+      }
+    };
+
+    checkNotification();
+    window.addEventListener("focus", checkNotification);
+
+    return () => window.removeEventListener("focus", checkNotification);
+  }, [RedDot]);
+
+  const clearNotification = () => {
     new Audio("/notification.mp3").play();
     setHasNotification(false);
     localStorage.setItem("hasNewNotification", "false");
@@ -39,28 +62,25 @@ const clearNotification = () => {
     <div className="navbar">
       <img src={logo} alt="HRMS Logo" className="logo" />
 
-      {/* RIGHT SIDE: bell + theme toggle */}
       <div className="notification-wrapper" onClick={clearNotification}>
         <button className="bell-btn">
           <i
             className="fa-regular fa-bell"
             style={{ color: darkMode ? "#ffffff" : "#444444" }}
           ></i>
-           {hasNotification && <span className="notification-dot"></span>}
-        </button>
-
-        <button
-          className="theme-toggle"
-          onClick={() => setDarkMode(prev => !prev)}
-        >
-          <span className="icon">
-            {darkMode ? "🌙" : "☀️"}
-          </span>
-          <span className="label">
-            {darkMode ? "Dark" : "Light"}
-          </span>
+          {RedDot && <span className="notification-dot"></span>}
         </button>
       </div>
+
+      <button
+        className="theme-toggle"
+        onClick={() => setDarkMode(prev => !prev)}
+      >
+        <span className="icon">{darkMode ? "🌙" : "☀️"}</span>
+        <span className="label">{darkMode ? "Dark" : "Light"}</span>
+      </button>
+
+      <Logout SessionName={"MySession"} />
     </div>
   );
 }

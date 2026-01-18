@@ -68,7 +68,7 @@ function Activity() {
             <div className="activity-content">
               <span className="activity-time">{item.dateCreated}</span>
               <p className="activity-text">{item.message}</p>
-              <small className="activity-sender">Posted by: {item.givenByRole}</small>
+              {/* <small className="activity-sender">Posted by: {item.givenByRole}</small> */}
             </div>
           </div>
         ))}

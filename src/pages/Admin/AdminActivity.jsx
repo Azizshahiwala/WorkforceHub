@@ -52,7 +52,7 @@ function AdminActivity() {
   return (
     <div className="activity-page">
       <div className="activity-header">
-        <h2>HR Activity Dashboard</h2>
+        <h2>Admin Activity Dashboard</h2>
         <button className="activity-btn" onClick={() => setShowModal(true)}>
           + New Activity
         </button>
@@ -68,7 +68,7 @@ function AdminActivity() {
             <div className="activity-content">
               <span className="activity-time">{item.dateCreated}</span>
               <p className="activity-text">{item.message}</p>
-              <small className="activity-sender">Posted by: {item.givenByRole}</small>
+              {/* <small className="activity-sender">Posted by: {item.givenByRole}</small> */}
             </div>
           </div>
         ))}
