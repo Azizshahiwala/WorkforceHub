@@ -12,7 +12,10 @@ body.dark .activity-page {
 }
 
 
-
+.modal-box,
+.activity-container {
+  color: #111827;
+}
 
 /* ===============================
    Activity Card Container
