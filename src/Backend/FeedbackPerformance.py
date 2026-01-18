@@ -105,9 +105,7 @@ def fetch_reviewers():
     except Exception as e:
         #print("fetchReviewers ERROR:", e)
         return jsonify({"error": str(e)}), 500
-    finally:
-        if conn:
-            conn.close() # This runs even if the code crashes
+    
 #Fetch emp performance for individual employees.    
 @feedbackandperformance.route('/myPeformancesAndFeedbacks/<string:employeeID>', methods=['GET'])
 def myPeformancesandFeedbacks(employeeID):
@@ -138,7 +136,4 @@ def myPeformancesandFeedbacks(employeeID):
     except Exception as e:
         print(e)
         return jsonify({"status":"error"})
-    finally:
-        if conn:
-            conn.close() # This runs even if the code crashes
         
