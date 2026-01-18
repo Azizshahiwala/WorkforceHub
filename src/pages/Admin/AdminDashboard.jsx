@@ -19,7 +19,7 @@ export default function AdminDashboard() {
   const [employees,setEmployees] = useState([])
     
     useEffect(() => {
-      fetch(`${API_BASE_URL}/api/getCompanyUsers`)
+      fetch(`${API_BASE_URL}/getCompanyUsers`)
         .then(res => res.json())
         .then(data => setEmployees(data))
         .catch(err => console.error("Dashboard load error:", err));

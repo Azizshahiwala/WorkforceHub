@@ -11,9 +11,11 @@ const MySession = JSON.parse(localStorage.getItem("MySession"));
 
 useEffect(() => {
   setLoggedInEmployee(MySession);
+  console.log(loggedInEmployee);
 }, []);
 
 useEffect(() => {
+  if (!loggedInEmployee?.employeeId) return;
   fetch(`${API_BASE_URL}/myPeformancesAndFeedbacks/${loggedInEmployee.employeeId}`)
     .then(res => res.json())
     .then(data => {
