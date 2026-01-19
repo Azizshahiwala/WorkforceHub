@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import "../../styles/Employees/AssignedTaskByHR.css";
 
-function EmployeeView() {
+function AssignedTaskByHR() {
   const [projectData, setProjectData] = useState(null);
 
   useEffect(() => {
@@ -9,42 +10,35 @@ function EmployeeView() {
   }, []);
 
   if (!projectData) {
-    return <h3 style={{ textAlign: "center" }}>No task assigned yet</h3>;
+    return <h3 className="employee-no-task">No task assigned yet</h3>;
   }
 
   return (
-    <div style={styles.card}>
-      <h2>Assigned Project</h2>
+    
+    <body className="employee-view-page">
+      <h1 className="employee-view-title">Assigned Task</h1>
 
-      <p>
-        <strong>Project Name:</strong> {projectData.projectName}
-      </p>
-      <p>
-        <strong>Company Name:</strong> {projectData.companyName}
-      </p>
+      <div className="employee-assigned-card">
+        <h2>Assigned Project</h2>
 
-      <h3>Assigned Team Members</h3>
-      <ul>
-        {projectData.employees.map((emp) => (
-          <li key={emp.id}>
-            {emp.name} - {emp.role}
-          </li>
-        ))}
-      </ul>
-    </div>
+        <p>
+          <strong>Project Name:</strong> {projectData.projectName}
+        </p>
+        <p>
+          <strong>Company Name:</strong> {projectData.companyName}
+        </p>
+
+        <h3>Assigned Team Members</h3>
+        <ul>
+          {projectData.employees.map((emp) => (
+            <li key={emp.uid || emp.id}>
+              {emp.name} - {emp.role}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </body>
   );
 }
 
-const styles = {
-  card: {
-    width: "400px",
-    margin: "50px auto",
-    padding: "20px",
-    borderRadius: "10px",
-    background: "#ffffff",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-    fontFamily: "Arial",
-  },
-};
-
-export default EmployeeView;
+export default AssignedTaskByHR;
