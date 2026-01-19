@@ -10,10 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "3": "^2.1.0",
     "@fullcalendar/core": "^6.1.20",
     "@fullcalendar/daygrid": "^6.1.20",
     "@fullcalendar/interaction": "^6.1.20",
     "@fullcalendar/react": "^6.1.20",
+    "p": "^0.2.0",
+    "pip": "^0.0.1",
+    "pip3": "^420.911.69",
     "react": "^19.2.0",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.0",

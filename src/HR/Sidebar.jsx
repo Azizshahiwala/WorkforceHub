@@ -52,6 +52,11 @@ function Sidebar({ darkMode }) {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/dashboard/assignTask" className="sidebar-item">
+            Assign Task to Employees
+          </NavLink>
+        </li>
+        <li>
           <NavLink to="/dashboard/feedback" className="sidebar-item">
             Feedback to Employees
           </NavLink>

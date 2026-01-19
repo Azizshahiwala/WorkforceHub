@@ -12,6 +12,9 @@ import Activity from "./pages/HR/Activity";
 import AttendanceDashboard from "./pages/HR/AttendanceDashboard";
 import AttendanceOverview from "./pages/HR/AttendanceOverview";
 import EmployeePerformance from "./pages/HR/EmployeePerformance";
+import AssignTask from "./pages/HR/AssignTask";
+
+// Login Layout import
 import Login from "./Login/LoginPage";
 import Interviewer from "./Login/InterviewerPage";
 import InterviewStart from "./Login/InterviewStart";
@@ -30,7 +33,8 @@ import EmployeeLayout from "./layout/EmployeeLayout";
 import EmployeeDashboard from "./pages/Employees/EmployeeDashboard";
 import ApplyLeave from "./pages/Employees/ApplyLeave";
 import EmployeePersonalPerformance from "./pages/Employees/MyPerformance";
-import Announcements from "./pages/Employees/EmployeeActivity";
+import EmployeeActivity from "./pages/Employees/EmployeeActivity";
+import AssignTaskByHR from "./pages/Employees/AssignedTaskByHR";
 
 //Entry point - Registration
 import RegisterForm from "./Login/RegisterForm";
@@ -69,6 +73,7 @@ function App() {
           <Route path="feedback" element={<Feedback />} />
           <Route path="Applications" element={<Recruitment />} />
           <Route path="activity" element={<Activity />} />
+          <Route path="assignTask" element={<AssignTask />} />
           <Route path="attendance/AttendanceOverview" element={<AttendanceOverview/>} />
           <Route path="EmployeePerformance" element={<EmployeePerformance />} />
         </Route>
@@ -88,7 +93,8 @@ function App() {
           <Route index element={<EmployeeDashboard />} />
           <Route path="applyLeave" element={<ApplyLeave />} />
           <Route path="performanceEmployee" element={<EmployeePersonalPerformance />} />
-          <Route path="announcements" element={<Announcements />} />
+          <Route path="activityEmployee" element={<EmployeeActivity />} />
+          <Route path="assignedTaskByHR" element={<AssignTaskByHR />} />
         </Route>
 
         {/* Interviewer routes remain the same or adjust as needed */}
