@@ -21,6 +21,7 @@ function LeaveManager() {
 
   const handleLeaveOption = async (Leaveid,option,employeeId) => {
     try{
+      //This checks if option is accept / reject. then uses calls using leaveid
       if(option === "accept"){
         const response = await fetch(`${API_BASE_URL}/acceptLeave/${Leaveid}`, {
         method: "POST",
