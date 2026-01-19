@@ -39,14 +39,14 @@ import AssignTaskByHR from "./pages/Employees/AssignedTaskByHR";
 //Entry point - Registration
 import RegisterForm from "./Login/RegisterForm";
 function App() {
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   //This hook sends API request to the python flask end point: localhost/api/init-db
   //Which the flask uses CORS to validate the response. THEN, flask will run the database.py  
   useEffect(() => {
     const initDB = async () => {
       try {
         //Get response into 'response'
-        const response = await fetch("http://localhost:5000/api/init-db");
+        const response = await fetch(`${API_BASE_URL}/init-db`);
         //convert response to json
         const data = await response.json();
         console.log("Backend response:", data.message);
