@@ -60,8 +60,8 @@ function AssignTask() {
   return (
     <>
       <div className={`assign-task-page ${showModal ? "assign-task-blur" : ""}`}>
+        <h1>Assign Task</h1>
         <div className="assign-task-card">
-          <h1>Assign Task</h1>
           <h3>Project Name: {projectName}</h3>
           <p>Company Name: {companyName}</p>
 
