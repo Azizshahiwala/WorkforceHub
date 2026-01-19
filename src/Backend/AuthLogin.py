@@ -153,8 +153,7 @@ def login():
                 "id":id,
                 "employeeId": employeeId,
                 "email": email,
-                "message": "Login successful",
-                "loggedInAt": datetime.now().strftime("%y-%m-%d %I:%M:%S %p")
+                "message": "Login successful"
             }), 200
         else:
             #print(f"❌ No user found for {email}")
