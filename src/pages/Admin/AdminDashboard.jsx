@@ -27,7 +27,7 @@ export default function AdminDashboard() {
   
     //This use effects checks if leave is expired or not.
       useEffect(() => {
-            fetch(`http://localhost:5000/api/CloseLeaveDuration`)
+            fetch(`${API_BASE_URL}/CloseLeaveDuration`)
               .then(res => res.json())
               .then(data => console.log(data.closedCount));
           }, []);

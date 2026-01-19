@@ -11,7 +11,7 @@ function Activity() {
     const loadActivities = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/fetchAnnouncements");
+          `${API_BASE_URL}/fetchAnnouncements`);
         const data = await response.json();
         setActivities(data);
         localStorage.removeItem("hasNewNotification");

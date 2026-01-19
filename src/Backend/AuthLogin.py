@@ -9,6 +9,7 @@ from PathConfig import CompanyUserPath,CredentialsPath
 #This prevents database data breach
 
 def createCredentials():
+    conn = None
     try:
         conn = sq.connect(CredentialsPath)
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -66,14 +67,6 @@ def isEmployee(role):
     
     return False
 authlogin = Blueprint('Auth',__name__,url_prefix='/api')
-
-#os.getcwd() Returns the current working directory
-databaseDir = os.path.join(os.getcwd(),"src","Database")
-#Returns: HOME/src/Database/
-CredentialsPath = os.path.join(databaseDir,"Credentials.db")
-#Returns: HOME/src/Database/Credentials.db
-CompanyUserPath = os.path.join(databaseDir,"CompanyUsers.db")
-
 class Login:
     def __init__(self,cred_path,comp_path):
         self.cred_path = cred_path
