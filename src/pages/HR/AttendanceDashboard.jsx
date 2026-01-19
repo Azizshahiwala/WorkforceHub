@@ -5,6 +5,7 @@ import "../../styles/HR/AttendanceDashboard.css";
 import { Link } from "react-router-dom";
 function AttendanceDashboard() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   
   const [employees, setEmployees] = useState([]);
@@ -77,7 +78,7 @@ function AttendanceDashboard() {
 
     // Directly set events as we no longer need to merge with holidays
     setMyEvents(mappedEvents);
-  }, [selectedEmp, attendanceRecords]);
+  }, [selectedEmp]);
   
   useEffect(() => {
   if (calendarRef.current && Myevent.length > 0) {

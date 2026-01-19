@@ -1,6 +1,7 @@
 // App.jsx
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useEffect , useState} from "react";
+
 import HRLayout from "./layout/HRLayout";
 import Dashboard from "./pages/HR/Dashboard";
 import LeaveManager from "./pages/HR/LeaveManager";
@@ -38,32 +39,54 @@ import AssignTaskByHR from "./pages/Employees/AssignedTaskByHR";
 
 //Entry point - Registration
 import RegisterForm from "./Login/RegisterForm";
-function App() {
+
+//This maincontent function seperates logic to 'remember' a device. 
+function MainContent(){
+  //we use navigate because <BrowserComponent> has its child useNavigate.
+
+  const navigate = useNavigate();
+  const location = useLocation();
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   //This hook sends API request to the python flask end point: localhost/api/init-db
   //Which the flask uses CORS to validate the response. THEN, flask will run the database.py  
   useEffect(() => {
+    // Initialize DB (only once)
     const initDB = async () => {
       try {
-        //Get response into 'response'
-        const response = await fetch(`${API_BASE_URL}/init-db`);
-        //convert response to json
-        const data = await response.json();
-        console.log("Backend response:", data.message);
+        await fetch(`${API_BASE_URL}/init-db`);
       } catch (error) {
-        console.error("Failed to initialize database on startup:", error);
+        console.error("DB Init failed", error);
       }
     };
-
     initDB();
+
+    // 2. Check if i find a session.
+    const session = JSON.parse(localStorage.getItem("MySession"));
+    if (session) {
+      const role = session.role.toLowerCase();
+      let targetPath = "";
+
+    //Also check permission. Then navigate according to the paths 
+      if (session.permission === 2 || session.permission === 3) targetPath = "/dashboardEmployee";
+      else if (session.permission === 1) {
+        targetPath = (role === "hr") ? "/dashboard" : "/dashboardAdmin";
+      }
+
+      //Check if path is not '/'. this prevents infinite hook render
+      
+      if (targetPath && location.pathname === "/") {
+        navigate(targetPath, { replace: true });
+      }
+    }
   }, []);
+
+
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* 1. Login or Register is now the index page */}
-        <Route path="/RegisterForm" element={<RegisterForm />} />
-        <Route path="/" element={<Login />} />
-        {/* 2. Move HR Layout to /dashboard */}
+    <Routes>
+      <Route path="/RegisterForm" element={<RegisterForm />} />
+      <Route path="/" element={<Login />} />
+      {/* ... all other routes ... */}
+    {/* 2. Move HR Layout to /dashboard */}
         <Route path="/dashboard" element={<HRLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="users" element={<CompanyUser />} />
@@ -102,6 +125,12 @@ function App() {
         <Route path="/interview/start" element={<InterviewStart />} />
         <Route path="/end" element={<InterviewEnd />} />
       </Routes>
+  );
+}
+function App() {
+  return (
+    <BrowserRouter>
+      <MainContent></MainContent>  
     </BrowserRouter>
   );
 }
