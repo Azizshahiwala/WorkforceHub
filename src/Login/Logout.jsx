@@ -5,6 +5,7 @@ function Logout({SessionName}){
     const removeSession = (SessionName) => {
         if(SessionName === ""){
             alert("Logged out. Please log back in.");
+            navigate("/", { replace: true });
         }
         localStorage.removeItem('MySession');
         alert("You have been logged-out.");
