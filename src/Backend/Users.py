@@ -41,7 +41,7 @@ class UserDB:
         
         query = """
    SELECT emp.name, emp.employeeId, emp.department, emp.status, emp.lastLogin, 
-   login.role, login.gender, login.phoneNumber, emp.BaseSalary, emp.auth_id
+   login.role, login.gender, login.email, login.phoneNumber, emp.BaseSalary, emp.auth_id
    FROM "user" AS emp 
    LEFT JOIN cred_db.login AS login ON emp.auth_id = login.id
     """
@@ -65,8 +65,8 @@ def get_company_users():
             {
                 "name": r[0], "employeeId": r[1], "department": r[2], 
                 "status": r[3], "lastLogin": r[4], "role": r[5], 
-                "gender": r[6], "phoneNumber": r[7],"BaseSalary": r[8],
-                "auth_id":r[9]
+                "gender": r[6], "email":r[7], "phoneNumber": r[8],"BaseSalary": r[9],
+                "auth_id":r[10]
             } for r in data
         ]
         return jsonify(result), 200

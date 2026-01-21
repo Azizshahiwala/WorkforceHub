@@ -160,6 +160,9 @@ class Payroll:
             taxamount = BaseEmpSal * 0.2
         
         LossOfPay = (BaseEmpSal / 30) * (30 - TotalDays)
+        if LossOfPay <= 0:
+            LossOfPay = 0
+
         GrossSalary = BaseEmpSal
         NetSalary = GrossSalary - (taxamount + ProvidentFund + professionaltax + LossOfPay)
         #Insert leave records from Leave.py / LeaveManager.jsx
@@ -177,6 +180,7 @@ class Payroll:
                    "TaxAmount":taxamount,
                    "ProvidentFund":ProvidentFund,
                    "ProfessionalTax":professionaltax,
+                   "LossOfPay": LossOfPay,
                    "GrossSalary":GrossSalary,
                    "NetSalary":NetSalary}]
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import "../../styles/HR/Payroll.css";
-import { sendMailGmail } from "./SendingEmail";
+import { sendPaySlip } from "../EmailHandler";
 function PayRoll() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const MySession = JSON.parse(localStorage.getItem("MySession"));
@@ -17,21 +17,23 @@ function PayRoll() {
     return `${year}-${month}`;
   };
 
-  async function SendMail(empId) {
+  async function SendMail(emailTo,empName,empID) {
     const currentMonth = getCurrentMonthYear();
     try {
-      const response = await fetch(`${API_BASE_URL}/pay-gateway/${empId}`, {
+      const response = await fetch(`${API_BASE_URL}/pay-gateway/${empID}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ MonthYear: currentMonth }),
       });
-
+      const data = await response.json();
       if (response.ok) {
         setCurrentGatewayRes(response);
         //This filters out non-same employeeId entries. 
         //Meaning it removes entries whose payslip has been sent (empId = employeeId).
-        setEmployee((prev) => prev.filter((emp) => emp.employeeId !== empId));
-        alert("Mail sent successfully!");
+        setEmployee((prev) => prev.filter((emp) => emp.employeeId !== empID));
+        alert("You will be redirected to gmail shortly...");
+        setSalBreakup(data[0]);
+        sendPaySlip(emailTo,empName,empID,data[0],"Salary Pay");
       }
       else {
         alert("Error: Mail could not be processed.");
@@ -125,9 +127,8 @@ function PayRoll() {
                   </button>
 
                   <button
-                    onClick={() => sendMailGmail(emp)}
-                    className="action-btn btn-card"
-                  >
+                    onClick={() => SendMail(emp.email,emp.name,emp.employeeId)}
+                    className="action-btn btn-card">
                     📧 Send Payslip
                   </button>
                 </div>
