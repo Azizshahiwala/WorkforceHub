@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import "../../styles/HR/Payroll.css";
+import { sendMailGmail } from "./SendingEmail";
 function PayRoll() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const MySession = JSON.parse(localStorage.getItem("MySession"));
@@ -18,32 +19,32 @@ function PayRoll() {
 
   async function SendMail(empId) {
     const currentMonth = getCurrentMonthYear();
-    try{
+    try {
       const response = await fetch(`${API_BASE_URL}/pay-gateway/${empId}`, {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body : JSON.stringify({ MonthYear : currentMonth }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ MonthYear: currentMonth }),
       });
 
-      if(response.ok){
+      if (response.ok) {
         setCurrentGatewayRes(response);
         //This filters out non-same employeeId entries. 
         //Meaning it removes entries whose payslip has been sent (empId = employeeId).
         setEmployee((prev) => prev.filter((emp) => emp.employeeId !== empId));
         alert("Mail sent successfully!");
       }
-      else{
+      else {
         alert("Error: Mail could not be processed.");
       }
     }
-    catch(error){
+    catch (error) {
       console.error("PayRoll.jsx Mail Error:", error);
     }
   }
   async function SalaryBreakupCard(empId) {
     const currentMonth = getCurrentMonthYear();
     try {
-      const response = await fetch(`${API_BASE_URL}/pay-Salarybreakup/${empId}/${currentMonth+"%"}`);
+      const response = await fetch(`${API_BASE_URL}/pay-Salarybreakup/${empId}/${currentMonth + "%"}`);
       const data = await response.json();
       if (response.ok) {
         setSalBreakup(data[0]);
@@ -72,6 +73,7 @@ function PayRoll() {
     loadEmployees();
   }, []);
 
+
   return (
     <div className="leave-page">
       <div className="leave-header">
@@ -93,9 +95,9 @@ function PayRoll() {
           {Employee
             .filter(emp => emp.name.toLowerCase().includes(search.toLowerCase()))
             .map((emp) => (
-              
+
               <div className="emp-card" key={emp.employeeId}>
-                
+
                 <div className="emp-card-row">
                   <span>ID:</span> <strong>{emp.employeeId}</strong>
                 </div>
@@ -121,12 +123,12 @@ function PayRoll() {
                   >
                     📄 Salary Breakup
                   </button>
-                  
+
                   <button
-                    onClick={() => SendMail(emp.employeeId)}
+                    onClick={() => sendMailGmail(emp)}
                     className="action-btn btn-card"
-                    name="MonthYear">
-                    📄 Send Payslip
+                  >
+                    📧 Send Payslip
                   </button>
                 </div>
               </div>
