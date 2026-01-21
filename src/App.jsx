@@ -88,10 +88,11 @@ function MainContent() {
 
   return (
     <Routes>
-      <Route path="/RegisterForm" element={<RegisterForm />} />
+      {/* ================= Auth Routes ================= */}
       <Route path="/" element={<Login />} />
-      {/* ... all other routes ... */}
-      {/* 2. Move HR Layout to /dashboard */}
+      <Route path="/register" element={<RegisterForm />} />
+
+      {/* ================= HR Routes ================= */}
       <Route path="/dashboard" element={<HRLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="users" element={<CompanyUser />} />
@@ -100,49 +101,37 @@ function MainContent() {
         <Route path="attendance/attendanceOverview" element={<AttendanceOverview />}/>
         <Route path="payroll" element={<Payroll />} />
         <Route path="feedback" element={<Feedback />} />
-        <Route path="Applications" element={<Recruitment />} />
+        <Route path="applications" element={<Recruitment />} />
         <Route path="activity" element={<Activity />} />
         <Route path="assignTask" element={<AssignTask />} />
-        <Route path="attendance/AttendanceOverview" element={<AttendanceOverview />} />
-        <Route path="EmployeePerformance" element={<EmployeePerformance />} />
+        <Route path="employeePerformance" element={<EmployeePerformance />}/>
       </Route>
 
-
-      {/* 3. Move Admin Layout to /dashboard */}
+      {/* ================= Admin Routes ================= */}
       <Route path="/dashboardAdmin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
         <Route path="usersAdmin" element={<AdminCompanyUser />} />
         <Route path="feedbackAdmin" element={<AdminFeedback />} />
         <Route path="activityAdmin" element={<AdminActivity />} />
-
-        <Route path="performanceAdmin" element={<AdminEmployeePerformance />} />
-
         <Route
           path="performanceAdmin"
           element={<AdminEmployeePerformance />}
         />
-
       </Route>
 
-      {/* 4. Move Employee Layout to /dashboard */}
+      {/* ================= Employee Routes ================= */}
       <Route path="/dashboardEmployee" element={<EmployeeLayout />}>
         <Route index element={<EmployeeDashboard />} />
         <Route path="applyLeave" element={<ApplyLeave />} />
-
-        <Route path="performanceEmployee" element={<EmployeePersonalPerformance />} />
-        <Route path="activityEmployee" element={<EmployeeActivity />} />
-        <Route path="assignedTaskByHR" element={<AssignTaskByHR />} />
-
         <Route path="performance" element={<EmployeePersonalPerformance />}/>
         <Route path="activityEmployee" element={<EmployeeActivity />} />
         <Route path="assignedTaskByHR" element={<AssignTaskByHR />}/>
-
       </Route>
 
-      {/* Interviewer routes remain the same or adjust as needed */}
+      {/* ================= Interview ================= */}
       <Route path="/interviewer" element={<Interviewer />} />
       <Route path="/interview/start" element={<InterviewStart />} />
-      <Route path="/end" element={<InterviewEnd />} />
+      <Route path="/interview/end" element={<InterviewEnd />} />
     </Routes>
   );
 }

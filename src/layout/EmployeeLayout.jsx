@@ -33,9 +33,9 @@ function EmployeeLayout() {
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
       <div className="layout-body">
         <Sidebar darkMode={darkMode}/>
-        <div className="layout-content">
+        <main className="layout-content">
           <Outlet />
-        </div>
+        </main>
       </div>
     </>
   );

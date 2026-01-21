@@ -15,7 +15,7 @@ function AttendanceDashboard() {
   // 2. Load all attendance records from your backend
   const fetchAttendance = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/fetchdashboard");
+      const response = await fetch(`${API_BASE_URL}/fetchdashboard`);
       const attdata = await response.json();
       const demo = attdata;
       setAttendanceRecords(demo);
@@ -27,7 +27,7 @@ function AttendanceDashboard() {
 
     const loadEmployees = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/getCompanyUsers");
+        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
         const empdata = await response.json();
 
         if (Array.isArray(empdata) && empdata.length > 0) {

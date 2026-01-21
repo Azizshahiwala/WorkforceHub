@@ -15,7 +15,7 @@ function AssignedTaskByHR() {
 
   return (
     
-    <div className="employee-view-page">
+    <body className="employee-view-page">
       <h1 className="employee-view-title">Assigned Task</h1>
 
       <div className="employee-assigned-card">
@@ -37,7 +37,7 @@ function AssignedTaskByHR() {
           ))}
         </ul>
       </div>
-    </div>
+    </body>
   );
 }
 
