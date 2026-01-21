@@ -106,7 +106,7 @@ function MainContent() {
         <Route path="feedback" element={<Feedback />} />
         <Route path="applications" element={<Recruitment />} />
         <Route path="activity" element={<Activity />} />
-        <Route path="assign-task" element={<AssignTask />} />
+        <Route path="assignTask" element={<AssignTask />} />
         <Route
           path="employee-performance"
           element={<EmployeePerformance />}
@@ -128,16 +128,10 @@ function MainContent() {
       {/* ================= Employee Routes ================= */}
       <Route path="/dashboardEmployee" element={<EmployeeLayout />}>
         <Route index element={<EmployeeDashboard />} />
-        <Route path="apply-leave" element={<ApplyLeave />} />
-        <Route
-          path="performance"
-          element={<EmployeePersonalPerformance />}
-        />
-        <Route path="activity" element={<EmployeeActivity />} />
-        <Route
-          path="assigned-task"
-          element={<AssignTaskByHR />}
-        />
+        <Route path="applyLeave" element={<ApplyLeave />} />
+        <Route path="performance" element={<EmployeePersonalPerformance />}/>
+        <Route path="activityEmployee" element={<EmployeeActivity />} />
+        <Route path="assignedTaskByHR" element={<AssignTaskByHR />}/>
       </Route>
 
       {/* ================= Interview ================= */}
