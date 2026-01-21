@@ -60,7 +60,7 @@ company_user_data = [
     ("Manish Agarwal", "LA-0014", "Engineering", "Logged In", 70000, "2025-12-21 09:30 AM"),
     ("Jonny", "LA-0011", "Engineering", "Logged In", 70000, "2025-12-21 09:00 AM"),
     ("asodjo", "LA-0012", "Engineering", "Logged In", 70000, "2025-12-21 09:10 AM"),
-    ("", "LA-0013", "Engineering", "Logged In", 70000, "2025-12-21 09:20 AM"),
+    (":D", "LA-0013", "Engineering", "Logged In", 70000, "2025-12-21 09:20 AM"),
     ("Dev Four", "LA-0014", "Engineering", "Logged In", 70000, "2025-12-21 09:30 AM"),
 
     ("Ananya Rao", "LA-0015", "Design", "Logged In", 55000, "2025-12-21 10:00 AM"),

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import "../../styles/HR/AttendanceDashboard.css";
+import "../HR/AttendanceDashboard.css";
 import { Link } from "react-router-dom";
 
 function AttendanceDashboard() {
@@ -18,7 +18,7 @@ function AttendanceDashboard() {
       const attdata = await response.json();
       const demo = attdata;
       setAttendanceRecords(demo);
-      console.log("Request from fetchAttendance Query result:",attendanceRecords);
+      console.log("Request from fetchAttendance Query result:",attRecord);
     } catch (error) {
       console.error("Error fetching attendance data:", error);
     }
