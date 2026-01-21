@@ -1,19 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import "../HR/AttendanceDashboard.css";
+import "../../styles/HR/AttendanceDashboard.css";
 import { Link } from "react-router-dom";
+
 function AttendanceDashboard() {
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  
-  const MySession = JSON.parse(localStorage.getItem("MySession"));
-  
   const [employees, setEmployees] = useState([]);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [selectedEmp, setSelectedEmp] = useState("");
   const [Myevent, setMyEvents] = useState([]);
   const calendarRef = useRef(null);
-  
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   // 2. Load all attendance records from your backend
   const fetchAttendance = async () => {
     try {
@@ -21,7 +19,7 @@ function AttendanceDashboard() {
       const attdata = await response.json();
       const demo = attdata;
       setAttendanceRecords(demo);
-      console.log("Request from fetchAttendance Query result:",attRecord);
+      console.log("Request from fetchAttendance Query result:",attendanceRecords);
     } catch (error) {
       console.error("Error fetching attendance data:", error);
     }
@@ -29,35 +27,29 @@ function AttendanceDashboard() {
 
     const loadEmployees = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
+        const response = await fetch(`${API_BASE_URL}getCompanyUsers`);
         const empdata = await response.json();
 
         if (Array.isArray(empdata) && empdata.length > 0) {
           setEmployees(empdata);
           console.log("Request from loadEmployees Query result:", empdata);
           setSelectedEmp(empdata[0].employeeId); 
-          console.log("Step 2 loademployees done.")
         }
       } catch (error) {
         console.error("Error fetching employees:", error);
-      }
-      finally{
-        setloading(false);
       }
     };
 
   useEffect(() => {
     fetchAttendance();
     loadEmployees();
-  }, [attRecord]);
-
-  useEffect(() => {
-  console.log("Attendance state updated:", attRecord);
-  }, [attRecord]);
+  }, []);
 
   //Map and Display attendance events for the selected employee
   useEffect(() => {
-  if (!selectedEmp || attRecord.length === 0) return;
+    if (!selectedEmp || attendanceRecords.length === 0) {
+    return;
+    }
 
     const filteredRecords = attendanceRecords.filter(
       (rec) => rec.empId === selectedEmp
@@ -66,19 +58,16 @@ function AttendanceDashboard() {
     const mappedEvents = filteredRecords.map((item) => ({
       id: `${item.empId}-${item.date}-${item.status}`,
       title: item.status,
-      date: item.date, // YYYY-MM-DD (perfect)
-      color:
-        item.status === "Present" || item.status === "Logged In"
-          ? "green"
-          : item.status === "Late"
-          ? "orange"
-          : item.status === "Absent"? "red": "blue",
-          
+      date: item.date,
+      color: 
+        item.status === "Present" || item.status === "Logged In" ? "green" : 
+        item.status === "Late" ? "orange" : 
+        item.status === "Absent" ? "red" : "blue",
     }));
 
     // Directly set events as we no longer need to merge with holidays
     setMyEvents(mappedEvents);
-  }, [selectedEmp]);
+  }, [selectedEmp, attendanceRecords]);
   
   useEffect(() => {
   if (calendarRef.current && Myevent.length > 0) {
@@ -87,12 +76,7 @@ function AttendanceDashboard() {
   }
 }, [Myevent]);
 
-  // if(loading) 
-  //   { 
-  //    return <p>Please wait while we fetch attendance records...</p>; 
-  //   }
   return (
-    
     <div className="attendance-page">
       <div className="attendance-header">
         <h2>Attendance Dashboard</h2>

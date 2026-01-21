@@ -98,13 +98,13 @@ function MainContent() {
         <Route path="users" element={<CompanyUser />} />
         <Route path="leave" element={<LeaveManager />} />
         <Route path="attendance" element={<AttendanceDashboard />} />
-        <Route path="attendance-overview" element={<AttendanceOverview />}/>
+        <Route path="AttendanceOverview" element={<AttendanceOverview />}/>
         <Route path="payroll" element={<Payroll />} />
         <Route path="feedback" element={<Feedback />} />
         <Route path="applications" element={<Recruitment />} />
         <Route path="activity" element={<Activity />} />
-        <Route path="assign-task" element={<AssignTask />} />
-        <Route path="employee-performance" element={<EmployeePerformance />}/>
+        <Route path="assignTask" element={<AssignTask />} />
+        <Route path="employeePerformance" element={<EmployeePerformance />}/>
       </Route>
 
       {/* ================= Admin Routes ================= */}
