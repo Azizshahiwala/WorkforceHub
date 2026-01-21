@@ -48,34 +48,38 @@ print(login_data)
 # Updated 'department' names to match Dashboard.jsx filter strings
 # Format: (name, employeeId, department, status, BaseSalary, lastLogin)
 company_user_data = [
-    ("System Admin", "LA-0001", "Admin", "Logged In", 90000, "2025-12-20 09:00 AM"),
-    ("Jane Executive", "LA-0002", "CEO", "Logged In", 150000, "2025-12-21 10:30 AM"),
-    ("John HR", "LA-0003", "HR", "Logged In", 60000, "2025-12-21 08:45 AM"),
-    ("Alice Interviewer", "LA-0004", "Interviewer", "Logged Out", 50000, "2025-12-19 05:15 PM"),
-    ("Frank Finance", "LA-0005", "Finance", "Logged In", 80000, "2025-12-21 11:00 AM"),
+    ("Amit Sharma", "LA-0001", "Admin", "Logged In", 90000, "2025-12-20 09:00 AM"),
+    ("Neha Verma", "LA-0002", "CEO", "Logged In", 150000, "2025-12-21 10:30 AM"),
+    ("Rahul Mehta", "LA-0003", "HR", "Logged In", 60000, "2025-12-21 08:45 AM"),
+    ("Pooja Iyer", "LA-0004", "Interviewer", "Logged Out", 50000, "2025-12-19 05:15 PM"),
+    ("Suresh Patel", "LA-0005", "Finance", "Logged In", 80000, "2025-12-21 11:00 AM"),
 
+    ("Arjun Singh", "LA-0011", "Engineering", "Logged In", 70000, "2025-12-21 09:00 AM"),
+    ("Rohit Kumar", "LA-0012", "Engineering", "Logged In", 70000, "2025-12-21 09:10 AM"),
+    ("Vikas Gupta", "LA-0013", "Engineering", "Logged In", 70000, "2025-12-21 09:20 AM"),
+    ("Manish Agarwal", "LA-0014", "Engineering", "Logged In", 70000, "2025-12-21 09:30 AM"),
     ("Jonny", "LA-0011", "Engineering", "Logged In", 70000, "2025-12-21 09:00 AM"),
     ("asodjo", "LA-0012", "Engineering", "Logged In", 70000, "2025-12-21 09:10 AM"),
     (":D", "LA-0013", "Engineering", "Logged In", 70000, "2025-12-21 09:20 AM"),
     ("Dev Four", "LA-0014", "Engineering", "Logged In", 70000, "2025-12-21 09:30 AM"),
 
-    ("Designer One", "LA-0015", "Design", "Logged In", 55000, "2025-12-21 10:00 AM"),
-    ("Designer Two", "LA-0016", "Design", "Logged In", 55000, "2025-12-21 10:10 AM"),
-    ("Designer Three", "LA-0017", "Design", "Logged In", 55000, "2025-12-21 10:20 AM"),
+    ("Ananya Rao", "LA-0015", "Design", "Logged In", 55000, "2025-12-21 10:00 AM"),
+    ("Kavya Nair", "LA-0016", "Design", "Logged In", 55000, "2025-12-21 10:10 AM"),
+    ("Sneha Kulkarni", "LA-0017", "Design", "Logged In", 55000, "2025-12-21 10:20 AM"),
 
-    ("Tester One", "LA-0018", "QA", "Logged In", 45000, "2025-12-21 11:00 AM"),
-    ("Tester Two", "LA-0019", "QA", "Logged In", 45000, "2025-12-21 11:10 AM"),
-    ("Tester Three", "LA-0020", "QA", "Logged In", 45000, "2025-12-21 11:20 AM"),
+    ("Pradeep Mishra", "LA-0018", "QA", "Logged In", 45000, "2025-12-21 11:00 AM"),
+    ("Nitin Joshi", "LA-0019", "QA", "Logged In", 45000, "2025-12-21 11:10 AM"),
+    ("Aakash Malhotra", "LA-0020", "QA", "Logged In", 45000, "2025-12-21 11:20 AM"),
 
-    ("Sales One", "LA-0021", "Sales", "Logged In", 65000, "2025-12-21 12:00 PM"),
-    ("Sales Two", "LA-0022", "Sales", "Logged In", 65000, "2025-12-21 12:10 PM"),
-    ("Sales Three", "LA-0023", "Sales", "Logged In", 65000, "2025-12-21 12:20 PM"),
+    ("Karan Malhotra", "LA-0021", "Sales", "Logged In", 65000, "2025-12-21 12:00 PM"),
+    ("Deepak Chawla", "LA-0022", "Sales", "Logged In", 65000, "2025-12-21 12:10 PM"),
+    ("Ravi Saxena", "LA-0023", "Sales", "Logged In", 65000, "2025-12-21 12:20 PM"),
 
-    ("Support One", "LA-0024", "Support", "Logged In", 35000, "2025-12-21 01:00 PM"),
-    ("Support Two", "LA-0025", "Support", "Logged In", 35000, "2025-12-21 01:10 PM"),
+    ("Sunil Yadav", "LA-0024", "Support", "Logged In", 35000, "2025-12-21 01:00 PM"),
+    ("Pankaj Tiwari", "LA-0025", "Support", "Logged In", 35000, "2025-12-21 01:10 PM"),
 
-    ("Intern One", "LA-0026", "Engineering", "Logged In", 25000, "2025-12-21 02:00 PM"),
-    ("Intern Two", "LA-0027", "Engineering", "Logged In", 25000, "2025-12-21 02:10 PM"),
+    ("Aditya Bansal", "LA-0026", "Engineering", "Logged In", 25000, "2025-12-21 02:00 PM"),
+    ("Riya Jain", "LA-0027", "Engineering", "Logged In", 25000, "2025-12-21 02:10 PM"),
 ]
 
 # ===============================

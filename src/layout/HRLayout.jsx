@@ -31,9 +31,9 @@ function HRLayout() {
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
       <div className="layout-body">
         <Sidebar darkMode={darkMode}/>
-        <main className="layout-content">
+        <div className="layout-content">
           <Outlet />
-        </main>
+        </div>
       </div>
     </>
   );
