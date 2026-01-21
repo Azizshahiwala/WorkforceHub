@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import "../../styles/HR/AttendanceDashboard.css";
+import "../HR/AttendanceDashboard.css";
 import { Link } from "react-router-dom";
 function AttendanceDashboard() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -9,7 +9,7 @@ function AttendanceDashboard() {
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   
   const [employees, setEmployees] = useState([]);
-  const [attRecord, setAttendanceRecords] = useState([]);
+  const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [selectedEmp, setSelectedEmp] = useState("");
   const [Myevent, setMyEvents] = useState([]);
   const calendarRef = useRef(null);
@@ -21,7 +21,7 @@ function AttendanceDashboard() {
       const attdata = await response.json();
       const demo = attdata;
       setAttendanceRecords(demo);
-      console.log("Request from fetchAttendance Query result:",attendanceRecords);
+      console.log("Request from fetchAttendance Query result:",attRecord);
     } catch (error) {
       console.error("Error fetching attendance data:", error);
     }
