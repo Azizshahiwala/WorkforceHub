@@ -98,7 +98,7 @@ function MainContent() {
         <Route path="users" element={<CompanyUser />} />
         <Route path="leave" element={<LeaveManager />} />
         <Route path="attendance" element={<AttendanceDashboard />} />
-        <Route path="AttendanceOverview" element={<AttendanceOverview />}/>
+        <Route path="attendance/attendanceOverview" element={<AttendanceOverview />}/>
         <Route path="payroll" element={<Payroll />} />
         <Route path="feedback" element={<Feedback />} />
         <Route path="applications" element={<Recruitment />} />

@@ -27,7 +27,7 @@ function AttendanceDashboard() {
 
     const loadEmployees = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}getCompanyUsers`);
+        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
         const empdata = await response.json();
 
         if (Array.isArray(empdata) && empdata.length > 0) {
