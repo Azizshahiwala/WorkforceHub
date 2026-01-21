@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import "../../styles/HR/Payroll.css";
+import { sendMailGmail } from "./SendingEmail";
 function PayRoll() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const MySession = JSON.parse(localStorage.getItem("MySession"));
@@ -72,32 +73,6 @@ function PayRoll() {
     loadEmployees();
   }, []);
 
-  // Frontend Send Mail Function
-  function SendMailGmail(emp) {
-    const email = "funfact1810@gmail.com";
-    const subject = "Employee Payslip";
-    const body = `
-        Employee ID: ${emp.employeeId}
-
-        Hello ${emp.name},
-        
-        => Please find your salary details for this month below:-
-        Base Salary: ₹${emp.BaseSalary}
-
-        Thank you for your continued dedication and hard work.
-        We truly appreciate your valuable contribution to the team.
-
-        Regards,
-        HR Team
-        `;
-
-    const gmailURL = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(body)}`;
-
-    window.open(gmailURL, "_blank");
-  }
-
 
   return (
     <div className="leave-page">
@@ -150,11 +125,10 @@ function PayRoll() {
                   </button>
 
                   <button
-                    // onClick={() => SendMail(emp.employeeId)}
-                    onClick={() => SendMailGmail(emp)}
+                    onClick={() => sendMailGmail(emp)}
                     className="action-btn btn-card"
-                    name="MonthYear">
-                    📄 Send Payslip
+                  >
+                    📧 Send Payslip
                   </button>
                 </div>
               </div>
