@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify
 import os
 import sqlite3 as sq
 from datetime import datetime
+from Notification import notifManager
 from PathConfig import CompanyUserPath,CredentialsPath
 #Instead of hardcoded paths, this will help in making it dynamic instead of hardcode
 #We use env file to get dynamic environment names
@@ -77,8 +78,8 @@ class Login:
         
         conn.execute("PRAGMA foreign_keys = ON;")
         cursor.execute(f"ATTACH DATABASE '{self.comp_path}' AS emp")
-        return conn, cursor 
-
+        return conn, cursor
+        
 @authlogin.route("/Login", methods=['POST'])
 def login():
     try:
@@ -182,3 +183,42 @@ def deleteAccount(auth_id):
     finally:
         if conn:
             conn.close() # This runs even if the code crashes
+
+@authlogin.route("/updatePassByHR/<string:auth_id>", methods=['POST'])
+def updatePassByHR(auth_id):
+    conn = None 
+    try:
+        conn,cursor = LoginHandler._conn_get()
+
+        #Fetch data
+        getData = rq.get_json()
+        newPassword = getData.get("tempPass")
+
+        #Update placeholder data
+        cursor.execute("update login set password = ? where id = ?",(newPassword,auth_id,))
+
+        #Set status as Logged out to remove the btn from frontend.
+        cursor.execute("UPDATE emp.'user' SET status = 'Logged Out' WHERE auth_id = ?", (auth_id,))
+        conn.commit()
+
+        #Now to insert notification, i need empID, role and msg
+        cursor.execute("""select login.role, emp.employeeId from login
+                       left join emp.'user' as emp on login.id = emp.auth_id
+                       where login.id = ? """,(auth_id,))
+        
+        data = cursor.fetchone()
+        print("Data found: ",data)
+
+        if data:
+            #Create a notification for user.
+            notifManager.insert_notification(data[1],data[0],f"Your password has been updated by HR. New pass: {newPassword}")
+
+        conn.close()
+        #Create a json result
+        return jsonify({"status":"success","message":"Password successfully updated. Reload the page."}),200
+    except Exception as e:
+        print(e)
+        return jsonify({"status":"error","message":"ID couldn't be processed. Re-start application."}),404
+    finally:
+        if conn:
+            conn.close()
