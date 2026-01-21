@@ -72,5 +72,7 @@ def get_company_users():
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
     
     
