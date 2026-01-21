@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import "../../styles/HR/Payroll.css";
-import { sendPaySlip } from "../EmailHandler";
+import { sendPaySlip } from "/src/Misc/EmailHandler";
 function PayRoll() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const MySession = JSON.parse(localStorage.getItem("MySession"));

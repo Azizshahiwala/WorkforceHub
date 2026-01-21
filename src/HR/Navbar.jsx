@@ -1,5 +1,5 @@
 import logo from "../images/logo.jpeg";
-import Logout from "../Login/Logout";
+import Logout from "../Misc/Logout";
 import "../HR/Navbar.css";
 
 import { useState, useEffect,useRef } from "react";
