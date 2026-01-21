@@ -18,32 +18,32 @@ function PayRoll() {
 
   async function SendMail(empId) {
     const currentMonth = getCurrentMonthYear();
-    try{
+    try {
       const response = await fetch(`${API_BASE_URL}/pay-gateway/${empId}`, {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body : JSON.stringify({ MonthYear : currentMonth }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ MonthYear: currentMonth }),
       });
 
-      if(response.ok){
+      if (response.ok) {
         setCurrentGatewayRes(response);
         //This filters out non-same employeeId entries. 
         //Meaning it removes entries whose payslip has been sent (empId = employeeId).
         setEmployee((prev) => prev.filter((emp) => emp.employeeId !== empId));
         alert("Mail sent successfully!");
       }
-      else{
+      else {
         alert("Error: Mail could not be processed.");
       }
     }
-    catch(error){
+    catch (error) {
       console.error("PayRoll.jsx Mail Error:", error);
     }
   }
   async function SalaryBreakupCard(empId) {
     const currentMonth = getCurrentMonthYear();
     try {
-      const response = await fetch(`${API_BASE_URL}/pay-Salarybreakup/${empId}/${currentMonth+"%"}`);
+      const response = await fetch(`${API_BASE_URL}/pay-Salarybreakup/${empId}/${currentMonth + "%"}`);
       const data = await response.json();
       if (response.ok) {
         setSalBreakup(data[0]);
@@ -72,6 +72,33 @@ function PayRoll() {
     loadEmployees();
   }, []);
 
+  // Frontend Send Mail Function
+  function SendMailGmail(emp) {
+    const email = "funfact1810@gmail.com";
+    const subject = "Employee Payslip";
+    const body = `
+        Employee ID: ${emp.employeeId}
+
+        Hello ${emp.name},
+        
+        => Please find your salary details for this month below:-
+        Base Salary: ₹${emp.BaseSalary}
+
+        Thank you for your continued dedication and hard work.
+        We truly appreciate your valuable contribution to the team.
+
+        Regards,
+        HR Team
+        `;
+
+    const gmailURL = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+
+    window.open(gmailURL, "_blank");
+  }
+
+
   return (
     <div className="leave-page">
       <div className="leave-header">
@@ -93,9 +120,9 @@ function PayRoll() {
           {Employee
             .filter(emp => emp.name.toLowerCase().includes(search.toLowerCase()))
             .map((emp) => (
-              
+
               <div className="emp-card" key={emp.employeeId}>
-                
+
                 <div className="emp-card-row">
                   <span>ID:</span> <strong>{emp.employeeId}</strong>
                 </div>
@@ -121,9 +148,10 @@ function PayRoll() {
                   >
                     📄 Salary Breakup
                   </button>
-                  
+
                   <button
-                    onClick={() => SendMail(emp.employeeId)}
+                    // onClick={() => SendMail(emp.employeeId)}
+                    onClick={() => SendMailGmail(emp)}
                     className="action-btn btn-card"
                     name="MonthYear">
                     📄 Send Payslip

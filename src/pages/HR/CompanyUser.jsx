@@ -70,7 +70,7 @@ function CompanyUser() {
     .then(data => {
       if (data.status === "success") {
         alert(data.message);
-        <Navigate to="/dashboard/users"></Navigate>
+        <Navigate to="/dashboard/users" replace></Navigate>
       } else {
         alert(data.message);
       }
