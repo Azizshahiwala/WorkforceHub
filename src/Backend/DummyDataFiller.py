@@ -58,11 +58,7 @@ company_user_data = [
     ("Rohit Kumar", "LA-0012", "Engineering", "Logged In", 70000, "2025-12-21 09:10 AM"),
     ("Vikas Gupta", "LA-0013", "Engineering", "Logged In", 70000, "2025-12-21 09:20 AM"),
     ("Manish Agarwal", "LA-0014", "Engineering", "Logged In", 70000, "2025-12-21 09:30 AM"),
-    ("Jonny", "LA-0011", "Engineering", "Logged In", 70000, "2025-12-21 09:00 AM"),
-    ("asodjo", "LA-0012", "Engineering", "Logged In", 70000, "2025-12-21 09:10 AM"),
-    (":D", "LA-0013", "Engineering", "Logged In", 70000, "2025-12-21 09:20 AM"),
-    ("Dev Four", "LA-0014", "Engineering", "Logged In", 70000, "2025-12-21 09:30 AM"),
-
+    
     ("Ananya Rao", "LA-0015", "Design", "Logged In", 55000, "2025-12-21 10:00 AM"),
     ("Kavya Nair", "LA-0016", "Design", "Logged In", 55000, "2025-12-21 10:10 AM"),
     ("Sneha Kulkarni", "LA-0017", "Design", "Logged In", 55000, "2025-12-21 10:20 AM"),

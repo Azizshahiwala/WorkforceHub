@@ -82,6 +82,7 @@ class Login:
         
 @authlogin.route("/Login", methods=['POST'])
 def login():
+    conn = None
     try:
         data = rq.get_json()
         email = data.get("email")
@@ -96,7 +97,7 @@ def login():
         cursor.execute(f"ATTACH DATABASE '{CompanyUserPath}' AS profile")
 
         cursor.execute(
-            """SELECT login.role, user.name, user.employeeId, login.email, login.id
+            """SELECT login.role, 'user'.name, 'user'.employeeId, login.email, login.id
                FROM login
                left join profile.user 'user' on login.id = user.auth_id 
                where login.email = ? and login.password = ?"""
@@ -162,6 +163,7 @@ def login():
 LoginHandler = Login(CredentialsPath,CompanyUserPath)
 @authlogin.route("/deleteAccount/<string:auth_id>", methods=['POST'])
 def deleteAccount(auth_id):
+    conn = None
     try:
         
         conn,cursor = LoginHandler._conn_get()
@@ -169,7 +171,7 @@ def deleteAccount(auth_id):
         #ALL the user database table using the cascade will automatically delete the row containing matching empid.
         #Hence i do not need to use JOIN
 
-        cursor.execute("DELETE FROM emp.user WHERE auth_id = ?", (auth_id,))
+        cursor.execute("DELETE FROM emp.'user' WHERE auth_id = ?", (auth_id,))
         
         #But login table is in credentials db. so i need to delete this manually. delete cascade does not support cross conn.
         cursor.execute("DELETE FROM login WHERE id = ?", (auth_id,))
