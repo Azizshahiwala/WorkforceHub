@@ -98,29 +98,23 @@ function MainContent() {
         <Route path="users" element={<CompanyUser />} />
         <Route path="leave" element={<LeaveManager />} />
         <Route path="attendance" element={<AttendanceDashboard />} />
-        <Route
-          path="attendance-overview"
-          element={<AttendanceOverview />}
-        />
+        <Route path="attendance-overview" element={<AttendanceOverview />}/>
         <Route path="payroll" element={<Payroll />} />
         <Route path="feedback" element={<Feedback />} />
         <Route path="applications" element={<Recruitment />} />
         <Route path="activity" element={<Activity />} />
         <Route path="assign-task" element={<AssignTask />} />
-        <Route
-          path="employee-performance"
-          element={<EmployeePerformance />}
-        />
+        <Route path="employee-performance" element={<EmployeePerformance />}/>
       </Route>
 
       {/* ================= Admin Routes ================= */}
       <Route path="/dashboardAdmin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
-        <Route path="users" element={<AdminCompanyUser />} />
-        <Route path="feedback" element={<AdminFeedback />} />
-        <Route path="activity" element={<AdminActivity />} />
+        <Route path="usersAdmin" element={<AdminCompanyUser />} />
+        <Route path="feedbackAdmin" element={<AdminFeedback />} />
+        <Route path="activityAdmin" element={<AdminActivity />} />
         <Route
-          path="performance"
+          path="performanceAdmin"
           element={<AdminEmployeePerformance />}
         />
       </Route>
@@ -128,16 +122,10 @@ function MainContent() {
       {/* ================= Employee Routes ================= */}
       <Route path="/dashboardEmployee" element={<EmployeeLayout />}>
         <Route index element={<EmployeeDashboard />} />
-        <Route path="apply-leave" element={<ApplyLeave />} />
-        <Route
-          path="performance"
-          element={<EmployeePersonalPerformance />}
-        />
-        <Route path="activity" element={<EmployeeActivity />} />
-        <Route
-          path="assigned-task"
-          element={<AssignTaskByHR />}
-        />
+        <Route path="applyLeave" element={<ApplyLeave />} />
+        <Route path="performance" element={<EmployeePersonalPerformance />}/>
+        <Route path="activityEmployee" element={<EmployeeActivity />} />
+        <Route path="assignedTaskByHR" element={<AssignTaskByHR />}/>
       </Route>
 
       {/* ================= Interview ================= */}
