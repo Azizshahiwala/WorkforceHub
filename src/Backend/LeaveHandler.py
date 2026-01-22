@@ -192,6 +192,7 @@ def PostLeave(empId,auth_id):
             return jsonify({"message":"Invalid structure. ","status":"datetime compare error"})
 
         status = leavehandler.createLeaveRq(auth_id=auth_id,name=name,department=department,startdate=startdate,enddate=enddate,reason=reason,dateSubmitted=dateSubmitted,empId=empId)
+        notifManager.insert_notification(message=f"A leave request has been issued.",adminOnly=True)
         return jsonify({"message":"Leave request sent successfully.","status":status})
         
     except Exception as e:
@@ -219,7 +220,7 @@ def AcceptLeave(leaveID):
 
         conn,cursor = leavehandler._get_connection()
         toLiveQuery = """
-        INSERT INTO LiveLeaves(
+        INSERT OR IGNORE INTO LiveLeaves(
             LeaveId, auth_id, name, employeeId, department,
             startdate, enddate, reason, status, dateSubmitted
         ) VALUES (?,?,?,?,?,?,?,?,?,?)
@@ -228,16 +229,16 @@ def AcceptLeave(leaveID):
         remQuery = """
         delete from IncomingLeaves where LeaveId = ? and employeeId = ?;
         """
+        conn.commit()
         cursor.execute(remQuery,(FetchedData[0],FetchedData[3]))
-        
-        notifManager.insert_notification(employeeId=FetchedData[3],
-                                         role=FetchedData[4],
-                                         message=f"Your leave request from {FetchedData[5]} - {FetchedData[6]} has been approved.")
         conn.commit()
         conn.close()
 
-
-        return jsonify({"message":"Leave request approved.","status":"success"})
+        notifManager.insert_notification(employeeId=FetchedData[3],
+                                         role=FetchedData[4],
+                                         message=f"Your leave request from {FetchedData[5]} - {FetchedData[6]} has been approved.")
+        notifManager.insert_notification(message=f"Leave req approved.",adminOnly=True)
+        return jsonify({"message":"Leave request approved.","status":"success", "name": FetchedData[2]})
     except Exception as e:
         print(e)
         return jsonify({"message":f"{e}","status":"error"})
@@ -263,14 +264,13 @@ def RejectLeave(leaveID):
         delete from IncomingLeaves where LeaveId = ? and employeeId = ?;
         """
         cursor.execute(remQuery,(FetchedData[0],FetchedData[3]))
-        
+        conn.commit()
+        conn.close()
         notifManager.insert_notification(employeeId=FetchedData[3],
                                          role=FetchedData[4],
                                          message=f"Your leave request from {FetchedData[5]} - {FetchedData[6]} has been rejected.")
-        
-        conn.commit()
-        conn.close()
-        return jsonify({"message":"Leave request denied successfully.","status":"success"})
+        notifManager.insert_notification(message=f"Leave req denied.",adminOnly=True)
+        return jsonify({"message":"Leave request denied successfully.","status":"success","name": FetchedData[2]})
     except Exception as e:
         print(e)
         return jsonify({"message":f"{e}","status":"error"})

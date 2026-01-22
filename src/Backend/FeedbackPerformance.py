@@ -4,6 +4,7 @@ import os
 import sqlite3 as sq
 from datetime import datetime, date, time, timezone
 from PathConfig import CompanyUserPath,CredentialsPath,GlobalInfoPath
+from Notification import notifManager
 import traceback
 #Feedback and performance are different.
 #Ref: FeedbackEmployee.jsx, AdminFeedback.jsx, EmployeePerformance.jsx, FeedbackEmployee.jsx, Performance.jsx
@@ -50,7 +51,13 @@ class FeedbackPerformance:
         ''')
         conn.commit()
         conn.close()
+    def _conn_comp(self):
+        conn = sq.connect(self.cred_path)
+        cursor = conn.cursor()
         
+        conn.execute("PRAGMA foreign_keys = ON;")
+        cursor.execute(f"ATTACH DATABASE '{self.compUser_path}' AS emp")
+        return conn, cursor
 FP_Handler = FeedbackPerformance(CompanyUserPath,CredentialsPath,GlobalInfoPath)
 
 def FeedbackPerformanceSetup():
@@ -74,7 +81,18 @@ def submitFeedBack(employeeId):
     
     conn.commit()
     conn.close()
-    #print(f"Feedback given to {employeeId}.")
+
+    conn,cursor = FP_Handler._conn_comp()
+    print("Notif from submitfeedback - FeedbackPerformance.py: ")
+    cursor.execute("""select login.role, emp.employeeId from login
+                       left join emp.'user' as emp on login.id = emp.auth_id
+                       where emp.employeeId = ? """,(employeeId,))
+    n = cursor.fetchone()
+    notifManager.insert_notification(employeeId=n[1],role=n[0],message="Someone gave you a feedback!")
+    print(n)
+    conn.commit()
+    conn.close()
+    print(f"Feedback given to {employeeId}.")
     return jsonify({"status":"success"}),200
 
 @feedbackandperformance.route('/fetchReviewers', methods=['GET'])

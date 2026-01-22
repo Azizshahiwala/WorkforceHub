@@ -9,6 +9,7 @@ from flask import Blueprint,jsonify
 import os 
 import sqlite3 as sq
 from PathConfig import CompanyUserPath,CredentialsPath,RecruitmentPath
+from Notification import notifManager
 #For pdf viewing, we need
 import io
 from flask import send_file
@@ -97,7 +98,7 @@ def createRecruitment():
 
 @recruitment.route('/RegisterForm/applications', methods=['GET'])
 def fetchApplications():
-    try:
+    try: 
         conn, cursor = manager._get_connection()
 
         TempItems = "SELECT id, email, role, gender, name, phoneNumber, PersonExperience, status, applied_date FROM TempStatusTable"
@@ -128,7 +129,6 @@ def fetchApplications():
             
 @recruitment.route('/RegisterForm/applications/upload', methods=['POST'])
 def resumeProcess():
-    print("RESUME UPLOAD FORM SELECTEDDD")
     #We use rq.form and rq.file because we used formData
     email = rq.form.get('email')
     phoneNumber = rq.form.get('phoneNumber')
@@ -175,7 +175,8 @@ def admitEmployee(Tempid):
     phoneNumber = Candidate[5]
     BinaryRes = Candidate[6]
     PersonExp = Candidate[7]
-    #password = Candidate[8]
+    
+
     conn.close()
     
     try:
@@ -203,7 +204,7 @@ def admitEmployee(Tempid):
         #Save
         manager.createBackup(new_auth_id,email,role,gender,name,phoneNumber,BinaryRes,PersonExp)
         manager.cleanupTempTable(Tempid)
-
+        notifManager.insert_notification(message=f"A new user: {name} has been admitted, will give interview shortly.. ",isGlobal=True)
         return jsonify({"message": "Employee successfully admitted", "status": "success"}), 200
     except Exception as e:
         if 'conn' in locals(): conn.close()

@@ -3,6 +3,7 @@ from flask import Blueprint,jsonify
 import os 
 import sqlite3 as sq
 from datetime import datetime, date, time, timezone
+from Notification import notifManager
 from PathConfig import CompanyUserPath,CredentialsPath,GlobalInfoPath
 activity = Blueprint('activity', __name__, url_prefix='/api')
 
@@ -42,6 +43,7 @@ class Activity:
         cursor.execute(insertQuery,(message,givenById,givenByRole,dateCreated,))
         conn.commit()
         conn.close()
+        
         return None
     
 activityManager = Activity(CompanyUserPath,CredentialsPath,GlobalInfoPath)
@@ -95,6 +97,9 @@ def insertAccouncement(givenById):
     conn.close()
     activityManager.insertAnnouncement(message,givenById,givenByRole,CurrentTimeStamp)
     
+    #Notification area - global message
+    notifManager.insert_notification(message="An announcement has been posted.",isGlobal=True)
+        
     return jsonify({
     "dateCreated": CurrentTimeStamp,
     "message": message,

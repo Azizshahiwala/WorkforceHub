@@ -28,7 +28,7 @@ function HRLayout() {
   
   return (
     <>
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} session={MySession}/>
       <div className="layout-body">
         <Sidebar darkMode={darkMode}/>
         <main className="layout-content">

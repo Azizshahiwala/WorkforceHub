@@ -170,14 +170,18 @@ def deleteAccount(auth_id):
         #Using the rule of on delete cascade, IF auth_id from user is deleted, 
         #ALL the user database table using the cascade will automatically delete the row containing matching empid.
         #Hence i do not need to use JOIN
-
         cursor.execute("DELETE FROM emp.'user' WHERE auth_id = ?", (auth_id,))
         
         #But login table is in credentials db. so i need to delete this manually. delete cascade does not support cross conn.
         cursor.execute("DELETE FROM login WHERE id = ?", (auth_id,))
         
         conn.commit()
+
+        cursor.execute("select name FROM emp.'user' WHERE auth_id = ?",(auth_id,))
+        name = cursor.fetchone()
+
         conn.close()
+        notifManager.insert_notification(message=f"User {name} has been removed, and will no longer work from today with us.. ",isGlobal=True)
         return jsonify({"status":"success"}),200
     except Exception as e:
         print(e)
@@ -203,6 +207,7 @@ def updatePassByHR(auth_id):
         cursor.execute("UPDATE emp.'user' SET status = 'Logged Out' WHERE auth_id = ?", (auth_id,))
         conn.commit()
 
+        print("Notif from updatePassByHR - Authlogin.py:")
         #Now to insert notification, i need empID, role and msg
         cursor.execute("""select login.role, emp.employeeId from login
                        left join emp.'user' as emp on login.id = emp.auth_id
@@ -213,7 +218,7 @@ def updatePassByHR(auth_id):
 
         if data:
             #Create a notification for user.
-            notifManager.insert_notification(data[1],data[0],f"Your password has been updated by HR. New pass: {newPassword}")
+            notifManager.insert_notification(role=data[1],employeeId=data[0],message=f"Your password has been updated by HR. New pass: {newPassword}")
 
         conn.close()
         #Create a json result

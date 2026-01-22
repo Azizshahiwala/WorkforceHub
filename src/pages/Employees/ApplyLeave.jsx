@@ -55,8 +55,6 @@ function ApplyLeave() {
         alert("Leave applied successfully");
         // Refresh local list after successful post
         
-        updateFetchedLeaves(prev => [...prev, { ...leaveData, leaveData}]);
-      
         alert("Leave applied successfully");
 
         setStartDate("");

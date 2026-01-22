@@ -1,12 +1,16 @@
 import logo from "../images/logo.jpeg";
 import Logout from "../Misc/Logout";
+import NotificationSystem from "../Misc/NotificationPanel";
 import "../HR/Navbar.css";
 import { useState, useEffect, useRef } from "react";
 
-function Navbar({ darkMode, setDarkMode }) {
+function Navbar({ darkMode, setDarkMode ,session}) {
   const [RedDot, SetRedDot] = useState(false);
   const audioRef = useRef(null);
 
+  const [notifWindow, setnotifWindow] = useState(false);
+  
+  // Notification bell logic and Sound Logic
   useEffect(() => {
     audioRef.current = new Audio("/notification.wav");
 
@@ -30,12 +34,17 @@ function Navbar({ darkMode, setDarkMode }) {
     SetRedDot(false);
     localStorage.removeItem("hasNewNotification");
   };
+  const togglePanel = (e) => {
+    e.stopPropagation();
+    setnotifWindow(!notifWindow);
+    clearNotification();
+  };
 
   return (
     <div className="navbar">
       <img src={logo} alt="HRMS Logo" className="logo" />
 
-      <div className="notification-wrapper" onClick={clearNotification}>
+      <div className="notification-wrapper" onClick={togglePanel}>
         <button className="bell-btn">
           <i
             className="fa-regular fa-bell"
@@ -54,6 +63,11 @@ function Navbar({ darkMode, setDarkMode }) {
       </button>
 
       <Logout SessionName={"MySession"} />
+      {notifWindow && (
+          <div className="notification-dropdown">
+            <NotificationSystem session={session} />
+          </div>
+        )}
     </div>
   );
 }

@@ -35,7 +35,9 @@ class Notification:
                 role TEXT NOT NULL,
                 NotifDateReceived TEXT NOT NULL,
                 Message TEXT NOT NULL,
-                Status TEXT DEFAULT 'Unread' NOT NULL
+                Status TEXT DEFAULT 'Unread' NOT NULL,
+                isGlobal BOOLEAN DEFAULT 0 NOT NULL,
+                adminOnly BOOLEAN DEFAULT 0 NOT NULL
             );
             ''')
             conn.commit()
@@ -48,15 +50,32 @@ class Notification:
         finally:
             if conn:
                 conn.close() # This runs even if the code crashes
-    def insert_notification(self, employeeId, role, message):
+    def insert_notification(self,employeeId="", role="", message="", isGlobal=False, adminOnly=False):
         try:
             conn ,cursor = self._conn_user()
             
+            #Global notif
+            if isGlobal and not adminOnly:
+                adminOnly = 0
+                isGlobal = 1
+                employeeId = "All"
+                role = "All"
+            #Admin only notif
+            elif adminOnly and not isGlobal:
+                adminOnly = 1
+                isGlobal = 0
+                employeeId= "Special"
+                role = "Special"
+            #Specific notif
+            else:
+                adminOnly = 0
+                isGlobal = 0
+
             date_now = datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")
             cursor.execute("""
-                INSERT INTO Notification (employeeId, role, NotifDateReceived, Message)
-                VALUES (?, ?, ?, ?)
-            """, (employeeId, role, date_now, message))
+                INSERT INTO Notification (employeeId, role, NotifDateReceived, Message, isGlobal, adminOnly)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (employeeId, role, date_now, message, isGlobal,adminOnly))
             conn.commit()
             conn.close()
             return True
@@ -65,18 +84,22 @@ class Notification:
             return False
         finally:
             if conn:
-                conn.close() # This runs even if the code crashes
+                conn.close() 
     
 
 notifManager = Notification(CompanyUserPath,CredentialsPath)    
 def createNotifs():
     notifManager.createNotifsTable()
 
-@notification.route('/getNotifs/<string:employeeId>', methods=['GET'])
-def get_notifications(employeeId):
+@notification.route('/getNotifs/<string:employeeId>/<string:role>', methods=['GET'])
+def get_notifications(employeeId,role):
     try:
         conn ,cursor = notifManager._conn_user()
-        cursor.execute("SELECT * FROM Notification WHERE employeeId = ? ORDER BY NotifsId DESC", (employeeId,))
+        cursor.execute("""SELECT * FROM Notification WHERE employeeId = ? 
+                       OR isGlobal = 1 
+                       OR employeeId = 'All'
+                       OR (employeeId = 'Special' AND ? IN ('Admin','CEO')) 
+                       ORDER BY NotifsId DESC""", (employeeId,role,))
         rows = cursor.fetchall()
         conn.close()
         
@@ -86,7 +109,9 @@ def get_notifications(employeeId):
             "role": r[2],
             "date": r[3],
             "message": r[4],
-            "status": r[5]
+            "status": r[5],
+            "isGlobal":bool(r[6]),
+            "adminOnly":bool(r[7])
         } for r in rows]
         return jsonify(result), 200
     except Exception as e:

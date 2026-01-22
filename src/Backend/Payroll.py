@@ -7,6 +7,7 @@ import sqlite3 as sq
 from flask import Blueprint,jsonify,request as rq
 import os
 from PathConfig import CompanyUserPath,CredentialsPath
+from Notification import notifManager
 payroll = Blueprint('Payroll',__name__,url_prefix='/api')
 
 class Payroll:
@@ -217,11 +218,20 @@ def payrollprocess(empId):
     #taxamount -> backend calculation
     #ProvidentFund -> backend 
     #ProfessionalTax -> backend 
-
+    role = ""
     try:
+        #Get role for notification.
+        conn , cursor = Paymanager._get_connection()
+        cursor.execute("""select login.role FROM cred_db.login AS login
+                       where 'user'.employeeId = ?""",(empId,))
+        role = cursor.fetchone()
+        print("Payroll process to: ",role)
+        conn.close()
+
         data = rq.json
         MonthYear = data.get("MonthYear")
         result = Paymanager.processAndSaveData(empId,MonthYear)
+        notifManager.insert_notification(employeeId=empId,role=role,message="Please check your email. Your salary has been paid for this month.")
         return jsonify(result),200
     except Exception as e:
         return jsonify({"error":str(e)}),500
