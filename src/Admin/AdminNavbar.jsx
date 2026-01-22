@@ -1,5 +1,6 @@
 import logo from "../images/logo.jpeg";
-import Logout from "../Misc/Logout";
+import Logout from "../Misc/Logout";  
+import NotificationSystem from "/src/Misc/NotificationPanel";
 import "../HR/Navbar.css";
 import { useState, useEffect, useRef } from "react";
 
