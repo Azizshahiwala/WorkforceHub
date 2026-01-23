@@ -90,7 +90,7 @@ function MainContent() {
     <Routes>
       {/* ================= Auth Routes ================= */}
       <Route path="/" element={<Login />} />
-      <Route path="/register" element={<RegisterForm />} />
+      <Route path="/RegisterForm" element={<RegisterForm />} />
 
       {/* ================= HR Routes ================= */}
       <Route path="/dashboard" element={<HRLayout />}>
