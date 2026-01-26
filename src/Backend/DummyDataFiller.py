@@ -4,7 +4,7 @@ import random
 from Encrypter import encrypter
 from datetime import date, timedelta
 
-"""
+DATA = """
     admin@workforce.com - admin123 - Admin - Male - +911111111111
     ceo@workforce.com - ceo999 - CEO - Female - +912222222222
     hr@workforce.com - hr_secure - HR - Male - +913333333333
@@ -34,6 +34,7 @@ from datetime import date, timedelta
     intern1@workforce.com - freelance - Intern - Female - +910101010103
     intern2@workforce.com - freelance - Intern - Female - +910101010104
 """
+print(DATA)
 # ===============================
 # DATABASE PATHS
 # ===============================

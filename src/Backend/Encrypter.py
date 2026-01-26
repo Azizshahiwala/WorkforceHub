@@ -4,11 +4,7 @@ import bcrypt
 #At last, on entering pass, we compare the password again with stored hash.
 
 class PasswordEncrypter:
-    def __init__(self):
-        #Keep for reference in future
-        self.hash = ""
-        self.bytePass = ""
-        
+     
     def create_hash(self,password):
 
         #Create a psuedo random string.
@@ -20,19 +16,18 @@ class PasswordEncrypter:
         #Create hash
         hash = bcrypt.hashpw(bytePass,salt)
 
-        #Store this hash
-        self.hash = hash
-        self.bytePass = bytePass
-
-        #return this hash in authlogin.py 
-        return self.hash     
+        #return this hash in string to authlogin.py 
+        return hash.decode('utf-8')     
     
-    def verify_hash(self,password):
+    def verify_hash(self,password, stored_hash):
         #Convert password to array of bytes
         bytePass = password.encode('utf-8')
 
+        if isinstance(stored_hash, str):
+            stored_hash = stored_hash.encode('utf-8')
+            
         #Check using byte password against hash
-        result = bcrypt.checkpw(bytePass,self.hash)
+        result = bcrypt.checkpw(bytePass,stored_hash)
 
         #Return True / False (result)
         return result

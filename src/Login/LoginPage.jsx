@@ -49,7 +49,7 @@ export default function AccountLogin() {
           navigate("/interviewer");
         }
       } else {
-        alert("Invalid role.");
+        alert(data.message);
         return;
       }
     } catch (error) {

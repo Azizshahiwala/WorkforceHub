@@ -96,9 +96,10 @@ def login():
 
         #To support indiviual user login, we use user table.
         cursor.execute(f"ATTACH DATABASE '{CompanyUserPath}' AS profile")
-        if encrypter.verify_hash(password):
-            cursor.execute(
-            """SELECT login.role, 'user'.name, 'user'.employeeId, login.email, login.id
+
+        #Step 1: Check for email first. also fetch password for next step
+        cursor.execute(
+            """SELECT login.role, 'user'.name, 'user'.employeeId, login.email, login.id, login.password
                FROM login
                left join profile.user 'user' on login.id = user.auth_id 
                where login.email = ?""", (email,))
@@ -106,39 +107,43 @@ def login():
         user_info = cursor.fetchone()
         conn.close()
         
+        #If data found, fetch data.
         if user_info:
-            role, name, employeeId, email, id = user_info  
-            permission = 0  
-            if isNonStaff(role):
-                permission = 1
-            elif isStaff(role):
-                permission = 2
-            elif isEmployee(role):
-                permission = 3
-            else:
-                permission = 0
+            role, name, employeeId, email, id, stored_hash = user_info  
+            
+            #Now you verify hash passwords. string with another string.
+            if encrypter.verify_hash(password,stored_hash):
+                permission = 0  
+                if isNonStaff(role):
+                    permission = 1
+                elif isStaff(role):
+                    permission = 2
+                elif isEmployee(role):
+                    permission = 3
+                else:
+                    permission = 0
 
-            # Update status and lastLogin
-            current_time = datetime.now().strftime("%Y-%m-%d %H:%M %p")
-            current_date = datetime.now().strftime("%Y-%m-%d")
-            update_conn = sq.connect(CompanyUserPath)
-            update_cursor = update_conn.cursor()
-            update_cursor.execute("""
-                UPDATE user SET status = 'Logged In', lastLogin = ? WHERE employeeId = ?
-            """, (current_time, employeeId))
-            
-            # Insert attendance record if not exists for today
-            update_cursor.execute("""
-                SELECT id FROM Attendance WHERE empId = ? AND date = ?
-            """, (employeeId, current_date))
-            existing = update_cursor.fetchone()
-            if not existing:
+                # Update status and lastLogin
+                current_time = datetime.now().strftime("%Y-%m-%d %H:%M %p")
+                current_date = datetime.now().strftime("%Y-%m-%d")
+                update_conn = sq.connect(CompanyUserPath)
+                update_cursor = update_conn.cursor()
                 update_cursor.execute("""
-                    INSERT INTO Attendance (empId, date, status) VALUES (?, ?, 'Present')
+                    UPDATE user SET status = 'Logged In', lastLogin = ? WHERE employeeId = ?
+                """, (current_time, employeeId))
+                
+                # Insert attendance record if not exists for today
+                update_cursor.execute("""
+                    SELECT id FROM Attendance WHERE empId = ? AND date = ?
                 """, (employeeId, current_date))
-            
-            update_conn.commit()
-            update_conn.close()
+                existing = update_cursor.fetchone()
+                if not existing:
+                    update_cursor.execute("""
+                        INSERT INTO Attendance (empId, date, status) VALUES (?, ?, 'Present')
+                    """, (employeeId, current_date))
+                
+                update_conn.commit()
+                update_conn.close()
 
             return jsonify({
                 "success": True,
