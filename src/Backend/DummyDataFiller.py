@@ -1,8 +1,39 @@
 import sqlite3 as sq
 import os
 import random
+from Encrypter import encrypter
 from datetime import date, timedelta
 
+"""
+    admin@workforce.com - admin123 - Admin - Male - +911111111111
+    ceo@workforce.com - ceo999 - CEO - Female - +912222222222
+    hr@workforce.com - hr_secure - HR - Male - +913333333333
+    interview@workforce.com - test456 - Interviewer - Female - +914444444444
+    finance@workforce.com - money123 - Finance - Male - +915555555555
+
+    dev1@workforce.com - dev123 - Developer - Male - +916666666666
+    dev2@workforce.com - dev123 - Developer - Female - +916666666667
+    dev3@workforce.com - dev123 - Developer - Male - +916666666668
+    dev4@workforce.com - dev123 - Developer - Female - +916666666669
+
+    des1@workforce.com - des123 - Designer - Female - +917777777771
+    des2@workforce.com - des123 - Designer - Male - +917777777772
+    des3@workforce.com - des123 - Designer - Female - +917777777773
+
+    test1@workforce.com - qa123 - Tester - Male - +918888888881
+    test2@workforce.com - qa123 - Tester - Female - +918888888882
+    test3@workforce.com - qa123 - Tester - Male - +918888888883
+
+    sales1@workforce.com - sale123 - Sales manager - Female - +919999999991
+    sales2@workforce.com - sale123 - Sales manager - Male - +919999999992
+    sales3@workforce.com - sale123 - Sales manager - Female - +919999999993
+
+    support1@workforce.com - help123 - Support - Male - +910101010101
+    support2@workforce.com - help123 - Support - Female - +910101010102
+
+    intern1@workforce.com - freelance - Intern - Female - +910101010103
+    intern2@workforce.com - freelance - Intern - Female - +910101010104
+"""
 # ===============================
 # DATABASE PATHS
 # ===============================
@@ -12,36 +43,35 @@ from PathConfig import CompanyUserPath,CredentialsPath
 # ===============================
 # Format: (email, password, role, gender, phoneNumber)
 login_data = [
-    ("admin@workforce.com", "admin123", "Admin", "Male", "+911111111111"),
-    ("ceo@workforce.com", "ceo999", "CEO", "Female", "+912222222222"),
-    ("hr@workforce.com", "hr_secure", "HR", "Male", "+913333333333"),
-    ("interview@workforce.com", "test456", "Interviewer", "Female", "+914444444444"),
-    ("finance@workforce.com", "money123", "Finance", "Male", "+915555555555"),
+    ("admin@workforce.com", encrypter.create_hash("admin123"), "Admin", "Male", "+911111111111"),
+    ("ceo@workforce.com", encrypter.create_hash("ceo999"), "CEO", "Female", "+912222222222"),
+    ("hr@workforce.com", encrypter.create_hash("hr_secure"), "HR", "Male", "+913333333333"),
+    ("interview@workforce.com", encrypter.create_hash("test456"), "Interviewer", "Female", "+914444444444"),
+    ("finance@workforce.com", encrypter.create_hash("money123"), "Finance", "Male", "+915555555555"),
 
-    ("dev1@workforce.com", "dev123", "Developer", "Male", "+916666666666"),
-    ("dev2@workforce.com", "dev123", "Developer", "Female", "+916666666667"),
-    ("dev3@workforce.com", "dev123", "Developer", "Male", "+916666666668"),
-    ("dev4@workforce.com", "dev123", "Developer", "Female", "+916666666669"),
+    ("dev1@workforce.com", encrypter.create_hash("dev123"), "Developer", "Male", "+916666666666"),
+    ("dev2@workforce.com", encrypter.create_hash("dev123"), "Developer", "Female", "+916666666667"),
+    ("dev3@workforce.com", encrypter.create_hash("dev123"), "Developer", "Male", "+916666666668"),
+    ("dev4@workforce.com", encrypter.create_hash("dev123"), "Developer", "Female", "+916666666669"),
 
-    ("des1@workforce.com", "des123", "Designer", "Female", "+917777777771"),
-    ("des2@workforce.com", "des123", "Designer", "Male", "+917777777772"),
-    ("des3@workforce.com", "des123", "Designer", "Female", "+917777777773"),
+    ("des1@workforce.com", encrypter.create_hash("des123"), "Designer", "Female", "+917777777771"),
+    ("des2@workforce.com", encrypter.create_hash("des123"), "Designer", "Male", "+917777777772"),
+    ("des3@workforce.com", encrypter.create_hash("des123"), "Designer", "Female", "+917777777773"),
 
-    ("test1@workforce.com", "qa123", "Tester", "Male", "+918888888881"),
-    ("test2@workforce.com", "qa123", "Tester", "Female", "+918888888882"),
-    ("test3@workforce.com", "qa123", "Tester", "Male", "+918888888883"),
+    ("test1@workforce.com", encrypter.create_hash("qa123"), "Tester", "Male", "+918888888881"),
+    ("test2@workforce.com", encrypter.create_hash("qa123"), "Tester", "Female", "+918888888882"),
+    ("test3@workforce.com", encrypter.create_hash("qa123"), "Tester", "Male", "+918888888883"),
 
-    ("sales1@workforce.com", "sale123", "Sales manager", "Female", "+919999999991"),
-    ("sales2@workforce.com", "sale123", "Sales manager", "Male", "+919999999992"),
-    ("sales3@workforce.com", "sale123", "Sales manager", "Female", "+919999999993"),
+    ("sales1@workforce.com", encrypter.create_hash("sale123"), "Sales manager", "Female", "+919999999991"),
+    ("sales2@workforce.com", encrypter.create_hash("sale123"), "Sales manager", "Male", "+919999999992"),
+    ("sales3@workforce.com", encrypter.create_hash("sale123"), "Sales manager", "Female", "+919999999993"),
 
-    ("support1@workforce.com", "help123", "Support", "Male", "+910101010101"),
-    ("support2@workforce.com", "help123", "Support", "Female", "+910101010102"),
+    ("support1@workforce.com", encrypter.create_hash("help123"), "Support", "Male", "+910101010101"),
+    ("support2@workforce.com", encrypter.create_hash("help123"), "Support", "Female", "+910101010102"),
 
-    ("intern1@workforce.com", "freelance", "Intern", "Female", "+910101010103"),
-    ("intern2@workforce.com", "freelance", "Intern", "Female", "+910101010104"),
+    ("intern1@workforce.com", encrypter.create_hash("freelance"), "Intern", "Female", "+910101010103"),
+    ("intern2@workforce.com", encrypter.create_hash("freelance"), "Intern", "Female", "+910101010104"),
 ]
-print(login_data)
 # ===============================
 # USER DATA (22 USERS)
 # ===============================

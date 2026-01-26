@@ -5,6 +5,7 @@ import sqlite3 as sq
 from datetime import datetime
 from Notification import notifManager
 from PathConfig import CompanyUserPath,CredentialsPath
+from Encrypter import encrypter
 #Instead of hardcoded paths, this will help in making it dynamic instead of hardcode
 #We use env file to get dynamic environment names
 #This prevents database data breach
@@ -95,13 +96,12 @@ def login():
 
         #To support indiviual user login, we use user table.
         cursor.execute(f"ATTACH DATABASE '{CompanyUserPath}' AS profile")
-
-        cursor.execute(
+        if encrypter.verify_hash(password):
+            cursor.execute(
             """SELECT login.role, 'user'.name, 'user'.employeeId, login.email, login.id
                FROM login
                left join profile.user 'user' on login.id = user.auth_id 
-               where login.email = ? and login.password = ?"""
-            , (email, password))
+               where login.email = ?""", (email,))
         
         user_info = cursor.fetchone()
         conn.close()
@@ -160,6 +160,7 @@ def login():
     finally:
         if conn:
             conn.close() # This runs even if the code crashes
+
 LoginHandler = Login(CredentialsPath,CompanyUserPath)
 @authlogin.route("/deleteAccount/<string:auth_id>", methods=['POST'])
 def deleteAccount(auth_id):
@@ -198,7 +199,7 @@ def updatePassByHR(auth_id):
 
         #Fetch data
         getData = rq.get_json()
-        newPassword = getData.get("tempPass")
+        newPassword = encrypter.create_hash(getData.get("tempPass"))
 
         #Update placeholder data
         cursor.execute("update login set password = ? where id = ?",(newPassword,auth_id,))
