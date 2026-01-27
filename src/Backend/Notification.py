@@ -85,6 +85,24 @@ class Notification:
         finally:
             if conn:
                 conn.close() 
+    def Scan_Notifs(self,conn,cursor,employeeId,role):
+        #This functions scans and removes notifs if one person has > 10 notifs. To save memory.
+        try:
+            cursor.execute("""SELECT NotifsId FROM Notification WHERE employeeId = ? 
+                       ORDER BY NotifsId DESC""", (employeeId,))
+            TotalNotifs = cursor.fetchall()
+            print(f"Total notifs for {employeeId}: ",TotalNotifs)
+
+            if len(TotalNotifs) > 10:
+                
+                cutoff = TotalNotifs[9][0]
+
+                cursor.execute("""DELETE from Notification where employeeId = ? and NotifsId < ? """,employeeId,cutoff)
+                
+            conn.commit() 
+        except Exception as e:
+            print(e)        
+        
     
 
 notifManager = Notification(CompanyUserPath,CredentialsPath)    
@@ -94,7 +112,11 @@ def createNotifs():
 @notification.route('/getNotifs/<string:employeeId>/<string:role>', methods=['GET'])
 def get_notifications(employeeId,role):
     try:
+        
         conn ,cursor = notifManager._conn_user()
+
+        notifManager.Scan_Notifs(conn,cursor,employeeId,role)
+
         cursor.execute("""SELECT * FROM Notification WHERE employeeId = ? 
                        OR isGlobal = 1 
                        OR employeeId = 'All'
@@ -118,8 +140,8 @@ def get_notifications(employeeId,role):
         return jsonify({"error": str(e)}), 500
     finally:
         if conn:
-            conn.close() # This runs even if the code crashes
-    
+            conn.close() 
+
 @notification.route('/markRead/<int:notifId>', methods=['POST'])
 def mark_as_read(notifId):
     try:

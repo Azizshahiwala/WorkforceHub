@@ -58,7 +58,7 @@ function NotificationSystem({session}) {
       onClick={() => markAsRead(n.NotifsId)}>
       <div className="notif-badge-container">
         {isGlobal && <span className="badge global">📢 Global</span>}
-        {isAdminOnly && <span className="badge admin">🛡️ Admin Only</span>}
+        {isAdminOnly && <span className="badge admin">🛡️ Admin </span>}
         {!isGlobal && !isAdminOnly && <span className="badge personal">👤 Personal</span>}
       </div>
 

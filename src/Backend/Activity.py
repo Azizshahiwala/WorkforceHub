@@ -98,7 +98,7 @@ def insertAccouncement(givenById):
     activityManager.insertAnnouncement(message,givenById,givenByRole,CurrentTimeStamp)
     
     #Notification area - global message
-    notifManager.insert_notification(message="An announcement has been posted.",isGlobal=True)
+    notifManager.insert_notification(message=f"An announcement has been posted by {givenByRole}.",isGlobal=True)
         
     return jsonify({
     "dateCreated": CurrentTimeStamp,
