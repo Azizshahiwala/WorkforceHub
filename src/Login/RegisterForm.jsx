@@ -4,7 +4,6 @@ import "./RegisterForm.css";
 import { Link } from "react-router-dom";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const roles = [
-  { id: "Employee", label: "Employees"},
   { id: "Interviewer", label: "Interviewer"},
   { id: "Sales manager", label: "Sales manager"},
   { id: "Designer", label: "Designer"},

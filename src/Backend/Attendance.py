@@ -5,12 +5,12 @@ import sqlite3 as sq
 from PathConfig import CompanyUserPath,CredentialsPath
 attendance = Blueprint('Attendance', __name__, url_prefix='/api')
 class AttendanceDB:
-    def __init__(self, db_path, cred_path):
-        self.db_path = db_path
+    def __init__(self, comp_path, cred_path):
+        self.comp_path = comp_path
         self.cred_path = cred_path
 
     def _get_connection(self):
-        conn = sq.connect(self.db_path)
+        conn = sq.connect(self.comp_path)
         conn.execute("PRAGMA foreign_keys = ON;")
         cursor = conn.cursor()
         cursor.execute(f"ATTACH DATABASE '{self.cred_path}' AS cred_db")
@@ -24,6 +24,7 @@ class AttendanceDB:
             empId TEXT NOT NULL,
             date TEXT NOT NULL,
             status TEXT NOT NULL,
+            leaveDuration TEXT DEFAULT NULL, -- store start and end date of leave
             FOREIGN KEY (empId) REFERENCES user(employeeId) ON DELETE CASCADE
         );            
         """
@@ -36,7 +37,7 @@ class AttendanceDB:
         query = """
         SELECT 
             emp.lastLogin, emp.employeeId, emp.name, 
-            att.date, login.role, att.status 
+            att.date, login.role, att.status,att.leaveDuration 
         FROM Attendance att
         LEFT JOIN "user" as emp ON att.empId = emp.employeeId
         LEFT JOIN cred_db.login as login ON emp.auth_id = login.id
@@ -64,7 +65,7 @@ def get_attendance_dashboard():
         result = [
             {
                 "lastLogin": r[0], "empId": r[1], "name": r[2], 
-                "date": r[3], "role": r[4], "status": r[5]
+                "date": r[3], "role": r[4], "status": r[5],"leaveDuration": r[6]
             } for r in data
         ]
         #print("Sample data from attendance.py: ",result)

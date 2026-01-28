@@ -186,8 +186,8 @@ def populate_databases():
 
     # ---------- ATTENDANCE (2 MONTHS) ----------
     attendance = []
-    attendance += generate_attendance(2025, 11)
-    attendance += generate_attendance(2025, 12)
+    attendance += generate_attendance(2026, 1)
+    attendance += generate_attendance(2026, 2)
 
     cur_u.executemany(
         "INSERT INTO Attendance(empId, date, status) VALUES (?, ?, ?)",

@@ -12,7 +12,7 @@ function AttendanceDashboard() {
   const calendarRef = useRef(null);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // 2. Load all attendance records from your backend
+  //fetch all attendance backend
   const fetchAttendance = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/fetchdashboard`);
@@ -24,7 +24,7 @@ function AttendanceDashboard() {
       console.error("Error fetching attendance data:", error);
     }
   };
-
+  //fetch all employees from backend
     const loadEmployees = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
@@ -50,21 +50,29 @@ function AttendanceDashboard() {
     if (!selectedEmp || attendanceRecords.length === 0) {
     return;
     }
-
+    
     const filteredRecords = attendanceRecords.filter(
       (rec) => rec.empId === selectedEmp
     );
 
     const mappedEvents = filteredRecords.map((item) => ({
-      id: `${item.empId}-${item.date}-${item.status}`,
-      title: item.status,
-      date: item.date,
-      color: 
-        item.status === "Present" || item.status === "Logged In" ? "green" : 
-        item.status === "Late" ? "orange" : 
-        item.status === "Absent" ? "red" : "blue",
-    }));
-
+  id: `${item.empId}-${item.date}-${item.status}`,
+  title: item.status,
+  date: item.date,
+  color: 
+    // 1. Check for Leave first
+    (item.leaveDuration && item.leaveDuration?.toLowerCase() !== "null") || item.status?.toLowerCase() === "leave" 
+      ? "blue" 
+      // 2. Check for Present or Logged In
+      : item.status?.toLowerCase() === "present" || item.status === "Logged In" 
+        ? "green" 
+        // 3. Check for Absent
+        : item.status?.toLowerCase() === "absent" 
+          ? "red" 
+          // 4. Default color
+          : "gray",
+}));
+    //Logic: IF status is not null, change colour to blue (leave)
     // Directly set events as we no longer need to merge with holidays
     setMyEvents(mappedEvents);
   }, [selectedEmp, attendanceRecords]);

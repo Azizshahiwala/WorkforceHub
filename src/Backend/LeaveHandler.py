@@ -76,7 +76,8 @@ class LeaveHandler:
             return "error"
         finally:
             if conn:
-                conn.close() # This runs even if the code crashes
+                conn.close() 
+
     def fetchData(self,Leaveid):
         try:
             conn,cursor = self._get_connection()
@@ -94,7 +95,7 @@ class LeaveHandler:
             return jsonify(e)
         finally:
             if conn:
-                conn.close() # This runs even if the code crashes
+                conn.close() 
     def LeavesChecker(self):
         conn, cursor = self._get_connection()
         today = date.today()
@@ -116,18 +117,37 @@ class LeaveHandler:
 
             # 🔑 Rule: close if today is enddate OR passed
             if today >= enddate:
+                #First update the column val to completed. IF time has passed.
                 cursor.execute("""
                     UPDATE LiveLeaves
                     SET status = 'Completed'
                     WHERE Leaveid = ?
                 """, (leaveId,))
-
+                #Delete the col value IF time has passed.
                 cursor.execute("""
                     delete from LiveLeaves
                     where status = 'Completed'
                     and Leaveid = ?
                 """, (leaveId,))
+                #Make sure to update attendance table.
+
+                #First update status to 'Leave' where leaveDuration is not null. / Will be null.
+                cursor.execute("""
+                    UPDATE Attendance
+                    SET status = 'Leave'
+                    WHERE leaveDuration IS NOT NULL""")
+
+                #NOW We use subquery to first GET employeeID THEN update set.
+                cursor.execute("""update Attendance set leaveDuration = NULL 
+                                  where empId = (select employeeId from LiveLeaves where Leaveid = ?) 
+                """,(leaveId,))
                 closedCount += 1
+
+                #What happened:
+                #1.Delete from live leaves where completed.
+                #2.Update attendance set status to 'Leave' where leaveduration is not null. This will later help in dashboard fetch.
+                #3.Update attendance set leaveduration to null where empId = employeeId from live
+                #This way, the status is going to remain 'Leave' for that day, but leaveduration is null, so next time it won't be considered.
 
         conn.commit()
         conn.close()
@@ -136,7 +156,6 @@ leavehandler = LeaveHandler(CompanyUserPath,CredentialsPath)
 
 def createLeave():
     leavehandler.create_tables()
-
 
 @leaveManager.route('/fetchAllRq/',methods=['GET'])
 def FetchAllLeaves():
@@ -169,7 +188,7 @@ def FetchAllLeaves():
         return jsonify({"status":"error"}) ,500
     finally:
         if conn:
-            conn.close() # This runs even if the code crashes
+            conn.close() 
 
 @leaveManager.route('/postLeaveRq/<string:empId>/<string:auth_id>',methods=['POST'])
 def PostLeave(empId,auth_id):
@@ -232,8 +251,18 @@ def AcceptLeave(leaveID):
         conn.commit()
         cursor.execute(remQuery,(FetchedData[0],FetchedData[3]))
         conn.commit()
+
+        #Update leaveDuration in attendance table for salary.
+        ToEmpId = FetchedData[3]
+        startDateObj = datetime.strptime(FetchedData[5], "%Y-%m-%d").date()
+        endDateObj = datetime.strptime(FetchedData[6], "%Y-%m-%d").date()
+        CompleteDuration = f"{startDateObj} to {endDateObj}"
+
+        updateAttTable(conn,cursor,CompleteDuration,ToEmpId,startDateObj,endDateObj)
+
         conn.close()
 
+        #Create notification for user and admin
         notifManager.insert_notification(employeeId=FetchedData[3],
                                          role=FetchedData[4],
                                          message=f"Your leave request from {FetchedData[5]} - {FetchedData[6]} has been approved.")
@@ -276,11 +305,19 @@ def RejectLeave(leaveID):
         return jsonify({"message":f"{e}","status":"error"})
     finally:
         if conn:
-            conn.close() # This runs even if the code crashes
+            conn.close()
+
+#This route will be called per refresh to see if a person's leave is finished / not.
 @leaveManager.route('/CloseLeaveDuration/',methods=['GET'])
 def CloseLeaveDuration():
     closedCount = leavehandler.LeavesChecker()
     return jsonify({"closedCount": closedCount}), 200
-    
 
-    
+def updateAttTable(conn,cursor,CompleteDuration,ToEmpId,startDate,endDate):
+    #We need employeeId, attendance table, start and end date.
+    #Update set leaveduration to "start to end" where empId = employeeId
+    attUpdateDurationQuery = """
+    update Attendance set leaveDuration = ? where empId = ? and date between ? and ?
+    """
+    cursor.execute(attUpdateDurationQuery,(CompleteDuration,ToEmpId,startDate,endDate))
+    conn.commit()
