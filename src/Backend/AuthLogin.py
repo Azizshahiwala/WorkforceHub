@@ -153,7 +153,8 @@ def login():
                 "id":id,
                 "employeeId": employeeId,
                 "email": email,
-                "message": "Login successful"
+                "message": "Login successful",
+                "status": "Logged in"
             }), 200
         else:
             #print(f"❌ No user found for {email}")
@@ -164,7 +165,7 @@ def login():
         return jsonify({"success": False,"message": str(e)}), 500
     finally:
         if conn:
-            conn.close() # This runs even if the code crashes
+            conn.close()
 
 LoginHandler = Login(CredentialsPath,CompanyUserPath)
 @authlogin.route("/deleteAccount/<string:auth_id>", methods=['POST'])
@@ -235,3 +236,19 @@ def updatePassByHR(auth_id):
     finally:
         if conn:
             conn.close()
+@authlogin.route("/TabCloseLogout/<string:employeeId>", methods=['POST'])
+def TabCloseLogout(employeeId):
+    try:
+        conn = sq.connect(CompanyUserPath)
+        cursor = conn.cursor()
+        
+        # Update status to Logged Out
+        cursor.execute("""
+            UPDATE user SET status = 'Logged Out' WHERE employeeId = ?
+        """, (employeeId,))
+        
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500 

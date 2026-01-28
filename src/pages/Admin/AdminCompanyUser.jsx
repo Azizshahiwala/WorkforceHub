@@ -201,7 +201,7 @@ function CompanyUser() {
                 </div>
                 <div className="emp-card-row">
                   <span>Status:</span>
-                  <strong className="status-active">Active</strong>
+                  <strong className="status-active">{emp.status === "Logged in" ? "Active" : "In-active"}</strong>
                 </div>
                 <div className="emp-card-row">
                   <span>Gender:</span>

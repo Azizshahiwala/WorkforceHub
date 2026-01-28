@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 import { Link } from "react-router-dom";
@@ -7,6 +7,31 @@ export default function AccountLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  //This useeffect handles tab close logout.
+  useEffect(()=>{
+    const handleClose = () => {
+      const currentSession = JSON.parse(localStorage.getItem("MySession"));
+      
+      
+      //Check if session exist and EmployeeId.
+      //This targets specific user.
+      if (currentSession) {
+        //Get url which updates session to log out
+      const url = `${API_BASE_URL}/TabCloseLogout/${currentSession.employeeId}`;
+        //this is a browser API. which runs before tab close. 
+        //Inshort,  WHEH tab close, send request to backend to update session status to logout.
+        navigator.sendBeacon(url);
+      }
+    };
+    //After column is updated, now trigger the event listener.
+    window.addEventListener("beforeunload", handleClose);
+    //For safety, remove eventlistener.
+    return () => {
+      window.removeEventListener("beforeunload", handleClose);
+    };
+  },[API_BASE_URL]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,7 +56,8 @@ export default function AccountLogin() {
             name: data.name,
             email: data.email,
             role: data.role,
-            permission: data.Permission
+            permission: data.Permission,
+            status: data.status
           }
       
           localStorage.setItem("MySession",JSON.stringify(userSession));
