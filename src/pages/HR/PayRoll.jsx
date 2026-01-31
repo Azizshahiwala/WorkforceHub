@@ -107,11 +107,9 @@ function PayRoll() {
                   <span>Name:</span> <strong>{emp.name}</strong>
                 </div>
                 <div className="emp-card-row">
-                  {/* FIXED: Using 'base_salary' or 'BaseSalary' to match your DB */}
                   <span>Salary:</span> <strong>₹ {emp.BaseSalary}</strong>
                 </div>
                 <div className="emp-card-row">
-                  {/* FIXED: Using 'base_salary' or 'BaseSalary' to match your DB */}
                   <span>Phone:</span> <strong> {emp.phoneNumber}</strong>
                 </div>
                 <div className="emp-card-row">

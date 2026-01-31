@@ -6,7 +6,8 @@
 
 from flask import request as rq
 from flask import Blueprint,jsonify
-import os 
+from Core.AISorter import ai_sorter_manager
+from Core.Limiter import limiter
 import sqlite3 as sq
 from PathConfig import CompanyUserPath,CredentialsPath,RecruitmentPath
 from Notification import notifManager
@@ -16,7 +17,7 @@ from flask import send_file
 
 #For unique user profile id. NOT auth_id
 from datetime import datetime, date, time, timezone
-recruitment = Blueprint('Recruitment', __name__, url_prefix='/api')
+recruit = Blueprint('Recruitment', __name__, url_prefix='/api')
 
 class Recruitment:
     def __init__(self, compPath, credPath, recPath):
@@ -56,7 +57,9 @@ class Recruitment:
                 resume BLOB NOT NULL,
                 PersonExperience TEXT NOT NULL,
                 applied_date TEXT,
-                status TEXT DEFAULT 'Pending'
+                status TEXT DEFAULT 'Pending',
+                AI_SCORE TEXT DEFAULT 'Not calculated',
+                AI_DESCRIPTION TEXT DEFAULT 'Not generated'
             );
         """)
         conn.commit()
@@ -74,20 +77,24 @@ class Recruitment:
                 name TEXT NOT NULL,
                 phoneNumber TEXT NOT NULL,
                 resume BLOB NOT NULL,
-                PersonExperience TEXT NOT NULL
+                PersonExperience TEXT NOT NULL,
+                AI_SCORE TEXT null,
+                AI_DESCRIPTION TEXT null
             );
         """)
         conn.commit()
         conn.close()
+
     def cleanupTempTable(self,idToDelete):
         conn,cursor = self._get_connection()
         cursor.execute("delete from TempStatusTable where id = ?",(idToDelete,))   
         conn.commit()
         conn.close()
-    def createBackup(self,new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience):
+
+    def createBackup(self,new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience,AI_SCORE="Not calculated",AI_DESCRIPTION="Not generated"):
         conn,cursor = self._get_connection()
         
-        cursor.execute("insert into MainStatusTable values(?,?,?,?,?,?,?,?)",(new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience)) 
+        cursor.execute("insert into MainStatusTable values(?,?,?,?,?,?,?,?,?,?)",(new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience,AI_SCORE,AI_DESCRIPTION)) 
         conn.commit()
         conn.close()
 manager = Recruitment(CompanyUserPath, CredentialsPath, RecruitmentPath)
@@ -96,12 +103,12 @@ def createRecruitment():
     manager.create_table_TempStatusTable()
     manager.create_table_MainStatusTable()
 
-@recruitment.route('/RegisterForm/applications', methods=['GET'])
+@recruit.route('/RegisterForm/applications', methods=['GET'])
 def fetchApplications():
     try: 
         conn, cursor = manager._get_connection()
 
-        TempItems = "SELECT id, email, role, gender, name, phoneNumber, PersonExperience, status, applied_date FROM TempStatusTable"
+        TempItems = "SELECT id, email, role, gender, name, phoneNumber, PersonExperience, status, applied_date, AI_SCORE, AI_DESCRIPTION FROM TempStatusTable"
         cursor.execute(TempItems)
         Candidates = cursor.fetchall()
 
@@ -116,7 +123,10 @@ def fetchApplications():
             "phone": r[5],
             "experience": r[6],        
             "status": r[7],
-            "appliedDate": r[8]  # This is the new applied_date column
+            "appliedDate": r[8],  # This is the new applied_date column
+            "AI_SCORE": r[9],  # This is the new AI_Review column
+            "AI_DESCRIPTION": r[10]  # This is the new AI_Description column
+        
         } for r in Candidates]
 
         return jsonify(result), 200
@@ -127,7 +137,7 @@ def fetchApplications():
         if conn:
             conn.close() # This runs even if the code crashes
             
-@recruitment.route('/RegisterForm/applications/upload', methods=['POST'])
+@recruit.route('/RegisterForm/applications/upload', methods=['POST'])
 def resumeProcess():
     #We use rq.form and rq.file because we used formData
     email = rq.form.get('email')
@@ -157,7 +167,7 @@ def resumeProcess():
         if conn:
             conn.close() # This runs even if the code crashes
 
-@recruitment.route('/RegisterConfirm/<int:Tempid>', methods=['POST'])
+@recruit.route('/RegisterConfirm/<int:Tempid>', methods=['POST'])
 def admitEmployee(Tempid):
 
     conn,cursor = manager._get_connection()
@@ -175,6 +185,9 @@ def admitEmployee(Tempid):
     phoneNumber = Candidate[5]
     BinaryRes = Candidate[6]
     PersonExp = Candidate[7]
+
+    AI_score = Candidate[-2]
+    AI_description = Candidate[-1]
     
 
     conn.close()
@@ -202,7 +215,7 @@ def admitEmployee(Tempid):
         conn.commit()
 
         #Save
-        manager.createBackup(new_auth_id,email,role,gender,name,phoneNumber,BinaryRes,PersonExp)
+        manager.createBackup(new_auth_id,email,role,gender,name,phoneNumber,BinaryRes,PersonExp,AI_score,AI_description)
         manager.cleanupTempTable(Tempid)
         notifManager.insert_notification(message=f"A new user: {name} has been admitted, will give interview shortly.. ",isGlobal=True)
         return jsonify({"message": "Employee successfully admitted", "status": "success"}), 200
@@ -213,12 +226,12 @@ def admitEmployee(Tempid):
         if conn:
             conn.close() # This runs even if the code crashes
 
-@recruitment.route("/recruitment/reject/<int:id>", methods=["DELETE"])
+@recruit.route("/recruitment/reject/<int:id>", methods=["DELETE"])
 def reject_candidate(id):
     manager.cleanupTempTable(id)
     return jsonify({"message": "Candidate rejected"}), 200  
 
-@recruitment.route('/recruitment/resume/<int:id>', methods=['GET'])
+@recruit.route('/recruitment/resume/<int:id>', methods=['GET'])
 def get_resume(id):
     try:
         conn, cursor = manager._get_connection()
@@ -241,4 +254,62 @@ def get_resume(id):
         return jsonify({"error": str(e)}), 500
     finally:
         if conn:
-            conn.close() # This runs even if the code crashes    
+            conn.close()    
+
+@recruit.route('/recruitment/getanalysis/<string:id>', methods=['POST'])
+@limiter.limit("2 per minute")
+def get_ai_analysis(id):
+    try:
+        conn, cursor = manager._get_connection()
+        # Fetch only the resume BLOB for the specific ID
+        cursor.execute("SELECT resume FROM TempStatusTable WHERE id = ?", (id,))
+        record = cursor.fetchone()
+
+        if record and record[0]:
+            binary_resume = record[0]
+            
+            # Here, you would integrate with AISorter to get the score
+            rawdata = ai_sorter_manager.convert_data_to_str(binary_resume)
+            cleaned_data = ai_sorter_manager.clean_text(rawdata)
+            final_score = ai_sorter_manager.find_score(cleaned_data)
+            final_description = ai_sorter_manager.find_description(cleaned_data,final_score)
+            
+            print("Final AI Score: ",final_score)
+            # Update the score and description in the database
+            cursor.execute("UPDATE TempStatusTable SET AI_SCORE = ?, AI_DESCRIPTION = ? WHERE id = ?", (final_score,final_description,id))
+            conn.commit()
+            conn.close()
+
+            return jsonify({"status": "success", "message": "AI score calculated", "AI_SCORE": final_score, "AI_DESCRIPTION": final_description}), 200
+        else:
+            return jsonify({"message": "Resume not found"}), 404
+    except Exception as e:
+        if 'conn' in locals(): conn.close()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if conn:
+            conn.close()
+
+@recruit.route('/resume/send-invite/<int:Tempid>', methods=['POST'])
+def send_interview_link(Tempid):
+    conn,cursor = manager._get_connection()
+    TempItems = "select * from TempStatusTable where id = ?;"
+    cursor.execute(TempItems,(Tempid,))
+    Candidate = cursor.fetchone()
+
+    if not Candidate:
+            return jsonify({"message": "Candidate not found", "status": "error"}), 404
+    
+    email = Candidate[1]
+    name = Candidate[4]
+
+    conn.close()
+    
+    try:
+        #Here, send email logic will be placed.
+        #For now, we just simulate sending email.
+        print(f"Sending interview link to {email} for candidate {name}...")
+        #Email logic goes here.
+        return jsonify({"message": "Interview link sent successfully", "status": "success"}), 200
+    except Exception as e:
+        return jsonify({"message": f"Error sending interview link: {e}", "status": "error"}), 500

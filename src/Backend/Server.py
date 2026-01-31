@@ -1,8 +1,4 @@
 #This file is used to run flask file
-
-#pip install flask
-#pip install flask-cors
-
 from flask import Flask,jsonify
 from flask_cors import CORS
 
@@ -11,13 +7,18 @@ from AuthLogin import authlogin,createCredentials
 from Users import users,createCompanyUsers
 from Attendance import attendance,createAttendance
 from Payroll import payroll,createPayroll
-from Recruitment import recruitment,createRecruitment
+from Recruitment import recruit,createRecruitment
 from LeaveHandler import leaveManager,createLeave
 from Notification import notification,createNotifs
 from FeedbackPerformance import feedbackandperformance,FeedbackPerformanceSetup
 from Activity import activity,createActivity
 from DummyDataFiller import populate_databases
 from PathConfig import setupPaths
+
+#Core import 
+from Core.AISorter import ai_sorter,ai_sorter_manager
+from Core.Limiter import limiter
+
 #render_template -> imports function which is used to load html
 #redirect -> used to redirect browser to a path
 #session -> processing of Sessions
@@ -35,20 +36,23 @@ app.register_blueprint(authlogin)
 app.register_blueprint(users)
 app.register_blueprint(attendance)
 app.register_blueprint(payroll)
-app.register_blueprint(recruitment)
+app.register_blueprint(recruit)
 app.register_blueprint(leaveManager)
 app.register_blueprint(notification)
 app.register_blueprint(feedbackandperformance)
 app.register_blueprint(activity)
-
-# Enables communication between your React app and this Flask server
+app.register_blueprint(ai_sorter)
+limiter.init_app(app)
+# Enables communication between React app and this Flask server
 CORS(app)  
+
 @app.route("/api/init-db",methods=['GET'])
 def createDatabases():
     try:
-
+        
         #Setup paths
         setupPaths()
+        
         #Credentials.db
 
         #Creates main login table
