@@ -8,9 +8,11 @@ from flask import request as rq
 from flask import Blueprint,jsonify
 from Core.AISorter import ai_sorter_manager
 from Core.Limiter import limiter
+from Core.EmailService import emailService
 import sqlite3 as sq
 from PathConfig import CompanyUserPath,CredentialsPath,RecruitmentPath
 from Notification import notifManager
+
 #For pdf viewing, we need
 import io
 from flask import send_file
@@ -290,26 +292,15 @@ def get_ai_analysis(id):
         if conn:
             conn.close()
 
-@recruit.route('/resume/send-invite/<int:Tempid>', methods=['POST'])
+@recruit.route('/recruit/send-invite/<int:Tempid>', methods=['POST'])
 def send_interview_link(Tempid):
-    conn,cursor = manager._get_connection()
-    TempItems = "select * from TempStatusTable where id = ?;"
-    cursor.execute(TempItems,(Tempid,))
-    Candidate = cursor.fetchone()
-
-    if not Candidate:
-            return jsonify({"message": "Candidate not found", "status": "error"}), 404
-    
-    email = Candidate[1]
-    name = Candidate[4]
-
-    conn.close()
-    
+    data = rq.get_json()
+    email = data.get('email')
+    name = data.get('name')
     try:
-        #Here, send email logic will be placed.
-        #For now, we just simulate sending email.
-        print(f"Sending interview link to {email} for candidate {name}...")
-        #Email logic goes here.
+        
+        emailService.sendInterviewLink(email,name,Tempid)
+
         return jsonify({"message": "Interview link sent successfully", "status": "success"}), 200
     except Exception as e:
         return jsonify({"message": f"Error sending interview link: {e}", "status": "error"}), 500

@@ -16,38 +16,42 @@ const MySession = JSON.parse(localStorage.getItem("MySession"));
   }, []);
 
   function Reject(id) {
-  fetch(`${API_BASE_URL}/recruitment/reject/${id}`, {
+  fetch(`${API_BASE_URL}/recruit/reject/${id}`, {
     method: "DELETE"
   }).then(() => {
     setApplications(prev => prev.filter(item => item.id !== id));
   }).then(()=>{alert(this.message)});
 }
-  function SendLink(id) {
-  fetch(`${API_BASE_URL}/RegisterConfirm/${id}`, {
-    method: "POST"
+  function SendLink(id,email,name) {
+  fetch(`${API_BASE_URL}/recruit/send-invite/${id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ id:id,email:email, name:name })
   })
     .then(res => res.json())
     .then(data => {
       if (data.status === "success") {
-        alert("Interview link sent successfully");
+        alert(data.message);
       } else {
         alert(data.message);
       }
     })
     .catch(err => {
-      console.error("Admit error:", err);
-      alert("Server error while admitting candidate");
+      console.error("link error :", err);
+      alert("Server error while sending link");
     });
 }
 function showReport(id) {
     // Open the backend PDF route in a new tab
-    window.open(`${API_BASE_URL}/recruitment/resume/${id}`, '_blank');
+    window.open(`${API_BASE_URL}/recruit/resume/${id}`, '_blank');
 } 
 const FindAnalysis = (id) => {
   //This function finds score and description.
   setAnalyzingId(id);
   //Send post req to backend to calculate score
-  fetch(`${API_BASE_URL}/recruitment/getanalysis/${id}`, {
+  fetch(`${API_BASE_URL}/recruit/getanalysis/${id}`, {
     method: "POST"
   })
     .then(async (res) => {
@@ -119,7 +123,7 @@ const ShowDesc = (description) => {
     </td> */}
     
     <td className="action-btns">
-      <button className="Accbtn" onClick={() => SendLink(Submission.id)}>Send link</button>
+      <button className="Accbtn" onClick={() => SendLink(Submission.id,Submission.email,Submission.name)}>Send link</button>
       <button className="Rejbtn" onClick={() => Reject(Submission.id)}>Reject</button>
     </td>
   </tr>
