@@ -2,7 +2,7 @@ from flask import request as rq
 from flask import Blueprint,jsonify
 import os 
 import sqlite3 as sq
-from datetime import datetime, date, time, timezone
+from datetime import datetime
 from Notification import notifManager
 from PathConfig import CompanyUserPath,CredentialsPath,GlobalInfoPath
 activity = Blueprint('activity', __name__, url_prefix='/api')

@@ -5,7 +5,6 @@
 #When mail option clicked,payslip / any document will be sent to employee email.
 import sqlite3 as sq
 from flask import Blueprint,jsonify,request as rq
-import os
 from PathConfig import CompanyUserPath,CredentialsPath
 from Notification import notifManager
 payroll = Blueprint('Payroll',__name__,url_prefix='/api')

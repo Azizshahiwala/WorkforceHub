@@ -4,7 +4,7 @@ from flask import request as rq
 from flask import Blueprint, jsonify
 import os
 import sqlite3 as sq
-from datetime import datetime, date, time, timezone
+from datetime import datetime
 from PathConfig import CompanyUserPath,CredentialsPath
 notification = Blueprint('notification',__name__,url_prefix='/api')
 

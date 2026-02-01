@@ -2,7 +2,6 @@
 import sqlite3 as sq 
 from PathConfig import CompanyUserPath,CredentialsPath
 from flask import Blueprint, jsonify
-import os
 
 users = Blueprint('CentralUserBase', __name__, url_prefix='/api')
 

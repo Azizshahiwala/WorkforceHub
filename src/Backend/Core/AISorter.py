@@ -5,12 +5,9 @@
 # Generates a shortlist for HR review.
 
 #Recruitment.jsx -> Accept -> send link for interview -> process answers -> get score and description (accept / reject by AI) -> final admission
-from http import client
-from http import client
 import re
 from dotenv import load_dotenv
-from flask import Blueprint,json,jsonify
-import requests
+from flask import Blueprint
 from google import genai
 import pdfplumber
 import io 
@@ -75,10 +72,9 @@ class AISorter:
     def find_description(self,chunk,scoreByAi=None):
         try:
             history=[]
-            history.append(f"p. You are an expert HR professional specializing in recruitment and talent acquisition.")
             history.append(f"p1. You provided score : {scoreByAi}/10 for this resume. ")
             history.append(f"p2. Check for: Age, Work background, skills, cultural fit, strengths, weaknesses, experience and hobbies.")
-            prompt = f"p4. Based on the resume chunk: {chunk} ,provide a brief description highlighting the candidate's strengths and areas for improvement. Keep it concise and relevant to the job requirements."
+            prompt = f"p3. Based on the resume chunk: {chunk} ,provide a brief description highlighting the candidate's strengths and areas for improvement. Keep it concise and relevant to the job requirements."
             response = self.generateResponse(prompt,history)
             return response
         except Exception as e:

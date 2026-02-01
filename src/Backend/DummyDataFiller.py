@@ -1,5 +1,4 @@
 import sqlite3 as sq
-import os
 import random
 from Encrypter import encrypter
 from datetime import date, timedelta
