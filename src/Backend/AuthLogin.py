@@ -6,7 +6,6 @@ from datetime import datetime
 from Notification import notifManager
 from PathConfig import CompanyUserPath,CredentialsPath
 from Encrypter import encrypter
-#Instead of hardcoded paths, this will help in making it dynamic instead of hardcode
 #We use env file to get dynamic environment names
 #This prevents database data breach
 
@@ -195,7 +194,7 @@ def deleteAccount(auth_id):
         return jsonify({"status":"error"}),500
     finally:
         if conn:
-            conn.close() # This runs even if the code crashes
+            conn.close()
 
 @authlogin.route("/updatePassByHR/<string:auth_id>", methods=['POST'])
 def updatePassByHR(auth_id):
