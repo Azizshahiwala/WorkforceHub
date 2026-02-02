@@ -7,6 +7,7 @@ import sqlite3 as sq
 from flask import Blueprint,jsonify,request as rq
 from PathConfig import CompanyUserPath,CredentialsPath
 from Notification import notifManager
+from Core.EmailService import emailService
 payroll = Blueprint('Payroll',__name__,url_prefix='/api')
 
 class Payroll:
