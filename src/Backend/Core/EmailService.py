@@ -67,5 +67,6 @@ class EmailService:
         body = f"Dear {candidate_name},\n\nYou are invited to attend an AI interview. Please use the following link to join the interview during working hours.\n\n{interview_link}\n\nBest regards,\nHR Team"
         
         self.send_email(from_email, to_email, subject, body)
-        
+    
+    
 emailService = EmailService()

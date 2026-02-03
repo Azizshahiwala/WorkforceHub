@@ -4,9 +4,11 @@ import "./Interviewer.css";
 
 export default function Interviewer() {
   const videoRef = useRef(null);
+  const [file, setFile] = useState(null);
   const [status, setStatus] = useState("");
   const [stream, setStream] = useState(null);
   const [ready, setReady] = useState(false);
+  const [questions, setQuestions] = useState([]);
   const navigate = useNavigate();
 
   const handleButtonClick = async () => {
@@ -29,9 +31,6 @@ export default function Interviewer() {
         console.error(err);
         setStatus("❌ Please allow camera and microphone access.");
       }
-    } else {
-      // Second click → go to interview page
-      navigate("/interview/start");
     }
   };
 
@@ -58,6 +57,45 @@ export default function Interviewer() {
         </button>
 
         {status && <p className="status">{status}</p>}
+
+        <h2>Upload Resume PDF</h2>
+
+        <input
+          type="file"
+          accept=".pdf"
+          onChange={(e) => setFile(e.target.files[0])}
+        />
+
+        <br /><br />
+
+        <button
+          onClick={async () => {
+            if (!file) {
+              alert("Upload resume first");
+              return;
+            }
+
+            const formData = new FormData();
+            formData.append("resume", file);
+
+            // ✅ DEFINE res properly
+            const res = await fetch("http://localhost:5000/start-interview", {
+              method: "POST",
+              body: formData,
+            });
+
+            if (!res.ok) {
+              alert("Resume upload failed");
+              return;
+            }
+
+            const data = await res.json();
+
+            navigate("/interviewer/start", { state: data });
+          }}
+        >
+          Upload & Proceed
+        </button>
       </div>
     </div>
   );

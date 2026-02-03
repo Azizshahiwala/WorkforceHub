@@ -17,7 +17,8 @@ function PayRoll() {
     return `${year}-${month}`;
   };
 
-  async function SendMail(emailTo,empName,empID) {
+  async function MailProcess(emailTo,empName,empID) {
+    //Step 1: onclick- fetch from Payroll.py to get details.
     const currentMonth = getCurrentMonthYear();
     try {
       const response = await fetch(`${API_BASE_URL}/pay-gateway/${empID}`, {
@@ -27,16 +28,16 @@ function PayRoll() {
       });
       const data = await response.json();
       if (response.ok) {
-        setCurrentGatewayRes(response);
+        setCurrentGatewayRes(data);
         //This filters out non-same employeeId entries. 
         //Meaning it removes entries whose payslip has been sent (empId = employeeId).
         setEmployee((prev) => prev.filter((emp) => emp.employeeId !== empID));
-        alert("You will be redirected to gmail shortly...");
-        setSalBreakup(data[0]);
-        sendPaySlip(emailTo,empName,empID,data[0],"Salary Pay");
+        //Step 2: Send actual payslip from: sendPaySlip(from EmailHandler.jsx) -> Payroll.py 
+        sendPaySlip(emailTo,empName,empID);
       }
       else {
         alert("Error: Mail could not be processed.");
+        alert(`Failed: ${data.error || data.message || "Unknown server error"}`);
       }
     }
     catch (error) {
@@ -125,7 +126,7 @@ function PayRoll() {
                   </button>
 
                   <button
-                    onClick={() => SendMail(emp.email,emp.name,emp.employeeId)}
+                    onClick={() => MailProcess(emp.email,emp.name,emp.employeeId)}
                     className="action-btn btn-card">
                     📧 Send Payslip
                   </button>

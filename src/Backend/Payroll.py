@@ -8,6 +8,7 @@ from flask import Blueprint,jsonify,request as rq
 from PathConfig import CompanyUserPath,CredentialsPath
 from Notification import notifManager
 from Core.EmailService import emailService
+
 payroll = Blueprint('Payroll',__name__,url_prefix='/api')
 
 class Payroll:
@@ -222,18 +223,55 @@ def payrollprocess(empId):
     try:
         #Get role for notification.
         conn , cursor = Paymanager._get_connection()
-        cursor.execute("""select login.role FROM cred_db.login AS login
-                       where 'user'.employeeId = ?""",(empId,))
+        cursor.execute("SELECT role FROM cred_db.login WHERE employeeId = ?", (empId,))
         role = cursor.fetchone()
         print("Payroll process to: ",role)
         conn.close()
 
         data = rq.json
         MonthYear = data.get("MonthYear")
+
         result = Paymanager.processAndSaveData(empId,MonthYear)
+        
         notifManager.insert_notification(employeeId=empId,role=role,message="Please check your email. Your salary has been paid for this month.")
         return jsonify(result),200
     except Exception as e:
         return jsonify({"error":str(e)}),500
     
     
+@payroll.route("/send-final-mail/<string:empId>",methods=['POST'])
+def sendFinalMail(empId):
+#This fetches salary breakup and sends email to employee.
+    try:
+        #We need the following: emailfrom, emailto, name(optional), monthyear :)
+        data = rq.json
+        emailFrom = emailService.username
+        emailTo = data.get("emailTo")
+        empName = data.get("empName")
+        MonthYear = data.get("currentMonth")
+        salarydata, error = Paymanager.SalaryBreakup(empId, MonthYear)
+
+        if error:
+            return jsonify({"error": error}), 404
+
+        #email content
+        subject = f"Salary Details for {MonthYear}"
+        body = f"Dear {empName},\n\nHere are your salary details for {MonthYear}:\n\n"
+        for item in salarydata:
+            body += (f"Employee ID: {item['empId']}\n"
+                     f"Name: {item['name']}\n"
+                     f"Days Worked: {item['daysWorked']}\n"
+                     f"Base Salary: {item['BaseSalary']}\n"
+                     f"Tax Amount: {item['TaxAmount']}\n"
+                     f"Provident Fund: {item['ProvidentFund']}\n"
+                     f"Professional Tax: {item['ProfessionalTax']}\n"
+                     f"Loss of Pay: {item['LossOfPay']}\n"
+                     f"Gross Salary: {item['GrossSalary']}\n"
+                     f"Net Salary: {item['NetSalary']}\n\n")
+        body += "Best regards,\nPayroll Department"
+        body += '\n\nDo not reply to this email.'
+
+        # Send email
+        emailService.send_email(from_email=emailFrom, to_email=emailTo, subject=subject, body=body)
+    except Exception as e:
+        pass 
