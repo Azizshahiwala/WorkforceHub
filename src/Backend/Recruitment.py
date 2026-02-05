@@ -12,9 +12,9 @@ from Core.EmailService import emailService
 import sqlite3 as sq
 from PathConfig import CompanyUserPath,CredentialsPath,RecruitmentPath
 from Notification import notifManager
-
+from dotenv import load_dotenv
 #For pdf viewing, we need
-import io
+import io,os
 from flask import send_file
 
 #For unique user profile id. NOT auth_id
@@ -23,10 +23,11 @@ recruit = Blueprint('Recruitment', __name__, url_prefix='/api')
 
 class Recruitment:
     def __init__(self, compPath, credPath, recPath):
+        load_dotenv("../../.env")
         self.recPath = recPath
         self.credPath = credPath
         self.compPath = compPath
-
+        self._compURL = os.getenv("VITE_WEB_PATH")
     def _conn_login(self):
         conn = sq.connect(self.credPath)
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -218,8 +219,33 @@ def admitEmployee(Tempid):
 
         #Save
         manager.createBackup(new_auth_id,email,role,gender,name,phoneNumber,BinaryRes,PersonExp,AI_score,AI_description)
-        manager.cleanupTempTable(Tempid)
         notifManager.insert_notification(message=f"A new user: {name} has been admitted, will give interview shortly.. ",isGlobal=True)
+        
+        #Now send email to the person.
+        conn,cursor = manager._get_connection()
+        cursor.execute("select name,email,role from TempStatusTable where Temp_id = ?",(id,))
+        acceptdata = cursor.fetchone()
+        conn.close()
+        subject = f"Offer of Employment: {acceptdata[2]} at MSP Concept"
+        emailbody=f"""Dear {acceptdata[0]},
+
+Congratulations! We are thrilled to officially offer you the position of {acceptdata[2]} with the MSP Concept team.\n\n
+Your performance during our interview process was exceptional, and we were particularly impressed by your insights and alignment with our company values. We believe your skills will be a significant asset to our department.
+Account Activation & Next Steps: To begin your onboarding, we have created your official employee profile. You can now log in to our internal portal to complete your documentation:
+Portal URL: {manager._compURL}
+Username: {acceptdata[1]}
+Temporary Password: placeholder
+Please change your password immediately upon your first login for security purposes.\n
+We are excited to have you join us and look forward to your contributions. If you have any questions regarding the onboarding process, please feel free to reach out to the HR department.\n
+Welcome to the team!\n
+Best regards,\n\n
+The HR Team MSP Concept"""
+        
+        #Remove tempstatusdata
+        manager.cleanupTempTable(Tempid)
+
+        #Send email 
+        emailService.send_email(emailService.username,acceptdata[1],subject,emailbody)
         return jsonify({"message": "Employee successfully admitted", "status": "success"}), 200
     except Exception as e:
         if 'conn' in locals(): conn.close()
