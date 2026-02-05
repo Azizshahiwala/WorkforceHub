@@ -1,7 +1,8 @@
 #This file is used to run flask file
 from flask import Flask,jsonify
 from flask_cors import CORS
-
+from dotenv import load_dotenv
+import os
 #Get blueprint
 from AuthLogin import authlogin,createCredentials
 from Users import users,createCompanyUsers
@@ -14,6 +15,7 @@ from FeedbackPerformance import feedbackandperformance,FeedbackPerformanceSetup
 from Activity import activity,createActivity
 from DummyDataFiller import populate_databases
 from PathConfig import setupPaths
+from Questionbase import quebase
 
 #Core import 
 from Core.AISorter import ai_sorter,ai_sorter_manager
@@ -42,10 +44,19 @@ app.register_blueprint(notification)
 app.register_blueprint(feedbackandperformance)
 app.register_blueprint(activity)
 app.register_blueprint(ai_sorter)
+app.register_blueprint(quebase)
 limiter.init_app(app)
 # Enables communication between React app and this Flask server
-CORS(app)  
-
+load_dotenv("../../.env")
+allowed_origins = [
+    os.getenv("LOCALHOST_PATH"),
+    os.getenv("VITE_WEB_PATH"),
+    os.getenv("EXTRA_NETWORK_PATH")
+]
+CORS(app, resources={r"/api/*": {
+    "origins": allowed_origins,
+    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"]}})
 @app.route("/api/init-db",methods=['GET'])
 def createDatabases():
     try:

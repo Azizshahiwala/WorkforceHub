@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./InterviewStart.css";
-
 export default function InterviewStart() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -36,6 +36,7 @@ export default function InterviewStart() {
   const [listening, setListening] = useState(false);
   const [answers, setAnswers] = useState({});
 
+  
   // ---- SPEAK FUNCTION ----
   const speak = (text) => {
     if (!window.speechSynthesis) return;
@@ -112,13 +113,50 @@ export default function InterviewStart() {
   };
 
   // ---- NEXT QUESTION ----
-  const nextQuestion = () => {
-    if (currentQuestion + 1 < allQuestions.length) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
+  const nextQuestion = async () => {
+  if (currentQuestion + 1 < allQuestions.length) {
+    setCurrentQuestion(currentQuestion + 1);
+  } else {
+    
+    // FIX: Define queryParams before using it!
+    const queryParams = new URLSearchParams(window.location.search);
+    const candidateId = queryParams.get("ref");
+
+    if (!candidateId) {
+      alert("Error: Candidate ID (ref) is missing from the URL.");
+      return;
+    }
+    const formattedAnswers = allQuestions
+      .map((q, i) => `Q: ${q}\nA: ${answers[i] || "No response"}`)
+      .join("\n\n");
+
+    try {
+      // Reusing your existing analysis route via process-test
+      console.log("Submitting to:", `${API_BASE_URL}/recruit/process-test`);
+
+      const response = await fetch(`${API_BASE_URL}/recruit/process-test`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: candidateId,
+          answers: formattedAnswers
+        }),
+      });    
+      if(response.ok){
+        // Play the closing message before navigating
+        speak(closingMessage);
+        setTimeout(() => navigate(`/interviewer/end`), 5000);
+      }
+      else{
+        alert("Error: Make sure you have internet connection. If the error persists, please contact administrator.");
+        navigate(`/interviewer/end`);
+      }
+    } catch (err) {
+      console.error("Submission failed:", err);
       navigate("/interviewer/end");
     }
-  };
+  }
+};
 
   // ---- UI ----
   return (

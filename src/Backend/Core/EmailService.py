@@ -15,7 +15,8 @@ class EmailService:
         self.smtp_port = int(os.getenv("smtp_port"))
         self.username = os.getenv("smtp_username")
         self.password = os.getenv("smtp_password")
-        self.basic_url = os.getenv("VITE_API_BASE_URL")
+        self.api_url = os.getenv("VITE_API_BASE_URL")
+        self.web_url = os.getenv("VITE_WEB_PATH")
     def create_connection(self):
         #this takes HOST and PORT (smtp_server, smtp_port)
         try:
@@ -58,7 +59,7 @@ class EmailService:
         #This function creates a unique link for interview.
         # ?ref is used to track the tempid in the link.
         #jsx will capture this ref and use it to return the interview data.
-        return f"{self.basic_url}/interviewer?ref={Tempid}"
+        return f"{self.web_url}interviewer?ref={Tempid}"
     
     def sendInterviewLink(self, to_email, candidate_name, Tempid):
         from_email = self.username

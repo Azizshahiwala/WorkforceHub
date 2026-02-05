@@ -228,12 +228,26 @@ def admitEmployee(Tempid):
         if conn:
             conn.close() # This runs even if the code crashes
 
-@recruit.route("/recruitment/reject/<int:id>", methods=["DELETE"])
+@recruit.route("/recruit/reject/<int:id>", methods=["DELETE"])
 def reject_candidate(id):
+
+    conn,cursor = manager._get_connection()
+    cursor.execute("select name,email,role from TempStatusTable where Temp_id = ?",(id,))
+    rejdata = cursor.fetchone()
+    conn.close()
+    emailbody = f"""
+Dear {rejdata[0]},\n
+Thank you for giving us the opportunity to review your application and for participating in our recent interview process. We truly appreciate the time and effort you put into your candidacy for the {rejdata[2]} role.\n
+After careful consideration of your background, experience, and our current business needs, we have decided to move forward with other candidates at this time.\n
+Please note that this decision is specific to this particular role and does not reflect your overall potential. We were impressed with your [Specific Skill/Strength found by AI], and we encourage you to keep an eye on our careers page for future openings that may be a better match for your skillset.\n
+We wish you the very best in your job search and your future professional endeavors.\n\n
+Best regards,\n\n
+The HR Team MSP Concept"""
+    emailService.send_email(emailService.username,{rejdata[1]},f"Update regarding your application for {rejdata[2]} at MSP Concept",emailbody)
     manager.cleanupTempTable(id)
     return jsonify({"message": "Candidate rejected"}), 200  
 
-@recruit.route('/recruitment/resume/<int:id>', methods=['GET'])
+@recruit.route('/recruit/resume/<int:id>', methods=['GET'])
 def get_resume(id):
     try:
         conn, cursor = manager._get_connection()
@@ -258,9 +272,9 @@ def get_resume(id):
         if conn:
             conn.close()    
 
-@recruit.route('/recruitment/getanalysis/<string:id>', methods=['POST'])
+@recruit.route('/recruit/getanalysis/<string:id>', methods=['POST'])
 @limiter.limit("2 per minute")
-def get_ai_analysis(id):
+def get_ai_analysis(id,interview_transcript=None):
     try:
         conn, cursor = manager._get_connection()
         # Fetch only the resume BLOB for the specific ID
@@ -273,8 +287,8 @@ def get_ai_analysis(id):
             # Here, you would integrate with AISorter to get the score
             rawdata = ai_sorter_manager.convert_data_to_str(binary_resume)
             cleaned_data = ai_sorter_manager.clean_text(rawdata)
-            final_score = ai_sorter_manager.find_score(cleaned_data)
-            final_description = ai_sorter_manager.find_description(cleaned_data,final_score)
+            final_score = ai_sorter_manager.find_score(interview_transcript,cleaned_data)
+            final_description = ai_sorter_manager.find_description(interview_transcript,cleaned_data,final_score)
             
             print("Final AI Score: ",final_score)
             # Update the score and description in the database
@@ -299,8 +313,38 @@ def send_interview_link(Tempid):
     name = data.get('name')
     try:
         
-        emailService.sendInterviewLink(email,name,Tempid)
+        emailService.sendInterviewLink(to_email=email,candidate_name=name,Tempid=Tempid)
 
         return jsonify({"message": "Interview link sent successfully", "status": "success"}), 200
     except Exception as e:
         return jsonify({"message": f"Error sending interview link: {e}", "status": "error"}), 500
+    
+
+@recruit.route('/recruit/process-test', methods=['POST','GET'])
+def processTestResults():
+    try:
+        data = rq.get_json()
+        candidate_id = data.get('id')
+        interview_transcript = data.get('answers') # From InterviewStart.jsx
+
+        # 1. Update the record with the transcript first
+        # We temporarily store this in AI_DESCRIPTION or a new 'transcript' column
+        conn, cursor = manager._get_connection()
+        
+        #update the status so HR knows the interview is done
+        cursor.execute("""
+            UPDATE TempStatusTable 
+            SET AI_DESCRIPTION = ?, status = 'Interviewed' 
+            WHERE id = ?
+        """, (interview_transcript, candidate_id))
+        conn.commit()
+        conn.close()
+        
+        #recalculate the score based on the new data
+        result = get_ai_analysis(candidate_id,interview_transcript)
+        print("Analysis complete: ", result[0].get_json())
+        
+        return result
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

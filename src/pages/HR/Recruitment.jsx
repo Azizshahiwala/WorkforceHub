@@ -1,149 +1,167 @@
-import React, { useState,useEffect } from "react";
-
+import React, { useState, useEffect } from "react";
 import "../../styles/HR/Recruitment.css";
 function Recruitment() {
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const [applications, setApplications] = useState([]);
-const [analyzingId, setAnalyzingId] = useState(null);
-const [isDescriptionVisible, setIsDescriptionVisible] = useState(false);
-const [activeDesc, setActiveDesc] = useState(null);
-const MySession = JSON.parse(localStorage.getItem("MySession"));
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  
+  console.log("Current ip: "+API_BASE_URL)
+  const [applications, setApplications] = useState([]);
+  const [filter, setFilter] = useState("All");
+
+  // States for the Review & Admission Modal
+  const [showModal, setShowModal] = useState(false);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
 
   useEffect(() => {
-  fetch(`${API_BASE_URL}/RegisterForm/applications`)
-    .then(res => res.json())
-    .then(data => setApplications(data));
+    fetchApplications();
   }, []);
 
-  function Reject(id) {
-  fetch(`${API_BASE_URL}/recruit/reject/${id}`, {
-    method: "DELETE"
-  }).then(() => {
-    setApplications(prev => prev.filter(item => item.id !== id));
-  }).then(()=>{alert(this.message)});
-}
-  function SendLink(id,email,name) {
-  fetch(`${API_BASE_URL}/recruit/send-invite/${id}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ id:id,email:email, name:name })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.status === "success") {
-        alert(data.message);
-      } else {
-        alert(data.message);
-      }
-    })
-    .catch(err => {
-      console.error("link error :", err);
-      alert("Server error while sending link");
-    });
-}
-function showReport(id) {
-    // Open the backend PDF route in a new tab
-    window.open(`${API_BASE_URL}/recruit/resume/${id}`, '_blank');
-} 
-const FindAnalysis = (id) => {
-  //This function finds score and description.
-  setAnalyzingId(id);
-  //Send post req to backend to calculate score
-  fetch(`${API_BASE_URL}/recruit/getanalysis/${id}`, {
-    method: "POST"
-  })
-    .then(async (res) => {
-      if (res.status === 429) {
-        throw new Error("Please wait...");
-      }
-      return res.json();
-    })
-    .then(data => {
-      if (data.status === "success") {
+  const fetchApplications = () => {
+    fetch(`${API_BASE_URL}/RegisterForm/applications`)
+      .then((res) => res.json())
+      .then((data) => setApplications(data));
+  };
 
-        // Refresh the applications list to show updated AI_SCORE
-        fetch(`${API_BASE_URL}/RegisterForm/applications`)
-          .then(res => res.json())
-          .then(data => setApplications(data));
-      }
-    }).catch(err => {
-      console.error("Analysis error:", err);
-      
-    }).finally(() => {setAnalyzingId(null);});
-};
-const ShowDesc = (description) => {
-  setActiveDesc(description);
-  setIsDescriptionVisible(true);
-}
-  return (<>
-  <div>
-    <table className="Inner-table"border={1} cellPadding={10} cellSpacing={0}>
-    <tr>
-      <th>Name</th>
-      <th>Position for</th>
-      <th>
-      <tr>
-        <th>Email and Phone</th>
-      </tr>
-      </th>
-      <th>Experience</th>
-      <th>Applied Date</th>
-      <th>Report View</th>
-      {/* <th>Score by AI (out of 10)</th>
-      <th>Description by AI</th> */}
-      <th>Send for interview</th>
-    </tr>
-    {applications.map((Submission, key) => (
-  <tr key={Submission.id || key}>
-    <td>{Submission.name}</td>
-    <td>{Submission.position}</td>
-    <td className="contact-info">
-      <span>{Submission.email}</span>
-      <span>{Submission.phone}</span>
-    </td> 
-    <td>{Submission.experience}</td>   
-    <td>{Submission.appliedDate}</td>
-    <td><button className="Repbtn" onClick={() => showReport(Submission.id)}>Resume</button></td>
-    
-    {/* <td>
-      {Submission.AI_SCORE === "Not calculated" ? (
-        analyzingId === Submission.id ? <p className="loading-text">⌛ Analyzing...</p> :
-        <button className="Scorebtn" onClick={() => FindAnalysis(Submission.id)}>Run AI</button>
-      ) : <span className="ai-score-badge">{Submission.AI_SCORE}</span>}
-    </td> */}
-    
-    {/* <td className="desc-cell">
-      {Submission.AI_DESCRIPTION?.toLowerCase() === "not generated" ? "---" : (
-          <button className="ai-view-btn" onClick={() => ShowDesc(Submission.AI_DESCRIPTION)}>
-            Click here to get description
-          </button>
+  // Original Logic: Admit Employee (Moves from Temp to Main/Login tables)
+  function Admit(Tempid) {
+    if (!window.confirm("Create official employee account for this candidate?")) return;
+
+    fetch(`${API_BASE_URL}/RegisterConfirm/${Tempid}`, {
+      method: "POST",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          alert("Account Created: Employee can now log in.");
+          setShowModal(false);
+          fetchApplications(); // Refresh list to remove admitted user
+        } else {
+          alert(data.message);
+        }
+      });
+  }
+
+  function Reject(id) {
+    if (!window.confirm("Permanently reject this candidate?")) return;
+    fetch(`${API_BASE_URL}/recruit/reject/${id}`, {
+      method: "DELETE",
+    }).then(() => {
+      setApplications((prev) => prev.filter((item) => item.id !== id));
+      alert("Candidate rejected.");
+    });
+  }
+
+  function SendLink(id, email, name) {
+    fetch(`${API_BASE_URL}/recruit/send-invite/${id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id:id, email: email, name: name }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(data.message);
+      })
+      .catch((err) => {
+        console.error("link error :", err);
+      });
+  }
+
+  function showReport(id) {
+    window.open(`${API_BASE_URL}/recruit/resume/${id}`, "_blank");
+  }
+
+  // Handle opening the results modal
+  const handleViewAnalysis = (candidate) => {
+    setSelectedCandidate(candidate);
+    setShowModal(true);
+  };
+
+  const filteredApps = applications.filter((app) => {
+    if (filter === "Shortlisted") return parseInt(app.AI_SCORE) >= 7;
+    if (filter === "Interviewed") return app.status === "Interviewed";
+    return true;
+  });
+
+  return (
+    <>
+      <div className="recruitment-container">
+        <table className="Inner-table" border={1} cellPadding={10} cellSpacing={0}>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Position for</th>
+              <th>Email and Phone</th>
+              <th>Experience</th>
+              <th>Applied Date</th>
+              <th>Report View</th>
+              <th>Send for interview</th>
+              <th>Status / AI Results</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredApps.map((Submission, key) => (
+              <tr key={Submission.id || key}>
+                <td>{Submission.name}</td>
+                <td>{Submission.position}</td>
+                <td className="contact-info">
+                  <span>{Submission.email}</span><br />
+                  <span>{Submission.phone}</span>
+                </td>
+                <td>{Submission.experience}</td>
+                <td>{Submission.appliedDate}</td>
+                <td>
+                  <button className="Repbtn" onClick={() => showReport(Submission.id)}>Resume</button>
+                </td>
+                <td className="action-btns">
+                  <button className="Accbtn" onClick={() => SendLink(Submission.id, Submission.email, Submission.name)}>Send link</button>
+                  <button className="Rejbtn" onClick={() => Reject(Submission.id)}>Reject</button>
+                </td>
+                <td className={`status-badge ${Submission.status.toLowerCase()}`}>
+                  {Submission.status === "Interviewed" ? (
+                    <div className="interview-done-section">
+                      <span>✅ Interview Done</span>
+                      <button className="ViewAnalysisBtn" onClick={() => handleViewAnalysis(Submission)}>
+                        View AI Analysis
+                      </button>
+                    </div>
+                  ) : (
+                    Submission.status
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* --- ANALYSIS & ADMISSION MODAL --- */}
+      {showModal && selectedCandidate && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Evaluation: {selectedCandidate.name}</h3>
+              <button className="close-btn" onClick={() => setShowModal(false)}>X</button>
+            </div>
+            <div className="modal-body">
+              <div className="score-summary">
+                <strong>Final AI Score:</strong>
+                <span className="big-score"> {selectedCandidate.AI_SCORE} / 10</span>
+              </div>
+              <div className="transcript-section">
+                <h4>Interview Transcript & Feedback</h4>
+                <pre className="transcript-text">{selectedCandidate.AI_DESCRIPTION}</pre>
+              </div>
+            </div>
+            <div className="modal-footer">
+              {/* This is where HR officially creates the account after reviewing the result */}
+              <button className="Admitbtn" onClick={() => Admit(selectedCandidate.id)}>
+                Admit & Create Account
+              </button>
+            </div>
+          </div>
+        </div>
       )}
-    </td> */}
-    
-    <td className="action-btns">
-      <button className="Accbtn" onClick={() => SendLink(Submission.id,Submission.email,Submission.name)}>Send link</button>
-      <button className="Rejbtn" onClick={() => Reject(Submission.id)}>Reject</button>
-    </td>
-  </tr>
-))}
-    </table>
-  </div>
-  {isDescriptionVisible && (
-  <div className="modal-overlay">
-    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-      <div className="modal-header">
-        <h3>✨ AI Candidate Insights</h3>
-        <button className="close-btn" onClick={() => setIsDescriptionVisible(!isDescriptionVisible)}>✖</button>
-      </div>
-      <div className="modal-body">
-        <p>{activeDesc}</p>
-      </div>
-    </div>
-  </div>
-)}
-  </>);
+    </>
+  );
 }
 
 export default Recruitment;

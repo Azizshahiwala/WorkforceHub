@@ -7,7 +7,6 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useEffect } from "react";
-
 /* ================= HR Layout ================= */
 import HRLayout from "./layout/HRLayout";
 import Dashboard from "./pages/HR/Dashboard";
@@ -47,10 +46,10 @@ import AssignTaskByHR from "./pages/Employees/AssignedTaskByHR";
 
 /* ================= Main Content ================= */
 function MainContent() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
   const location = useLocation();
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
+  
   useEffect(() => {
     /* ---------- Initialize DB (only once per reload) ---------- */
     const initDB = async () => {
@@ -62,7 +61,7 @@ function MainContent() {
     };
     initDB();
 
-    /* ---------- Session Handling ---------- */
+    /* Check for sessions */
     let session = null;
     try {
       session = JSON.parse(localStorage.getItem("MySession"));
@@ -130,8 +129,8 @@ function MainContent() {
 
       {/* ================= Interview ================= */}
       <Route path="/interviewer" element={<Interviewer />} />
-      <Route path="/interview/start" element={<InterviewStart />} />
-      <Route path="/interview/end" element={<InterviewEnd />} />
+      <Route path="/interviewer/start" element={<InterviewStart />} />
+      <Route path="/interviewer/end" element={<InterviewEnd />} />
     </Routes>
   );
 }

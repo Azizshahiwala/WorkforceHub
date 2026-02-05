@@ -55,11 +55,11 @@ class AISorter:
             print("Error cleaning text:", e)
             return ""
     
-    def find_score(self,chunk):
+    def find_score(self,interview_transcript,chunk):
         try:
             score = 0
             
-            prompt = f"On a scale of 1 to 10, how well does the following resume chunk match the job requirements and skills? Resume Chunk: {chunk} . Give score number only."
+            prompt = f"On a scale of 1 to 10, how well does the following resume chunk match the job requirements and skills as per answers: {interview_transcript} \n\nResume Chunk: {chunk} . Give score number only."
             response = self.generateResponse(prompt,None)
             match = re.search(r'\d+', str(response))
             if match:
@@ -67,13 +67,18 @@ class AISorter:
 
             return score 
         except Exception as e:
-            print("Resume does not have required data: ", e)
+            print("Error feeding data to AI: ", e)
             return 0
-    def find_description(self,chunk,scoreByAi=None):
+    def find_description(self,interview_transcript=None,chunk=None,scoreByAi=None):
         try:
+            print(interview_transcript)
+            if not interview_transcript or chunk == None:
+                return "Error. The resume seems out-dated and not fit."
+            
             history=[]
             history.append(f"p1. You provided score : {scoreByAi}/10 for this resume. ")
-            history.append(f"p2. Check for: Age, Work background, skills, cultural fit, strengths, weaknesses, experience and hobbies.")
+            history.append(f"p2. Your task: compare the resume with given answers. Answers: {interview_transcript}")
+            
             prompt = f"p3. Based on the resume chunk: {chunk} ,provide a brief description highlighting the candidate's strengths and areas for improvement. Keep it concise and relevant to the job requirements."
             response = self.generateResponse(prompt,history)
             return response
