@@ -230,11 +230,11 @@ def admitEmployee(Tempid):
         emailbody=f"""Dear {acceptdata[0]},
 
 Congratulations! We are thrilled to officially offer you the position of {acceptdata[2]} with the MSP Concept team.\n\n
-Your performance during our interview process was exceptional, and we were particularly impressed by your insights and alignment with our company values. We believe your skills will be a significant asset to our department.
-Account Activation & Next Steps: To begin your onboarding, we have created your official employee profile. You can now log in to our internal portal to complete your documentation:
-Portal URL: {manager._compURL}
-Username: {acceptdata[1]}
-Temporary Password: placeholder
+Your performance during our interview process was exceptional, and we were particularly impressed by your insights and alignment with our company values. We believe your skills will be a significant asset to our department.\n
+Account Activation & Next Steps: To begin your onboarding, we have created your official employee profile. You can now log in to our internal portal to complete your documentation:\n
+Portal URL: {manager._compURL}\n
+Username: {acceptdata[1]}\n
+Temporary Password: placeholder\n\n
 Please change your password immediately upon your first login for security purposes.\n
 We are excited to have you join us and look forward to your contributions. If you have any questions regarding the onboarding process, please feel free to reach out to the HR department.\n
 Welcome to the team!\n
