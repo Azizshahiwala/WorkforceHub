@@ -223,7 +223,7 @@ def admitEmployee(Tempid):
         
         #Now send email to the person.
         conn,cursor = manager._get_connection()
-        cursor.execute("select name,email,role from TempStatusTable where Temp_id = ?",(id,))
+        cursor.execute("select name,email,role from TempStatusTable where id = ?",(id,))
         acceptdata = cursor.fetchone()
         conn.close()
         subject = f"Offer of Employment: {acceptdata[2]} at MSP Concept"
@@ -258,7 +258,7 @@ The HR Team MSP Concept"""
 def reject_candidate(id):
 
     conn,cursor = manager._get_connection()
-    cursor.execute("select name,email,role from TempStatusTable where Temp_id = ?",(id,))
+    cursor.execute("select name,email,role from TempStatusTable where id = ?",(id,))
     rejdata = cursor.fetchone()
     conn.close()
     emailbody = f"""
