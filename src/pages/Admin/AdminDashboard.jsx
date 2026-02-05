@@ -1,6 +1,5 @@
 import {React,useEffect,useState} from 'react';
 import { Pie, Bar } from "react-chartjs-2";
-import { useNavigate } from 'react-router-dom';
 import { 
   Chart as ChartJS, 
   ArcElement, 
@@ -10,46 +9,51 @@ import {
   Tooltip, 
   Legend 
 } from "chart.js";
-import "../../styles/Admin/AdminDashboard.css";
+import "../../styles/HR/Dashboard.css";
+
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-export default function AdminDashboard() {
+export default function Dashboard() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-  const [employees,setEmployees] = useState([])
-    
-    useEffect(() => {
-      fetch(`${API_BASE_URL}/getCompanyUsers`)
-        .then(res => res.json())
-        .then(data => setEmployees(data))
-        .catch(err => console.error("Dashboard load error:", err));
-    }, []);
   
-    //This use effects checks if leave is expired or not.
-      useEffect(() => {
-            fetch(`${API_BASE_URL}/CloseLeaveDuration`)
-              .then(res => res.json())
-              .then(data => console.log(data.closedCount));
-          }, []);
-          
-    // Gender data
-    const genderData = {
-      labels: ["Male", "Female"],
-      datasets: [{ 
-        data: [
-          employees.filter(e => e.gender === "Male").length, 
-          employees.filter(e => e.gender === "Female").length
-        ], 
-        backgroundColor: ["#36A2EB", "#FF6384"] 
-      }]
-    };
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+  
+  const [employees,setEmployees] = useState([])
+  
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/getCompanyUsers`)
+      .then(res => res.json())
+      .then(data => setEmployees(data))
+      .catch(err => console.error("Dashboard load error:", err));
+  }, []);
+
+  //This use effects checks if leave is expired or not.
+  useEffect(() => {
+        fetch(`${API_BASE_URL}/CloseLeaveDuration`)
+          .then(res => res.json())
+          .then(data => console.log(data.closedCount));
+      }, []);
+
+  // Gender data
+  const genderData = {
+    labels: ["Male", "Female"],
+    datasets: [{ 
+      data: [
+        employees.filter(e => e.gender === "Male").length, 
+        employees.filter(e => e.gender === "Female").length
+      ], 
+      backgroundColor: ["#36A2EB", "#FF6384"] 
+    }]
+  };
   
   // Staff data  
-  const staffCount = employees.filter(e => !["Admin", "CEO"].includes(e.department)).length;
-  const staffData = {
+  const NonstaffCount = employees.filter(e => ["Admin", "CEO", "Interviewer","HR"].includes(e.department)).length;
+  const staffCount = employees.filter(e => !["Admin", "CEO", "Interviewer","HR"].includes(e.department)).length;
+  console.log("Non staff Department: "+NonstaffCount+", Staff Department: "+staffCount)
+  const PieData = {
     labels: ["Staff", "Non-Staff"],
     datasets: [{ 
-      data: [staffCount, employees.length - staffCount], 
+      data: [staffCount,NonstaffCount], 
       backgroundColor: ["#47B39C", "#EC6B56"] 
     }]
   };
@@ -69,15 +73,20 @@ export default function AdminDashboard() {
       backgroundColor: "#36A2EB" 
     }]
   };
+
+
+// feedback performance
   const getAvgPerformance = () => {
   try {
     const data = localStorage.getItem("feedback");
     if (data) {
       const feedback = JSON.parse(data);
 
+      // reduce() turns an array into a single value by processing each item one by one
       const avg = feedback.reduce((sum, f) => sum + parseInt(f.rating), 0) / feedback.length;
       
-      return Math.round(avg * 10) / 10;
+      // Math.round() rounds numbers to the nearest whole number.
+      return Math.round(avg * 10) / 10; // 1 decimal place
     }
   } catch (e) {
     return 0;
@@ -85,6 +94,9 @@ export default function AdminDashboard() {
   return 0;
 }
 const reviewsCount = JSON.parse(localStorage.getItem("feedback") || "[]").length;
+
+  // TO-DO List State and Handler
+
   const [task, setTask] = useState("");
   const [store, setStore] = useState(() => {
   // runs once on first render
@@ -108,13 +120,13 @@ const removeTask = (index) => {
 };
   return (
     <div className="dashboard">
-      <h3>Admin Dashboard</h3>
+      <h2>HR Dashboard</h2>
 
       {/* Staff Pie */}
       <div className="emp-summary">
         <h1 className="card-title">Staff Distribution</h1>
         <div className="pie-wrapper">
-          <Pie data={staffData} />
+          <Pie data={PieData} />
           <div className="pie-center-text">
             <span>Total</span>
             <strong>{employees.length}</strong>

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/HR/Activity.css";
-//This API is for dynamic url instead of having to hardcode in every single jsx
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-function AdminActivity() {
+function Activity() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [activities, setActivities] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -70,9 +69,6 @@ function AdminActivity() {
             <div className="activity-content">
               <span className="activity-time">{item.dateCreated}</span>
               <p className="activity-text">{item.message}</p>
-
-              <small className="activity-sender">Posted by: {item.givenByRole}</small>
-
               {/* <small className="activity-sender">Posted by: {item.givenByRole}</small> */}
             </div>
           </div>
@@ -109,4 +105,4 @@ function AdminActivity() {
   );
 }
 
-export default AdminActivity;
+export default Activity;

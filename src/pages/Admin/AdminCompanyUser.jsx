@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import "../../styles/HR/CompanyUser.css";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -22,6 +22,7 @@ export function UserInfo(empID, name, lastLogin) {
 
 function CompanyUser() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  
   const MySession = JSON.parse(localStorage.getItem("MySession"));
  
   const [employees, setEmployees] = useState(() => {
@@ -46,50 +47,36 @@ function CompanyUser() {
   
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
-  const [newEmployee, setNewEmployee] = useState({
-    name: "",
-    department: "",
-    Gender: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewEmployee((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const generateEmployeeId = () => {
-    const lastEmp = employees[employees.length - 1];
-    const lastNum = lastEmp
-      ? Number(lastEmp.employeeId.split("-")[1])
-      : 10;
-    return `LA-${String(lastNum + 1).padStart(4, "0")}`;
-  };
-
+  const [tempPass, setTempPass] = useState("");
+  const [tempID, settempID] = useState("");
+  
+  const setData = (auth_id) => {
+    settempID(auth_id);
+    setShowModal(true);
+  } 
+  const clearData = () => {
+    settempID("");
+    setTempPass("");
+    setShowModal(false);
+  } 
   const submitEmployee = () => {
-    const { name, department, Gender } = newEmployee;
-    if (!name || !department || !Gender) {
-      alert("Please fill all fields");
-      return;
-    }
-
-    const newEmp = {
-      id: employees.length + 1,
-      name,
-      department,
-      Gender,
-      employeeId: generateEmployeeId(),
-      status: "Logged In",
-      lastLogin: new Date().toLocaleString(),
-    };
-
-    const updated = [...employees, newEmp];
-    setEmployees(updated);
-    localStorage.setItem("employees", JSON.stringify(updated));
-
-    setNewEmployee({ name: "", department: "", Gender: "" });
+    
+    fetch(`${API_BASE_URL}/updatePassByHR/${tempID}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({tempPass})
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        alert(data.message);
+        <Navigate to="/dashboard/users" replace></Navigate>
+      } else {
+        alert(data.message);
+      }
+    })
+    .catch(err => {console.error("Error:", err);});
+    setTempPass("");
     setShowModal(false);
   };
 
@@ -163,13 +150,10 @@ function CompanyUser() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-
+      
       <div className="leave-card">
         <div className="leave-card-header">
           <h3>All Employees</h3>
-          <button type="button" onClick={() => setShowModal(true)}>
-            + NEW
-          </button>
         </div>
 
         {/* ✅ Grid instead of invalid table */}
@@ -186,7 +170,13 @@ function CompanyUser() {
                 >
                   ✖
                 </button>
-
+                {/**This condition checks if status is just admitted. Then only it puts a change pass btn */}
+                {emp.status === "Just admitted" && 
+                <div className="emp-card-row">
+                  <button type="button" onClick={() => setData(emp.auth_id)}>
+                  <strong>Update Password</strong>
+                  </button>
+                </div>}
                 <div className="emp-card-row">
                   <span>Employee ID:</span>
                   <strong>{emp.employeeId}</strong>
@@ -201,7 +191,7 @@ function CompanyUser() {
                 </div>
                 <div className="emp-card-row">
                   <span>Status:</span>
-                  <strong className="status-active">{emp.status === "Logged in" ? "Active" : "In-active"}</strong>
+                  <strong className="status-active">{emp.status?.toLowerCase() === "logged in" ? "Active" : "In-active"}</strong>
                 </div>
                 <div className="emp-card-row">
                   <span>Gender:</span>
@@ -216,52 +206,34 @@ function CompanyUser() {
         </div>
 
         {showModal && (
+          <form onSubmit={() => submitEmployee(tempPass)}>
           <div className="modal-overlay">
             <div className="modal-box">
-              <h3>Add New Employee</h3>
-
               <input
-                type="text"
-                name="name"
-                placeholder="Employee Name"
-                value={newEmployee.name}
-                onChange={handleChange}
-              />
-
-              <input
-                type="text"
-                name="department"
-                placeholder="Department"
-                value={newEmployee.department}
-                onChange={handleChange}
-              />
-
-              <input
-                type="text"
-                name="role"
-                placeholder="Role"
-                value={newEmployee.role}
-                onChange={handleChange}
-              />
-
-              <input
-                type="text"
-                name="Gender"
-                placeholder="Gender"
-                value={newEmployee.Gender}
-                onChange={handleChange}
-              />
-
+                type="password"
+                name="UIpassword"
+                placeholder="Enter password"
+                value={tempPass}
+                onChange={(e) => setTempPass(e.target.value)}
+                />
+              <div className="emp-card-row" style={{color : "red"}}>
+                Note: when password is changed, this will
+                be notified to the corresponding user {employees.name},
+                and you will no longer be able to change this again.
+                Only the user will be able to re-set its password
+              </div>
               <div className="modal-actions">
-                <button type="button" onClick={submitEmployee}>
-                  Add
+                
+                <button type="submit">
+                  Notify
                 </button>
-                <button type="button" onClick={() => setShowModal(false)}>
+                <button type="button" onClick={() => clearData()}>
                   Close
                 </button>
               </div>
-            </div>
+            </div>   
           </div>
+          </form>
         )}
       </div>
     </div>

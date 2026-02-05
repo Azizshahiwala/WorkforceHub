@@ -33,9 +33,11 @@ export default function InterviewStart() {
   const [stream, setStream] = useState(null);
   const [muted, setMuted] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  //listening for vocal answers
   const [listening, setListening] = useState(false);
   const [answers, setAnswers] = useState({});
-
+  //snippet for coding answers
+  const [snippet,addsnippets] = useState("");
   
   // ---- SPEAK FUNCTION ----
   const speak = (text) => {
@@ -52,6 +54,8 @@ export default function InterviewStart() {
 
   // Speak when question changes
   useEffect(() => {
+    //clear snippets or append.
+    addsnippets(answers[currentQuestion] || "");
     speak(allQuestions[currentQuestion]);
   }, [currentQuestion]);
 
@@ -85,6 +89,16 @@ export default function InterviewStart() {
     navigate("/interviewer/end");
   };
 
+  const handleCodeChange = (event) => {
+    //Update if textbox is changed
+      var codeText = event.target.value;
+      addsnippets(codeText);
+
+      setAnswers((prev) => ({
+    ...prev,
+    [currentQuestion]: snippet,
+  }));
+  }
   // ---- SPEECH TO TEXT ----
   const startListening = () => {
     if (!("webkitSpeechRecognition" in window)) {
@@ -188,6 +202,15 @@ export default function InterviewStart() {
         </div>
       </div>
 
+        <div className="code-container">
+          <label>💻 Code / Text Editor:</label>
+        <textbox
+        className="code-editor"
+        placeholder="<html/>,import,etc.." 
+        value={snippet}
+        onChange={handleCodeChange}>
+        </textbox>
+        </div>
       <div className="call-controls">
         <button className="control-btn mute" onClick={toggleMute}>
           {muted ? "🔊 Unmute" : "🔇 Mute"}
@@ -196,7 +219,7 @@ export default function InterviewStart() {
         <button className="control-btn mute" onClick={() => speak(allQuestions[currentQuestion])}>
           🔁 Repeat
         </button>
-
+        
         <button className="control-btn mute" onClick={startListening} disabled={listening}>
           {listening ? "🎙️ Listening..." : "🎤 Answer"}
         </button>
@@ -204,7 +227,7 @@ export default function InterviewStart() {
         <button className="control-btn mute" onClick={nextQuestion}>
           Next Question
         </button>
-
+        
         <button className="control-btn end" onClick={endCall}>
           📞 End Call
         </button>
