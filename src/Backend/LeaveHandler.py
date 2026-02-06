@@ -151,6 +151,19 @@ class LeaveHandler:
         conn.commit()
         conn.close()
         return closedCount
+    
+    def get_leave_count(self, empId, MonthYear):
+        conn, cursor = self._get_connection()
+        #This returns days which are flagged as leave from LeaveHandler.py
+        fetchPaidDays = """
+    SELECT count(*) FROM Attendance 
+    WHERE empId = ? AND status = 'Leave' 
+    AND date LIKE ?;
+    """
+        cursor.execute(fetchPaidDays, (empId, MonthYear + "%"))
+        leave_days = cursor.fetchone()[0]
+        conn.close()
+        return leave_days
 leavehandler = LeaveHandler(CompanyUserPath,CredentialsPath)
 
 def createLeave():

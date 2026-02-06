@@ -3,12 +3,26 @@ import "../../styles/HR/Payroll.css";
 function PayRoll() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const MySession = JSON.parse(localStorage.getItem("MySession"));
+  const [devMode, setDevMode] = useState(false);
 
   const [Window, setWindow] = useState(false);
   const [salBreakup, setSalBreakup] = useState(null);
   const [Employee, setEmployee] = useState([]);
   const [search, setSearch] = useState("");
   const [CurrentGatewayRes, setCurrentGatewayRes] = useState("");
+  
+  const isMonthCompleted = (monthYearStr) => {
+  const [year, month] = monthYearStr.split('-').map(Number);
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1; // JS months are 0-indexed
+
+  if (currentYear > year) return true;
+  if (currentYear === year && currentMonth > month) return true;
+  
+  return false;
+};
+
   const getCurrentMonthYear = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -44,7 +58,7 @@ function PayRoll() {
   async function SalaryBreakupCard(empId) {
     const currentMonth = getCurrentMonthYear();
     try {
-      const response = await fetch(`${API_BASE_URL}/pay-Salarybreakup/${empId}/${currentMonth + "%"}`);
+      const response = await fetch(`${API_BASE_URL}/pay-Salarybreakup/${empId}/${currentMonth}`);
       const data = await response.json();
       if (response.ok) {
         setSalBreakup(data[0]);
@@ -73,6 +87,8 @@ function PayRoll() {
     loadEmployees();
   }, []);
 
+  const currentMonth = getCurrentMonthYear(); 
+  const completed = isMonthCompleted(currentMonth);
 
   return (
     <div className="leave-page">
@@ -82,6 +98,16 @@ function PayRoll() {
 
       <div className="leave-card">
         <div className="leave-card-header">
+          <div className="dev-toggle">
+          <label>
+            <input 
+              type="checkbox" 
+              checked={devMode} 
+              onChange={() => setDevMode(!devMode)} 
+            />
+            🚀 Dev Mode (Ignore Date Check)
+          </label>
+        </div>
           <input
             type="text"
             placeholder="Search by name...🔍"
@@ -92,10 +118,11 @@ function PayRoll() {
         </div>
 
         <div className="emp-grid">
+          
           {Employee
             .filter(emp => emp.name.toLowerCase().includes(search.toLowerCase()))
             .map((emp) => (
-
+              
               <div className="emp-card" key={emp.employeeId}>
 
                 <div className="emp-card-row">
@@ -115,19 +142,22 @@ function PayRoll() {
                 </div>
 
                 <div style={{ marginTop: "12px", textAlign: "right" }}>
-                  <button
-                    onClick={() => SalaryBreakupCard(emp.employeeId)}
-                    className="action-btn btn-card"
-                  >
-                    📄 Salary Breakup
-                  </button>
+          {/* Check both the completion logic AND your new devMode flag */}
+          {(completed || devMode) ? (
+            <>
+              <button
+                onClick={() => SalaryBreakupCard(emp.employeeId)}
+                className="action-btn btn-card">
+                📄 Salary Breakup
+              </button>
 
-                  <button
-                    onClick={() => MailProcess(emp.email,emp.name,emp.employeeId)}
-                    className="action-btn btn-card">
-                    📧 Send Payslip
-                  </button>
-                </div>
+              <button
+                onClick={() => MailProcess(emp.email, emp.name, emp.employeeId)}
+                className="action-btn btn-card">
+                📧 Send Payslip
+              </button>
+              </>) : (<span className="pending-tag">⏳ Month In-Progress</span>)}
+        </div>
               </div>
             ))}
         </div>
@@ -138,15 +168,15 @@ function PayRoll() {
             <div className="SalBreakup-page">
               <h2>Salary Breakup for {salBreakup.name} - {salBreakup.empId}</h2>
               <div className="breakup-stats">
-                <p><strong>Base Salary:</strong> ₹{salBreakup.BaseSalary}</p>
+                <p><strong>Base Salary:</strong> ₹{salBreakup.BaseSalary.toFixed(2)}</p>
                 <p><strong>Days Worked:</strong> {salBreakup.daysWorked}</p>
                 <p><strong>Tax Deducted:</strong> ₹{salBreakup.TaxAmount}</p>
                 <p><strong>Provident fund:</strong> ₹{salBreakup.ProvidentFund}</p>
                 <p><strong>Professional Tax:</strong> ₹{salBreakup.ProfessionalTax}</p>
-                <p><strong>Gross Pay:</strong> ₹{salBreakup.GrossSalary}</p>
-                <p><strong>Loss Of Pay:</strong> ₹{salBreakup.LossOfPay}</p>
+                <p><strong>Gross Pay:</strong> ₹{salBreakup.GrossSalary.toFixed(2)}</p>
+                <p><strong>Loss Of Pay:</strong> ₹{salBreakup.LossOfPay.toFixed(2)}</p>
                 <hr />
-                <p className="net-pay"><strong>Net Take-Home:</strong> ₹{salBreakup.NetSalary}</p>
+                <p className="net-pay"><strong>Net Take-Home:</strong> ₹{salBreakup.NetSalary.toFixed(2)}</p>
               </div>
               <button className="close-btn" onClick={() => setWindow(false)}>Close</button>
             </div>
