@@ -59,7 +59,7 @@ class EmailService:
         #This function creates a unique link for interview.
         # ?ref is used to track the tempid in the link.
         #jsx will capture this ref and use it to return the interview data.
-        return f"{self.web_url}interviewer?ref={Tempid}"
+        return f"{self.web_url}/interviewer?ref={Tempid}"
     
     def sendInterviewLink(self, to_email, candidate_name, Tempid):
         from_email = self.username

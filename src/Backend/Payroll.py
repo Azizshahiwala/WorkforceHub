@@ -187,6 +187,7 @@ class Payroll:
                    "NetSalary":NetSalary}]
 
         conn.close()
+        print("ProcessAndSaveData complete")
         return result
 Paymanager = Payroll(CompanyUserPath,CredentialsPath)
 
@@ -223,32 +224,38 @@ def payrollprocess(empId):
     try:
         #Get role for notification.
         conn , cursor = Paymanager._get_connection()
-        cursor.execute("SELECT role FROM cred_db.login WHERE employeeId = ?", (empId,))
-        role = cursor.fetchone()
-        print("Payroll process to: ",role)
+        
+        cursor.execute("SELECT auth_id FROM 'user' WHERE employeeId = ?", (empId,))
+        data = cursor.fetchone()
+        auth_id = data[0]
+        
+        cursor.execute("SELECT role FROM cred_db.login WHERE id = ?", (auth_id,))
+        data = cursor.fetchone()
+        role = data[0]
+
+        print("Payroll process to: ",role,auth_id)
         conn.close()
 
-        data = rq.json
-        MonthYear = data.get("MonthYear")
+        formdata = rq.get_json()
+        MonthYear = formdata.get("MonthYear")
+        emailTo = formdata.get("emailTo")
+        empName = formdata.get("empName")
 
         result = Paymanager.processAndSaveData(empId,MonthYear)
-        
         notifManager.insert_notification(employeeId=empId,role=role,message="Please check your email. Your salary has been paid for this month.")
+        sendFinalMail(emailTo=emailTo,empId=empId,empName=empName,MonthYear=MonthYear)
+        print("Payrollprocess complete")
         return jsonify(result),200
     except Exception as e:
+        print("Payrollprocess",e)
         return jsonify({"error":str(e)}),500
     
-    
-@payroll.route("/send-final-mail/<string:empId>",methods=['POST'])
-def sendFinalMail(empId):
+def sendFinalMail(emailTo,empId,empName,MonthYear):
 #This fetches salary breakup and sends email to employee.
     try:
         #We need the following: emailfrom, emailto, name(optional), monthyear :)
-        data = rq.json
         emailFrom = emailService.username
-        emailTo = data.get("emailTo")
-        empName = data.get("empName")
-        MonthYear = data.get("currentMonth")
+        
         salarydata, error = Paymanager.SalaryBreakup(empId, MonthYear)
 
         if error:
@@ -273,5 +280,7 @@ def sendFinalMail(empId):
 
         # Send email
         emailService.send_email(from_email=emailFrom, to_email=emailTo, subject=subject, body=body)
+        print("sendFinalMail complete")
     except Exception as e:
+        print("sendFinalMail",e)
         pass 

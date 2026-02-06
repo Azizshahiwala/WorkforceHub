@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import "../../styles/HR/Payroll.css";
-import { sendPaySlip } from "/src/Misc/EmailHandler";
 function PayRoll() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const MySession = JSON.parse(localStorage.getItem("MySession"));
@@ -24,7 +23,7 @@ function PayRoll() {
       const response = await fetch(`${API_BASE_URL}/pay-gateway/${empID}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ MonthYear: currentMonth }),
+        body: JSON.stringify({ MonthYear: currentMonth, emailTo:emailTo, empName:empName }),
       });
       const data = await response.json();
       if (response.ok) {
@@ -32,8 +31,6 @@ function PayRoll() {
         //This filters out non-same employeeId entries. 
         //Meaning it removes entries whose payslip has been sent (empId = employeeId).
         setEmployee((prev) => prev.filter((emp) => emp.employeeId !== empID));
-        //Step 2: Send actual payslip from: sendPaySlip(from EmailHandler.jsx) -> Payroll.py 
-        sendPaySlip(emailTo,empName,empID);
       }
       else {
         alert("Error: Mail could not be processed.");

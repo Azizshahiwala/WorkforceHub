@@ -1,12 +1,14 @@
 from dotenv import load_dotenv
 import os 
 
-load_dotenv("PathConfig.env")
 
+base_dir = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(base_dir,"PathConfig.env"))
 # Setup Database paths 
 def setupPaths():
     
-    databaseDir = os.path.join(os.getcwd(), os.getenv("DATABASE_DIR", "src/Database"))
+    databaseDir = os.path.join(os.getcwd(), os.getenv("DATABASE_DIR", "Database"))
+    print("Final db dir:",databaseDir)
     os.makedirs(databaseDir, exist_ok=True)
     CredentialsPath = os.path.join(databaseDir, os.getenv("CREDENTIALS_DB_NAME", "Credentials.db"))
     CompanyUserPath = os.path.join(databaseDir, os.getenv("COMPANY_USER_DB_NAME", "CompanyUsers.db"))
