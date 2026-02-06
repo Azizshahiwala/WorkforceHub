@@ -91,7 +91,7 @@ export default function InterviewStart() {
 
   const handleCodeChange = (event) => {
     //Update if textbox is changed
-      var codeText = event.target.value;
+      const codeText = event.target.value;
       addsnippets(codeText);
 
       setAnswers((prev) => ({
@@ -204,12 +204,12 @@ export default function InterviewStart() {
 
         <div className="code-container">
           <label>💻 Code / Text Editor:</label>
-        <textbox
+        <textarea
         className="code-editor"
         placeholder="<html/>,import,etc.." 
         value={snippet}
         onChange={handleCodeChange}>
-        </textbox>
+        </textarea>
         </div>
       <div className="call-controls">
         <button className="control-btn mute" onClick={toggleMute}>
