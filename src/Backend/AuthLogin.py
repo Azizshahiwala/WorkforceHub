@@ -25,7 +25,7 @@ def createCredentials():
             gender TEXT NOT NULL,
             phoneNumber TEXT NOT NULL UNIQUE,
             OTP INTEGER NULL,
-            OTP_TIMESTAMP TEXT NULL;
+            OTP_TIMESTAMP TEXT NULL
         );
         ''')
         conn.commit()
