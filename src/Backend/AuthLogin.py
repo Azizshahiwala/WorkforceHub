@@ -24,7 +24,8 @@ def createCredentials():
             role TEXT NOT NULL,
             gender TEXT NOT NULL,
             phoneNumber TEXT NOT NULL UNIQUE,
-            OTP INTEGER NULL
+            OTP INTEGER NULL,
+            OTP_TIMESTAMP TEXT NULL;
         );
         ''')
         conn.commit()
@@ -264,8 +265,8 @@ def ForgotpasswordPhase1():
         FetchedId = cursor.fetchone()
         if FetchedId[0]:
             OTP = random.randint(100000,999999)
-
-            cursor.execute("UPDATE login SET OTP = ? WHERE email = ?", (OTP, reqEmail))
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            cursor.execute("UPDATE login SET OTP = ?,OTP_TIMESTAMP=? WHERE email = ?", (OTP,timestamp, reqEmail,))
             conn.commit()
             
             subject = "Your Password Reset Code"
@@ -297,13 +298,27 @@ def ForgotpasswordPhase2():
 
         #Now get otp using forid:
         if forid:
-            cursor.execute("select OTP from login where id = ?",(forid,))
+            cursor.execute("select OTP,OTP_TIMESTAMP from login where id = ?",(forid,))
+            record = cursor.fetchone()
+            print(record)
 
             #Now get otp and compare:
-            serverotp = cursor.fetchone()
-            if serverotp[0] == typed_otp:
-                return jsonify({"success": True, "message":"OTP match."}), 200
-
+            
+            if record[0] and record:
+                #Clear the otp
+                serverotp = record[0]
+                stored_time = datetime.strptime(record[1], "%Y-%m-%d %H:%M:%S")
+                
+                # Calculate time difference
+                time_diff = datetime.now() - stored_time
+                seconds_passed = time_diff.total_seconds()
+                if serverotp == typed_otp and seconds_passed <= 120:  
+                    cursor.execute("UPDATE login SET OTP = NULL,OTP_TIMESTAMP = NULL WHERE id = ?",(forid,))
+                    return jsonify({"success": True, "message":"OTP match."}), 200
+                elif seconds_passed > 120:
+                    cursor.execute("UPDATE login SET OTP = NULL,OTP_TIMESTAMP = NULL WHERE id = ?",(forid,))
+                    return jsonify({"success": False, "message":"OTP time out."}), 200
+    
         return jsonify({"success": False, "message":"OTP incorrect."}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -331,7 +346,7 @@ def ForgotpasswordPhase3():
         cursor.execute("UPDATE login SET password = ? WHERE email = ?",(hashed,email,))
 
         #Clear the otp
-        cursor.execute("UPDATE login SET OTP = ? WHERE email = ?",("",email,))
+        cursor.execute("UPDATE login SET OTP = NULL WHERE email = ?",(email,))
 
         return jsonify({"success": True, "message":"Successfully updated password."}), 200
 
