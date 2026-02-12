@@ -4,15 +4,14 @@ import "./RegisterForm.css";
 import { Link } from "react-router-dom";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const roles = [
-  { id: "Interviewer", label: "Interviewer"},
-  { id: "Sales manager", label: "Sales manager"},
-  { id: "Designer", label: "Designer"},
-  { id: "Developer", label: "Developer"},
-  { id: "Marketing", label: "Marketing"},
-  { id: "Finance", label: "Finance"},
-  { id: "Support", label: "Support"},
-  { id: "Tester", label: "Tester"},
-  { id: "Intern", label: "Intern"},
+  { id: "Sales manager", label: "Sales manager",BaseSalary:62000},
+  { id: "Designer", label: "Designer", BaseSalary:45000},
+  { id: "Developer", label: "Developer", BaseSalary:55000},
+  { id: "Marketing", label: "Marketing", BaseSalary:48000},
+  { id: "Finance", label: "Finance", BaseSalary:58000},
+  { id: "Support", label: "Support", BaseSalary:38000},
+  { id: "Tester", label: "Tester", BaseSalary:42000},
+  { id: "Intern", label: "Intern", BaseSalary:18000},
 ];
 {/*Roles you cannot apply for*/}
 const rolesYouCannotApplyFor = ["admin", "hr", "ceo"];
@@ -20,12 +19,27 @@ const rolesYouCannotApplyFor = ["admin", "hr", "ceo"];
 export default function RegisterForm() {
   const navigate = useNavigate();
   const [file, setFile] = useState(null)
-  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedRole, setSelectedRole] = useState("Intern");
+  const [selectedSal,setselectedSal] = useState(0);
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [gender,setGender] = useState("");
-  const [personExperience, setpersonExperience] = useState("")
-  const [name, setName] = useState("")
+  const [personExperience, setpersonExperience] = useState("");
+  const [name, setName] = useState("");
+  
+  const handleRoleChange = (e) => {
+  const roleId = e.target.value;
+  setSelectedRole(roleId);
+  
+  //Now find the object which has r.id
+  const roleObj = roles.find(r => r.id === roleId);
+  if (roleObj) {
+    setselectedSal(roleObj.BaseSalary);
+  } else {
+    setselectedSal(0);
+  }
+};
+
   const handleFileChange = (e) => {
     if(e.target.files.length == 1){
       setFile(e.target.files[0]);
@@ -51,7 +65,7 @@ export default function RegisterForm() {
     formData.append('gender', gender);
     formData.append('name', name);
     formData.append('personExperience', personExperience);
-
+    formData.append('selectedSal',selectedSal)
     const response = await fetch(`${API_BASE_URL}/RegisterForm/applications/upload`, {
       method: "POST",
       body: formData,
@@ -92,15 +106,15 @@ export default function RegisterForm() {
         </div>
 
         <div className="roles">
-            <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value)}>
-              <option value="">Select Role</option>
-              {roles.map((role) => (
-                <option key={role.id} value={role.id}>
-                  {role.label}
-                </option>
-              ))}
-            </select>
-        </div>
+    <select value={selectedRole} onChange={handleRoleChange}>
+      <option value="">Select Role</option>
+      {roles.map((role) => (
+        <option key={role.id} value={role.id}>
+          {role.label} (Base Salary: ₹{role.BaseSalary})
+        </option>
+      ))}
+    </select>
+</div>
 
         <div className="ResumeUploadArea">
           <input type="file" accept=".pdf" onChange={handleFileChange} />
@@ -114,6 +128,7 @@ export default function RegisterForm() {
           Submit Application
         </button>
         <Link to="/">Already have an account? Click here</Link>
+        
       </form>
     </div>
   );

@@ -73,19 +73,14 @@
 .modal-content {
   background: white;
   width: 90%;
-  max-width: 600px; /* Increased default max-width for better analysis viewing */
-  min-width: 350px; /* Prevent the modal from getting too small */
-  min-height: 400px; /* Prevent the modal from getting too short */
+  max-width: 650px;
+  max-height: 85vh; /* Prevents modal from going off-screen */
   border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  
-  /* RESIZABLE LOGIC */
-  overflow: auto; /* Required for resize to function */
-  resize: both;    /* Allows horizontal and vertical resizing */
-  
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Keeps header/body/footer stacked */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden; /* Important: keeps the scroll inside the body, not the whole modal */
 }
 
 @keyframes modalPop {
@@ -113,14 +108,16 @@
   line-height: 1.6;
   color: #334155;
   font-size: 14px;
-  flex-grow: 1; /* Ensures body takes up available space when resized */
-  overflow-y: auto; /* Allows scrolling inside the body if text is long */
+  flex: 1; /* Takes available space */
+  overflow-y: auto; /* ENABLE SCROLLING HERE */
 }
 
 .modal-footer {
-  padding: 12px 20px;
+  padding: 16px 20px;
+  background: #f8fafc; /* Subtle background to distinguish buttons */
   text-align: right;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid #e2e8f0;
+  z-index: 10; /* Keeps buttons on top */
 }
 
 .modal-close-action {
@@ -146,3 +143,15 @@
   border-radius: 6px;
   font-weight: 600;
 }
+.Admitbtn {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.Admitbtn:hover { background: #059669; }

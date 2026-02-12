@@ -53,10 +53,7 @@ allowed_origins = [
     os.getenv("VITE_WEB_PATH"),
     os.getenv("EXTRA_NETWORK_PATH")
 ]
-CORS(app, resources={r"/api/*": {
-    "origins": allowed_origins,
-    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    "allow_headers": ["Content-Type", "Authorization"]}})
+CORS(app, resources={r"/api/*": {"origins": allowed_origins,"methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],"allow_headers": ["Content-Type", "Authorization"]}})
 @app.route("/api/init-db",methods=['GET'])
 def createDatabases():
     try:
@@ -100,7 +97,7 @@ def createDatabases():
         createActivity()
 
         #Dummy data filler
-        populate_databases()
+        #populate_databases()
         
         return jsonify({"message": "Databases initialized successfully"}), 200
     except Exception as e:

@@ -1,8 +1,9 @@
 from flask import request as rq
 from flask import Blueprint, jsonify
-import os
+import os,random
 import sqlite3 as sq
 from datetime import datetime
+from Core.EmailService import emailService
 from Notification import notifManager
 from PathConfig import CompanyUserPath,CredentialsPath
 from Encrypter import encrypter
@@ -22,7 +23,8 @@ def createCredentials():
             password TEXT NOT NULL,
             role TEXT NOT NULL,
             gender TEXT NOT NULL,
-            phoneNumber TEXT NOT NULL UNIQUE
+            phoneNumber TEXT NOT NULL UNIQUE,
+            OTP INTEGER NULL
         );
         ''')
         conn.commit()
@@ -251,3 +253,91 @@ def TabCloseLogout(employeeId):
         return jsonify({"success": True}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500 
+@authlogin.route('/Forgotpassword-process',methods=['POST'])
+def ForgotpasswordPhase1():
+    try:
+        conn = sq.connect(CredentialsPath)
+        cursor = conn.cursor()
+        reqEmail = rq.form.get('email')
+        cursor.execute("select id from login where email = ?",(reqEmail,))
+        
+        FetchedId = cursor.fetchone()
+        if FetchedId[0]:
+            OTP = random.randint(100000,999999)
+
+            cursor.execute("UPDATE login SET OTP = ? WHERE email = ?", (OTP, reqEmail))
+            conn.commit()
+            
+            subject = "Your Password Reset Code"
+            body = f"Your verification code is: {OTP}. It expires in 2 minutes."
+            emailService.send_email(emailService.username, reqEmail, subject, body)
+
+            return jsonify({"success": True, "message":"Email found.", "forId":FetchedId[0]}), 200
+        
+        return jsonify({"success": False, "message":"Email not found. make sure you typed the email correctly.","forId":None}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if conn:
+            conn.commit()
+            conn.close()
+
+@authlogin.route('/getserverOTP',methods=['GET','POST'])
+def ForgotpasswordPhase2():
+    try:
+        conn = sq.connect(CredentialsPath)
+        cursor = conn.cursor()
+
+        #Get id from server to compare.
+        #Get current otp typed from frontend.
+        data = rq.get_json()
+        
+        forid = data.get("forid")
+        typed_otp = data.get("currentotp")
+
+        #Now get otp using forid:
+        if forid:
+            cursor.execute("select OTP from login where id = ?",(forid,))
+
+            #Now get otp and compare:
+            serverotp = cursor.fetchone()
+            if serverotp[0] == typed_otp:
+                return jsonify({"success": True, "message":"OTP match."}), 200
+
+        return jsonify({"success": False, "message":"OTP incorrect."}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if conn:
+            conn.commit()
+            conn.close()
+@authlogin.route('/finalize-password-updation',methods=['POST'])
+def ForgotpasswordPhase3():
+    try:
+        conn = sq.connect(CredentialsPath)
+        cursor = conn.cursor()
+
+        data = rq.get_json()
+        
+        finalPassword = data.get("finalPassword")
+        email = data.get("email")
+
+        if len(finalPassword) <= 8:
+            return jsonify({"success": "Retry", "message":"Successfully updated password."}), 200
+
+        hashed = encrypter.create_hash(finalPassword)
+
+        #Update password
+        cursor.execute("UPDATE login SET password = ? WHERE email = ?",(hashed,email,))
+
+        #Clear the otp
+        cursor.execute("UPDATE login SET OTP = ? WHERE email = ?",("",email,))
+
+        return jsonify({"success": True, "message":"Successfully updated password."}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if conn:
+            conn.commit()
+            conn.close()

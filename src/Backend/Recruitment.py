@@ -59,6 +59,7 @@ class Recruitment:
                 phoneNumber TEXT NOT NULL,
                 resume BLOB NOT NULL,
                 PersonExperience TEXT NOT NULL,
+                BaseSalary REAL null,
                 applied_date TEXT,
                 status TEXT DEFAULT 'Pending',
                 AI_SCORE TEXT DEFAULT 'Not calculated',
@@ -81,6 +82,7 @@ class Recruitment:
                 phoneNumber TEXT NOT NULL,
                 resume BLOB NOT NULL,
                 PersonExperience TEXT NOT NULL,
+                BaseSalary REAL null,
                 AI_SCORE TEXT null,
                 AI_DESCRIPTION TEXT null
             );
@@ -94,10 +96,10 @@ class Recruitment:
         conn.commit()
         conn.close()
 
-    def createBackup(self,new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience,AI_SCORE="Not calculated",AI_DESCRIPTION="Not generated"):
+    def createBackup(self,new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience,basesalary,AI_SCORE="Not calculated",AI_DESCRIPTION="Not generated"):
         conn,cursor = self._get_connection()
         
-        cursor.execute("insert into MainStatusTable values(?,?,?,?,?,?,?,?,?,?)",(new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience,AI_SCORE,AI_DESCRIPTION)) 
+        cursor.execute("insert into MainStatusTable values(?,?,?,?,?,?,?,?,?,?,?)",(new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience,basesalary,AI_SCORE,AI_DESCRIPTION)) 
         conn.commit()
         conn.close()
 manager = Recruitment(CompanyUserPath, CredentialsPath, RecruitmentPath)
@@ -111,7 +113,7 @@ def fetchApplications():
     try: 
         conn, cursor = manager._get_connection()
 
-        TempItems = "SELECT id, email, role, gender, name, phoneNumber, PersonExperience, status, applied_date, AI_SCORE, AI_DESCRIPTION FROM TempStatusTable"
+        TempItems = "SELECT id, email, role, gender, name, phoneNumber, PersonExperience, BaseSalary, status, applied_date, AI_SCORE, AI_DESCRIPTION FROM TempStatusTable"
         cursor.execute(TempItems)
         Candidates = cursor.fetchall()
 
@@ -124,11 +126,12 @@ def fetchApplications():
             "gender": r[3],
             "name": r[4],
             "phone": r[5],
-            "experience": r[6],        
-            "status": r[7],
-            "appliedDate": r[8],  # This is the new applied_date column
-            "AI_SCORE": r[9],  # This is the new AI_Review column
-            "AI_DESCRIPTION": r[10]  # This is the new AI_Description column
+            "experience": r[6],     
+            "basesalary":r[7],   
+            "status": r[8],
+            "appliedDate": r[9],  # This is the new applied_date column
+            "AI_SCORE": r[10],  # This is the new AI_Review column
+            "AI_DESCRIPTION": r[11]  # This is the new AI_Description column
         
         } for r in Candidates]
 
@@ -146,6 +149,10 @@ def resumeProcess():
     email = rq.form.get('email')
     phoneNumber = rq.form.get('phoneNumber')
     role = rq.form.get('selectedRole')
+    role = role.split(",")
+    selectedSal = rq.form.get('selectedSal')
+    userrole = role[0]
+    print("userrole",userrole)
     personExp = rq.form.get('personExperience')
     gender = rq.form.get('gender')
     name = rq.form.get('name')
@@ -158,9 +165,9 @@ def resumeProcess():
     try:
         conn, cursor = manager._get_connection()
         cursor.execute("""
-            INSERT INTO TempStatusTable (email, role, gender, name, phoneNumber, resume, PersonExperience, status, applied_date)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
-        """, (email, role, gender, name, phoneNumber, binary_resume, personExp, status, applied_date))
+            INSERT INTO TempStatusTable (email, role, gender, name, phoneNumber, resume, PersonExperience,BaseSalary, status, applied_date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        """, (email, userrole, gender, name, phoneNumber, binary_resume, personExp,selectedSal, status, applied_date))
         conn.commit()
         conn.close()
         return jsonify({"message": "Application uploaded. Please wait for approval.", "status": "success"}), 200
@@ -188,11 +195,10 @@ def admitEmployee(Tempid):
     phoneNumber = Candidate[5]
     BinaryRes = Candidate[6]
     PersonExp = Candidate[7]
-
+    basesalary = Candidate[8]
     AI_score = Candidate[-2]
     AI_description = Candidate[-1]
     
-
     conn.close()
     
     try:
@@ -214,16 +220,16 @@ def admitEmployee(Tempid):
         #Lets create a profile
         userEntry = "insert into user(auth_id,name,employeeId,department,status,lastLogin,BaseSalary) values(?,?,?,?,?,?,?);"
         employeeId = 'P'+datetime.now().strftime("%y%m%d%H%M%S")
-        cursor.execute(userEntry,(new_auth_id,name,employeeId,role,'Just admitted',datetime.now().strftime("%S%M%H %d%m%y"),0.0))
+        cursor.execute(userEntry,(new_auth_id,name,employeeId,role,'Just admitted',datetime.now().strftime("%S%M%H %d%m%y"),basesalary))
         conn.commit()
 
         #Save
-        manager.createBackup(new_auth_id,email,role,gender,name,phoneNumber,BinaryRes,PersonExp,AI_score,AI_description)
+        manager.createBackup(new_auth_id,email,role,gender,name,phoneNumber,BinaryRes,PersonExp,basesalary,AI_score,AI_description)
         notifManager.insert_notification(message=f"A new user: {name} has been admitted, will give interview shortly.. ",isGlobal=True)
         
         #Now send email to the person.
         conn,cursor = manager._get_connection()
-        cursor.execute("select name,email,role from TempStatusTable where id = ?",(id,))
+        cursor.execute("select name,email,role from TempStatusTable where id = ?",(Tempid,))
         acceptdata = cursor.fetchone()
         conn.close()
         subject = f"Offer of Employment: {acceptdata[2]} at MSP Concept"

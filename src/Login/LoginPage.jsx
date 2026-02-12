@@ -32,6 +32,15 @@ export default function AccountLogin() {
     };
   },[API_BASE_URL]);
 
+  const handleNavLink = (e) => {
+    e.preventDefault();
+  // Encode the email to use as a 'ref' query parameter
+  // If the email field is empty, it just navigates without the ref
+  
+  const refParam = email ? `?ref=${btoa(email)}` : ""; 
+  console.log("Navigating to Forgot Password with ref:", email);
+  navigate(`/ForgotPasswordPage${refParam}`);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -106,8 +115,9 @@ export default function AccountLogin() {
           />
 
           <button type="submit">Login</button>
-          <Link className="Register-Employee" to="/RegisterForm">Click here to register if you're new here</Link>
-        </form>
+          <Link className="Register-Employee" to="/RegisterForm">Click here to register if you're new here</Link><br/>
+          <Link className="Forget-nav" onClick={handleNavLink}>Forgot password?</Link>
+          </form>
       </div>
     </div>
   );

@@ -27,7 +27,7 @@ import Interviewer from "./Login/InterviewerPage";
 import InterviewStart from "./Login/InterviewStart";
 import InterviewEnd from "./Login/InterviewEnd";
 import RegisterForm from "./Login/RegisterForm";
-
+import ForgotPasswordPage from "./Misc/ForgotPasswordPage";
 /* ================= Admin Layout ================= */
 import AdminLayout from "./layout/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
@@ -90,7 +90,8 @@ function MainContent() {
       {/* ================= Auth Routes ================= */}
       <Route path="/" element={<Login />} />
       <Route path="/RegisterForm" element={<RegisterForm />} />
-
+      <Route path="/ForgotPasswordPage" element={<ForgotPasswordPage />} />
+      
       {/* ================= HR Routes ================= */}
       <Route path="/dashboard" element={<HRLayout />}>
         <Route index element={<Dashboard />} />
