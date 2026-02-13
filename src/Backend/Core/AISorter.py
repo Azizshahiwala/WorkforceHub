@@ -71,20 +71,20 @@ Technical Depth:\n
 1-3/10: Mentioned related terms but failed to explain the core concept.\n
 No Penalties for Style: Do not penalize for conversational tone or minor grammatical errors.\n
 Input Data:\n
-Question: [Insert Question]\n
-Expected Logic: [Insert Key Technical Points]\n
-Candidate Answer: [Insert Answer]\n
 Output Format:\n
 Score: X/10\n
 Reasoning: One sentence explaining why this score was given, focusing on what was correct.
 answers: {interview_transcript} \nResume Chunk: {chunk}
 """
             response = self.generateResponse(prompt,None)
-            match = re.search(r'\d+', str(response))
+            response_text = str(response)
+            match = re.search(r"Score:\s*(\d+)", response_text, re.IGNORECASE)
+        
             if match:
-                score = int(match.group())
-
-            return score 
+                score = int(match.group(1)) # Capture only the 'X' part
+                print("Score from AISorter: ", score)
+            return score
+            
         except Exception as e:
             print("Error feeding data to AI: ", e)
             return 0
@@ -94,6 +94,7 @@ answers: {interview_transcript} \nResume Chunk: {chunk}
             if not interview_transcript or chunk == None:
                 return "Error. The resume seems out-dated and not fit."
             
+            print("ScoreByAI:",scoreByAi)
             history=[]
             history.append(f"p1. You provided score : {scoreByAi}/10 for this resume. ")
             history.append(f"p2. Your task: compare the resume with given answers. Answers: {interview_transcript}")
