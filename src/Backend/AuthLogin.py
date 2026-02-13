@@ -263,10 +263,11 @@ def ForgotpasswordPhase1():
         cursor.execute("select id from login where email = ?",(reqEmail,))
         
         FetchedId = cursor.fetchone()
+        print("Fetched:",FetchedId)
         if FetchedId[0]:
             OTP = random.randint(100000,999999)
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            cursor.execute("UPDATE login SET OTP = ?,OTP_TIMESTAMP=? WHERE email = ?", (OTP,timestamp, reqEmail,))
+            cursor.execute("UPDATE login SET OTP = ?, OTP_TIMESTAMP=? WHERE email = ?", (OTP,timestamp, reqEmail,))
             conn.commit()
             
             subject = "Your Password Reset Code"

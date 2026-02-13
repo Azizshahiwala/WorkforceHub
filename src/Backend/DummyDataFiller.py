@@ -167,5 +167,4 @@ def populate_databases():
 
     print(f"✓ Seed data generated successfully ({len(user_rows)} Users, Attendance records added)")
 
-
-    populate_databases()
+populate_databases()
