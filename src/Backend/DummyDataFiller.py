@@ -116,10 +116,8 @@ def populate_databases():
     conn_c = sq.connect(CredentialsPath)
     cur_c = conn_c.cursor()
 
-    cur_c.execute("DELETE FROM login")
-
     login_insert = """
-        INSERT INTO login(email, password, role, gender, phoneNumber)
+        INSERT or ignore INTO login(email, password, role, gender, phoneNumber)
         VALUES (?, ?, ?, ?, ?)
     """
 
@@ -137,11 +135,8 @@ def populate_databases():
     conn_u = sq.connect(CompanyUserPath)
     cur_u = conn_u.cursor()
 
-    cur_u.execute("DELETE FROM user")
-    cur_u.execute("DELETE FROM Attendance")
-
     user_insert = """
-        INSERT INTO user(auth_id, name, employeeId, department, status, BaseSalary, lastLogin)
+        INSERT or ignore INTO user(auth_id, name, employeeId, department, status, BaseSalary, lastLogin)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     """
 
@@ -158,7 +153,7 @@ def populate_databases():
     attendance += generate_attendance(2026, 2)
 
     cur_u.executemany(
-        "INSERT INTO Attendance(empId, date, status) VALUES (?, ?, ?)",
+        "INSERT or ignore INTO Attendance(empId, date, status) VALUES (?, ?, ?)",
         attendance
     )
 

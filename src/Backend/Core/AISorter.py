@@ -58,8 +58,27 @@ class AISorter:
     def find_score(self,interview_transcript,chunk):
         try:
             score = 0
-            
-            prompt = f"On a scale of 1 to 10, how well does the following resume chunk match the job requirements and skills as per answers: {interview_transcript} \n\nResume Chunk: {chunk} . Give score number only."
+            prompt = f"""
+Role: You are a Senior Technical Interviewer and fair Evaluator.\n
+Task: Grade the candidate's answer based on a 0-10 scale.\n
+Evaluation Rules:\n
+Semantic Matching: Do not look for exact words. If the candidate explains the concept correctly using different terminology (e.g., "wrapping a function" instead of "decorator pattern"), give full credit for accuracy.\n
+Partial Credit: If an answer is partially correct or shows a foundational understanding but misses a specific detail, award points proportionally (e.g., 5/10 or 7/10). Never default to 0/10 unless the answer is completely irrelevant or factually wrong.\n
+Technical Depth:\n
+10/10: Clear, accurate, and provides a practical example or context.\n
+7-9/10: Accurate explanation but lacks a little detail.\n
+4-6/10: Understands the concept but the explanation is vague.\n
+1-3/10: Mentioned related terms but failed to explain the core concept.\n
+No Penalties for Style: Do not penalize for conversational tone or minor grammatical errors.\n
+Input Data:\n
+Question: [Insert Question]\n
+Expected Logic: [Insert Key Technical Points]\n
+Candidate Answer: [Insert Answer]\n
+Output Format:\n
+Score: X/10\n
+Reasoning: One sentence explaining why this score was given, focusing on what was correct.
+answers: {interview_transcript} \nResume Chunk: {chunk}
+"""
             response = self.generateResponse(prompt,None)
             match = re.search(r'\d+', str(response))
             if match:
