@@ -181,7 +181,6 @@ class Payroll:
                    "NetSalary":round(item['NetSalary'],2)}]
 
         conn.close()
-        print("ProcessAndSaveData complete")
         return result
     
 Paymanager = Payroll(CompanyUserPath,CredentialsPath)
@@ -198,7 +197,6 @@ def returnSalBreakup(empId,MonthYear):
     if error:
         return jsonify({"error": error}), 404
     
-    print("Payroll raw data: ",data)
     return jsonify(data),200
 
 #Data is sent to frontend
@@ -232,14 +230,13 @@ def payrollprocess(empId):
         data = cursor.fetchone()
         role = data[0]
 
-        print("Payroll process to: ",role,auth_id)
         conn.close()
 
         result = Paymanager.processAndSaveData(empId,MonthYear)
         if result:
             notifManager.insert_notification(employeeId=empId,role=role,message="Please check your email. Your salary has been paid for this month.")
             sendFinalMail(emailTo=emailTo,empId=empId,empName=empName,MonthYear=MonthYear)
-        print("Payrollprocess complete")
+        
         return jsonify(result),200
     except Exception as e:
         print("Payrollprocess",e)
@@ -275,8 +272,7 @@ def sendFinalMail(emailTo,empId,empName,MonthYear):
 
         # Send email
         emailService.send_email(from_email=emailFrom, to_email=emailTo, subject=subject, body=body)
-        print("sendFinalMail complete")
+        
     except Exception as e:
         print("sendFinalMail",e)
-        pass 
-
+        

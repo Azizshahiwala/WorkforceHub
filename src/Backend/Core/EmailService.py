@@ -27,14 +27,14 @@ class EmailService:
                 return False
         
             statuscode,response = smtp.ehlo()
-            print("[] Echoing server: ",statuscode,response)
+            #print("[] Echoing server: ",statuscode,response)
             statuscode,response = smtp.starttls()
-            print("[] Start TLS server: ",statuscode,response)
+            #print("[] Start TLS server: ",statuscode,response)
             statuscode,response = smtp.login(self.username, self.password)
-            print("[] Login status: ",statuscode,response)
+            #print("[] Login status: ",statuscode,response)
             statuscode = None 
             response = None 
-            print("[] SMTP connection established successfully.")
+            #print("[] SMTP connection established successfully.")
             return smtp
         except Exception as e:
             print(f"Error creating connection: {e}")
@@ -49,8 +49,6 @@ class EmailService:
             #Now send email using from, to and msg.
             smtp.sendmail(from_email, to_email, message)
 
-            print(f"Email sent successfully to {to_email}")
-            
             #close the connection
             smtp.quit()
         except Exception as e:

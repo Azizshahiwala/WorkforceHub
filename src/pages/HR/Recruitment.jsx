@@ -3,7 +3,7 @@ import "../../styles/HR/Recruitment.css";
 function Recruitment() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   
-  console.log("Current ip: "+API_BASE_URL)
+  const [loading,isloading] = useState(false);
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState("All");
 
@@ -24,7 +24,7 @@ function Recruitment() {
   // Original Logic: Admit Employee (Moves from Temp to Main/Login tables)
   function Admit(Tempid) {
     if (!window.confirm("Create official employee account for this candidate?")) return;
-
+    isloading(true);
     fetch(`${API_BASE_URL}/RegisterConfirm/${Tempid}`, {
       method: "POST",
     })
@@ -37,6 +37,7 @@ function Recruitment() {
         } else {
           alert(data.message);
         }
+        isloading(false);
       });
   }
 
@@ -51,6 +52,7 @@ function Recruitment() {
   }
 
   function SendLink(id, email, name) {
+    isloading(true);
     fetch(`${API_BASE_URL}/recruit/send-invite/${id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -59,9 +61,11 @@ function Recruitment() {
       .then((res) => res.json())
       .then((data) => {
         alert(data.message);
+        isloading(false);
       })
       .catch((err) => {
         console.error("link error :", err);
+        isloading(false);
       });
   }
 
@@ -112,7 +116,7 @@ function Recruitment() {
                   <button className="Repbtn" onClick={() => showReport(Submission.id)}>Resume</button>
                 </td>
                 <td className="action-btns">
-                  <button className="Accbtn" onClick={() => SendLink(Submission.id, Submission.email, Submission.name)}>Send link</button>
+                  {loading ? <b className="processstage">Processing</b> : <button className="Accbtn" onClick={() => SendLink(Submission.id, Submission.email, Submission.name)}>Send link</button>}
                   <button className="Rejbtn" onClick={() => Reject(Submission.id)}>Reject</button>
                 </td>
                 <td className={`status-badge ${Submission.status.toLowerCase()}`}>
@@ -153,9 +157,7 @@ function Recruitment() {
             </div>
             <div className="modal-footer">
               {/* This is where HR officially creates the account after reviewing the result */}
-              <button className="Admitbtn" onClick={() => Admit(selectedCandidate.id)}>
-                Admit & Create Account
-              </button>
+              {loading ? <b className="processstage">Processing</b> : <button className="Admitbtn" onClick={() => Admit(selectedCandidate.id)}>Admit & Create Account</button>}
             </div>
           </div>
         </div>

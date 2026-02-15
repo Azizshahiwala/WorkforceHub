@@ -81,7 +81,6 @@ function CompanyUser() {
   };
 
   const deleteAccount = async (auth_id,role,employeeId) => {
-    console.log(auth_id+","+role+","+employeeId);
     if(auth_id == "undefined" || role == "undefined" || employeeId == "undefined"){
       alert("Un-identified attempt to remove an account");
       return;

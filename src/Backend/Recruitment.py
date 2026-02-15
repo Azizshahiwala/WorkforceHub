@@ -152,7 +152,6 @@ def resumeProcess():
     role = role.split(",")
     selectedSal = rq.form.get('selectedSal')
     userrole = role[0]
-    print("userrole",userrole)
     personExp = rq.form.get('personExperience')
     gender = rq.form.get('gender')
     name = rq.form.get('name')

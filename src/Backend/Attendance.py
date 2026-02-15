@@ -44,7 +44,6 @@ class AttendanceDB:
         """
         cursor.execute(query)
         data = cursor.fetchall()
-        #print("Attendance.py: ",data)
         if not data:
             conn.close()
             return jsonify({"Error":"Table view error. No data found."}), 404
@@ -68,7 +67,6 @@ def get_attendance_dashboard():
                 "date": r[3], "role": r[4], "status": r[5],"leaveDuration": r[6]
             } for r in data
         ]
-        #print("Sample data from attendance.py: ",result)
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500

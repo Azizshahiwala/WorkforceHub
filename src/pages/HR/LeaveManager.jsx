@@ -58,7 +58,7 @@ function LeaveManager() {
       setLeaveRequests(updatedData);
       }
     catch(e){
-      console.log("Error from leavemanger.jsx: "+e);
+      console.error("Error from leavemanger.jsx: "+e);
       alert("An error occurred");
       return;
     }

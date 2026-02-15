@@ -30,7 +30,6 @@ def createCredentials():
         ''')
         conn.commit()
         conn.close()
-        print("✅ Database ready")
         return True
     except Exception as e:
         print(f"❌ DB Error: {e}")
@@ -90,8 +89,6 @@ def login():
         data = rq.get_json()
         email = data.get("email")
         password = data.get("password")
-        
-        #print(f"🔍 Login attempt: {email}")
         
         conn = sq.connect(CredentialsPath)
         cursor = conn.cursor()
@@ -159,7 +156,6 @@ def login():
                 "status": "Logged in"
             }), 200
         else:
-            #print(f"❌ No user found for {email}")
             return jsonify({"success": False,"message": "Invalid credentials"}), 200
             
     except Exception as e:
@@ -216,15 +212,13 @@ def updatePassByHR(auth_id):
         cursor.execute("UPDATE emp.'user' SET status = 'Logged Out' WHERE auth_id = ?", (auth_id,))
         conn.commit()
 
-        print("Notif from updatePassByHR - Authlogin.py:")
         #Now to insert notification, i need empID, role and msg
         cursor.execute("""select login.role, emp.employeeId from login
                        left join emp.'user' as emp on login.id = emp.auth_id
                        where login.id = ? """,(auth_id,))
         
         data = cursor.fetchone()
-        print("Data found: ",data)
-
+        
         if data:
             #Create a notification for user.
             notifManager.insert_notification(role=data[1],employeeId=data[0],message=f"Your password has been updated by HR. New pass: {newPassword}")
@@ -263,7 +257,6 @@ def ForgotpasswordPhase1():
         cursor.execute("select id from login where email = ?",(reqEmail,))
         
         FetchedId = cursor.fetchone()
-        print("Fetched:",FetchedId)
         if FetchedId[0]:
             OTP = random.randint(100000,999999)
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -301,8 +294,7 @@ def ForgotpasswordPhase2():
         if forid:
             cursor.execute("select OTP,OTP_TIMESTAMP from login where id = ?",(forid,))
             record = cursor.fetchone()
-            print(record)
-
+           
             #Now get otp and compare:
             
             if record[0] and record:

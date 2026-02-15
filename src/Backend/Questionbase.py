@@ -86,7 +86,6 @@ queHandler = questionbase(RecruitmentPath)
 @quebase.route("/interview-process", methods=["POST"])
 def start_parsing():
     candidateId = request.form.get("candidateId")
-    print("FILES RECEIVED:", request.files)
     # 1. Check file exists
     if "resume" not in request.files:
         return jsonify({"error": "No resume uploaded"}), 400
@@ -104,8 +103,7 @@ def start_parsing():
         return jsonify({"error": "Resume text empty"}), 400
 
     applyingFor = queHandler.fetch_role(candidateId)
-    print("Applying for: ",applyingFor)
-   
+    
     # 4. Call AI (limit size for safety)
     ai_raw = queHandler.generate_questions(resume_text[:6000],candidateId,applyingFor)
 

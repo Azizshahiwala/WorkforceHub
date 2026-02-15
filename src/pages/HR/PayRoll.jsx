@@ -4,6 +4,8 @@ function PayRoll() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   const [devMode, setDevMode] = useState(false);
+  const [loading,isloading] = useState(false);
+  const [processingId,setprocessingId] = useState(null);
 
   const [Window, setWindow] = useState(false);
   const [salBreakup, setSalBreakup] = useState(null);
@@ -33,6 +35,8 @@ function PayRoll() {
   async function MailProcess(emailTo,empName,empID) {
     //Step 1: onclick- fetch from Payroll.py to get details.
     const currentMonth = getCurrentMonthYear();
+    isloading(true);
+    setprocessingId(empID);
     try {
       const response = await fetch(`${API_BASE_URL}/pay-gateway/${empID}`, {
         method: "POST",
@@ -50,9 +54,12 @@ function PayRoll() {
         alert("Error: Mail could not be processed.");
         alert(`Failed: ${data.error || data.message || "Unknown server error"}`);
       }
+      isloading(false);
+      setprocessingId(null);
     }
     catch (error) {
       console.error("PayRoll.jsx Mail Error:", error);
+      isloading(false);
     }
   }
   async function SalaryBreakupCard(empId) {
@@ -77,7 +84,6 @@ function PayRoll() {
         const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
         const empdata = await response.json();
         if (Array.isArray(empdata)) {
-          console.log("Employee Data Loaded:", empdata);
           setEmployee(empdata);
         }
       } catch (error) {
@@ -105,7 +111,7 @@ function PayRoll() {
               checked={devMode} 
               onChange={() => setDevMode(!devMode)} 
             />
-            🚀 Dev Mode (Ignore Date Check)
+            Dev Mode (Ignore Date Check)
           </label>
         </div>
           <input
@@ -151,11 +157,11 @@ function PayRoll() {
                 📄 Salary Breakup
               </button>
 
-              <button
+              {loading && emp.employeeId == processingId ? <b className="processstage">Sending reciept</b>: <button
                 onClick={() => MailProcess(emp.email, emp.name, emp.employeeId)}
                 className="action-btn btn-card">
                 📧 Send Payslip
-              </button>
+              </button>}
               </>) : (<span className="pending-tag">⏳ Month In-Progress</span>)}
         </div>
               </div>

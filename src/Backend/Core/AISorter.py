@@ -49,7 +49,7 @@ class AISorter:
             common_words = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with','*','|','-']
             #This logic says: put all words that are not in common_words into a list
             tokenized_text = [word for word in text.split() if word.lower() not in common_words]
-            print("Text cleaned: ",tokenized_text)
+            
             return tokenized_text
         except Exception as e:
             print("Error cleaning text:", e)

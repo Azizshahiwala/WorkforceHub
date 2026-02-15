@@ -19,8 +19,7 @@ function AttendanceDashboard() {
       const attdata = await response.json();
       const demo = attdata;
       setAttendanceRecords(demo);
-      console.log("Request from fetchAttendance Query result:",attendanceRecords);
-    } catch (error) {
+     } catch (error) {
       console.error("Error fetching attendance data:", error);
     }
   };
@@ -32,7 +31,6 @@ function AttendanceDashboard() {
 
         if (Array.isArray(empdata) && empdata.length > 0) {
           setEmployees(empdata);
-          console.log("Request from loadEmployees Query result:", empdata);
           setSelectedEmp(empdata[0].employeeId); 
         }
       } catch (error) {
