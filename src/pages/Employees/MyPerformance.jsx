@@ -11,7 +11,7 @@ const MySession = JSON.parse(localStorage.getItem("MySession"));
 
 useEffect(() => {
   setLoggedInEmployee(MySession);
-  console.log(loggedInEmployee);
+  
 }, []);
 
 useEffect(() => {

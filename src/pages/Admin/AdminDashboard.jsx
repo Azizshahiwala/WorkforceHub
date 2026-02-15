@@ -49,7 +49,6 @@ export default function Dashboard() {
   // Staff data  
   const NonstaffCount = employees.filter(e => ["Admin", "CEO", "Interviewer","HR"].includes(e.department)).length;
   const staffCount = employees.filter(e => !["Admin", "CEO", "Interviewer","HR"].includes(e.department)).length;
-  console.log("Non staff Department: "+NonstaffCount+", Staff Department: "+staffCount)
   const PieData = {
     labels: ["Staff", "Non-Staff"],
     datasets: [{ 
