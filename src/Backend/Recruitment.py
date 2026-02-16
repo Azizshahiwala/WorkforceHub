@@ -4,6 +4,7 @@
 #when approved, it is stored in db. Once approved, registered user cannot access this portal.
 #If rejected, entry is deleted and guest can try to upload again.
 
+from ast import For
 from flask import request as rq
 from flask import Blueprint,jsonify
 from Core.AISorter import ai_sorter_manager
@@ -13,7 +14,7 @@ import sqlite3 as sq
 from PathConfig import CompanyUserPath,CredentialsPath,RecruitmentPath
 from Notification import notifManager
 from dotenv import load_dotenv
-#For pdf viewing, we need
+# For pdf viewing, we need
 import io,os
 from flask import send_file
 
