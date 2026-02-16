@@ -15,6 +15,7 @@
     "@fullcalendar/daygrid": "^6.1.20",
     "@fullcalendar/interaction": "^6.1.20",
     "@fullcalendar/react": "^6.1.20",
+    "lottie-react": "^2.4.1",
     "p": "^0.2.0",
     "pip": "^0.0.1",
     "pip3": "^420.911.69",
