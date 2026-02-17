@@ -7,8 +7,7 @@ from PathConfig import RecruitmentPath
 import sqlite3 as sq
 
 quebase = Blueprint('questionBank', __name__, url_prefix='/api')
-
-client = None
+client = None 
 class questionbase:
     def __init__(self,rec_path):
         load_dotenv("../../.env")
@@ -39,7 +38,7 @@ class questionbase:
     def generate_questions(resume_text,candidateId=None,role=None):
 
         if candidateId == None and role == None:
-            return jsonify({"profession": None,"skills": None,"questions": None,"role_mismatch": True}), 400
+            return jsonify({{"profession": None,"skills": None,"questions": None,"role_mismatch": True}})
         
         prompt = f"""
         Generate TECHNICAL interview questions based on a resume.
