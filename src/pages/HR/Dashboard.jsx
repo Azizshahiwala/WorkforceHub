@@ -13,17 +13,6 @@ import {
 import Lottie from "lottie-react";
 import performanceAnimation from "../../assets/lottie/performance.json";
 
-import "../../styles/HR/Dashboard.css";
-
-ChartJS.register(
-  ArcElement,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend
-);
-
 import "../../styles/Admin/AdminDashboard.css";
 
 ChartJS.register(
@@ -35,7 +24,7 @@ ChartJS.register(
   Legend
 );
 
-export default function Dashboard() {
+export default function AdminDashboard() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   /* ===============================
@@ -51,31 +40,28 @@ export default function Dashboard() {
   });
 
   /* ===============================
-       API CALLS + LOADING CONTROL
-    ================================ */
-    useEffect(() => {
-      setLoading(true);
-  
-      fetch(`${API_BASE_URL}/getCompanyUsers`)
-        .then(res => res.json())
-        .then(data => {
-          setEmployees(data);
-  
-          // Small delay for smooth UX
-          setTimeout(() => setLoading(false), 7500);
-        })
-        .catch(err => {
-          console.error("Dashboard load error:", err);
-          setLoading(false);
-        });
-    }, []);
-  
-    useEffect(() => {
-      fetch(`${API_BASE_URL}/CloseLeaveDuration`)
-        .then(res => res.json())
-        .then(data => console.log(data.closedCount));
-    }, []);
-  
+     API CALLS
+  ================================ */
+  useEffect(() => {
+    setLoading(true);
+
+    fetch(`${API_BASE_URL}/getCompanyUsers`)
+      .then(res => res.json())
+      .then(data => {
+        setEmployees(data);
+        setLoading(false); // ✅ dashboard ready
+      })
+      .catch(err => {
+        console.error("Dashboard load error:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/CloseLeaveDuration`)
+      .then(res => res.json())
+      .then(data => console.log(data.closedCount));
+  }, []);
 
   /* ===============================
      SAVE TASKS
@@ -170,7 +156,7 @@ export default function Dashboard() {
           loop
           style={{ width: 220, height: 220 }}
         />
-        <b>Loading HR Dashboard...</b>
+        <b>Loading Admin Dashboard...</b>
       </div>
     );
   }
@@ -180,8 +166,7 @@ export default function Dashboard() {
   ================================ */
   return (
     <div className="dashboard">
-
-      <h3>HR Dashboard</h3>
+      <h3>Admin Dashboard</h3>
 
       <div className="emp-summary">
         <h1 className="card-title">Staff Distribution</h1>
