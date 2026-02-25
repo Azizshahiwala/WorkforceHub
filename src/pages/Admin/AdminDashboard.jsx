@@ -119,7 +119,7 @@ const removeTask = (index) => {
 };
   return (
     <div className="dashboard">
-      <h2>HR Dashboard</h2>
+      <h2>Admin Dashboard</h2>
 
       {/* Staff Pie */}
       <div className="emp-summary">

@@ -1,2 +1,2 @@
-python DummyDataFiller.py
+py DummyDataFiller.py
 pause

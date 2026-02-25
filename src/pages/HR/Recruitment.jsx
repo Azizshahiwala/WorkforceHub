@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import "../../styles/HR/Recruitment.css";
 function Recruitment() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  
-  const [loading,isloading] = useState(false);
+
+  const [loading, isloading] = useState(false);
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState("All");
 
@@ -16,9 +16,13 @@ function Recruitment() {
   }, []);
 
   const fetchApplications = () => {
+    isloading(true);
     fetch(`${API_BASE_URL}/RegisterForm/applications`)
       .then((res) => res.json())
-      .then((data) => setApplications(data));
+      .then((data) => {
+        setApplications(data);
+        isloading(false);
+      });
   };
 
   // Original Logic: Admit Employee (Moves from Temp to Main/Login tables)
@@ -56,7 +60,7 @@ function Recruitment() {
     fetch(`${API_BASE_URL}/recruit/send-invite/${id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id:id, email: email, name: name }),
+      body: JSON.stringify({ id: id, email: email, name: name }),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -116,8 +120,32 @@ function Recruitment() {
                   <button className="Repbtn" onClick={() => showReport(Submission.id)}>Resume</button>
                 </td>
                 <td className="action-btns">
-                  {loading ? <b className="processstage">Processing</b> : <button className="Accbtn" onClick={() => SendLink(Submission.id, Submission.email, Submission.name)}>Send link</button>}
-                  <button className="Rejbtn" onClick={() => Reject(Submission.id)}>Reject</button>
+                  <div className="button-group">
+                    {/* If loading is true, show the loader. Otherwise, show the active button */}
+                    {loading ? (
+                      <div className="loader-container">
+                        {/* Added the loading circle and it will appear when loading is true / when we click on send Link */}
+                        <div className="loader"></div>
+                      </div>
+                    ) : (
+                      <button
+                        className="Accbtn"
+                        onClick={() => SendLink(Submission.id, Submission.email, Submission.name)}
+                      >
+                        Send link
+                      </button>
+                    )}
+
+                    {/* Disable the Reject button while loading to prevent conflicts */}
+                    <button
+                      className="Rejbtn"
+                      onClick={() => Reject(Submission.id)}
+                      disabled={loading}
+                      style={{ opacity: loading ? 0.5 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+                    >
+                      Reject
+                    </button>
+                  </div>
                 </td>
                 <td className={`status-badge ${Submission.status.toLowerCase()}`}>
                   {Submission.status === "Interviewed" ? (

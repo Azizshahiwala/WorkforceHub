@@ -156,7 +156,7 @@ export default function AdminDashboard() {
           loop
           style={{ width: 220, height: 220 }}
         />
-        <b>Loading Admin Dashboard...</b>
+        <b>Loading HR Dashboard...</b>
       </div>
     );
   }
@@ -166,7 +166,7 @@ export default function AdminDashboard() {
   ================================ */
   return (
     <div className="dashboard">
-      <h3>Admin Dashboard</h3>
+      <h3>HR Dashboard</h3>
 
       <div className="emp-summary">
         <h1 className="card-title">Staff Distribution</h1>
