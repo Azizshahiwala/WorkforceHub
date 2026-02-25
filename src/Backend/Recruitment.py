@@ -141,7 +141,7 @@ def fetchApplications():
         return jsonify({"error": str(e), "status": "error"}), 500
     finally:
         if conn:
-            conn.close() # This runs even if the code crashes
+            conn.close()
             
 @recruit.route('/RegisterForm/applications/upload', methods=['POST'])
 def resumeProcess():
@@ -174,7 +174,7 @@ def resumeProcess():
         return jsonify({"message": f"Error uploading resume: {e}", "status": "error"}), 500
     finally:
         if conn:
-            conn.close() # This runs even if the code crashes
+            conn.close()
 
 @recruit.route('/RegisterConfirm/<int:Tempid>', methods=['POST'])
 def admitEmployee(Tempid):
@@ -257,7 +257,7 @@ The HR Team MSP Concept"""
         return jsonify({"message": f"Error during admission process: {e}", "status": "error"}), 500
     finally:
         if conn:
-            conn.close() # This runs even if the code crashes
+            conn.close() 
 
 @recruit.route("/recruit/reject/<int:id>", methods=["DELETE"])
 def reject_candidate(id):
@@ -359,7 +359,7 @@ def processTestResults():
         interview_transcript = data.get('answers') # From InterviewStart.jsx
 
         # 1. Update the record with the transcript first
-        # We temporarily store this in AI_DESCRIPTION or a new 'transcript' column
+        # We temporarily store this in AI_DESCRIPTION 
         conn, cursor = manager._get_connection()
         
         #update the status so HR knows the interview is done

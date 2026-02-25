@@ -19,11 +19,11 @@ export default function Interviewer() {
       // First click → ask permission
       try {
         const mediaStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
+          video: false,
+          audio: false,
         });
 
-        // setStream(mediaStream);
+        setStream(mediaStream);
         if (videoRef.current) {
           videoRef.current.srcObject = mediaStream;
         }

@@ -70,19 +70,17 @@ Technical Depth:\n
 4-6/10: Understands the concept but the explanation is vague.\n
 1-3/10: Mentioned related terms but failed to explain the core concept.\n
 No Penalties for Style: Do not penalize for conversational tone or minor grammatical errors.\n
-Input Data:\n
-Output Format:\n
-Score: X/10\n
+Output Format: Only print the following- Score: X/10\n
 Reasoning: One sentence explaining why this score was given, focusing on what was correct.
 answers: {interview_transcript} \nResume Chunk: {chunk}
 """
             response = self.generateResponse(prompt,None)
             response_text = str(response)
             match = re.search(r"Score:\s*(\d+)", response_text, re.IGNORECASE)
-        
+            print("Output from src/Core/AISorter.py: ",match)
             if match:
                 score = int(match.group(1)) # Capture only the 'X' part
-                print("Score from AISorter: ", score)
+                
             return score
             
         except Exception as e:
@@ -94,7 +92,6 @@ answers: {interview_transcript} \nResume Chunk: {chunk}
             if not interview_transcript or chunk == None:
                 return "Error. The resume seems out-dated and not fit."
             
-            print("ScoreByAI:",scoreByAi)
             history=[]
             history.append(f"p1. You provided score : {scoreByAi}/10 for this resume. ")
             history.append(f"p2. Your task: compare the resume with given answers. Answers: {interview_transcript}")
