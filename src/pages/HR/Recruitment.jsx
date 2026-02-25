@@ -185,7 +185,13 @@ function Recruitment() {
             </div>
             <div className="modal-footer">
               {/* This is where HR officially creates the account after reviewing the result */}
-              {loading ? <b className="processstage">Processing</b> : <button className="Admitbtn" onClick={() => Admit(selectedCandidate.id)}>Admit & Create Account</button>}
+              {loading ? (
+                <div className="loader-container">
+                  <div className="loader"></div>
+                </div>
+              ) : (
+                <button className="Admitbtn" onClick={() => Admit(selectedCandidate.id)}>Admit & Create Account</button>
+              )}
             </div>
           </div>
         </div>

@@ -19,7 +19,7 @@ export default function Interviewer() {
   const navigate = useNavigate();
 
   const handleButtonClick = async () => {
-  
+
     if (!candidateId) {
       setStatus("❌ Candidate ID missing in URL");
       return;
@@ -27,8 +27,8 @@ export default function Interviewer() {
     if (!ready) {
       try {
         const mediaStream = await navigator.mediaDevices.getUserMedia({
-          video: false,
-          audio: false,
+          video: true,
+          audio: true,
         });
 
         setStream(mediaStream);
@@ -73,7 +73,8 @@ export default function Interviewer() {
 
       const aiRes = await fetch(`${API_BASE_URL}/interview-process`, {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ candidateId }),
       });
 
       const aiData = await aiRes.json();
