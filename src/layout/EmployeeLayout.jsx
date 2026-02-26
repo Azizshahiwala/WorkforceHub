@@ -6,6 +6,7 @@ import "./AdminLayout.css";
 import { useState,useEffect, Children } from "react";
 import { Navigate } from "react-router-dom";
 function EmployeeLayout() {
+  
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   const isAuthorized = MySession?.permission === 2 || MySession?.permission === 3;
 

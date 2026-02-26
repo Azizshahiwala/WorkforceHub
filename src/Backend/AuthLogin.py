@@ -153,7 +153,7 @@ def login():
                 "employeeId": employeeId,
                 "email": email,
                 "message": "Login successful",
-                "status": "Logged in"
+                "status": "Logged In"
             }), 200
         else:
             return jsonify({"success": False,"message": "Invalid credentials"}), 200
@@ -208,7 +208,7 @@ def updatePassByHR(auth_id):
         #Update placeholder data
         cursor.execute("update login set password = ? where id = ?",(newPassword,auth_id,))
 
-        #Set status as Logged out to remove the btn from frontend.
+        #Set status as Logged Out to remove the btn from frontend.
         cursor.execute("UPDATE emp.'user' SET status = 'Logged Out' WHERE auth_id = ?", (auth_id,))
         conn.commit()
 

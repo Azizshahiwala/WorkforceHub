@@ -13,7 +13,6 @@ export default function AccountLogin() {
     const handleClose = () => {
       const currentSession = JSON.parse(localStorage.getItem("MySession"));
       
-      
       //Check if session exist and EmployeeId.
       //This targets specific user.
       if (currentSession) {

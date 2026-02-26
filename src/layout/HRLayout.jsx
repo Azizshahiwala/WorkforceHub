@@ -4,7 +4,9 @@ import Navbar from "../HR/Navbar";
 import Sidebar from "../HR/Sidebar";
 import "./HRLayout.css";
 import { useState,useEffect, Children } from "react";
+
 function HRLayout() {
+  
   const MySession = JSON.parse(localStorage.getItem("MySession"));
 
   if (!MySession || MySession.permission !== 1) {

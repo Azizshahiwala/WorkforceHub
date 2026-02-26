@@ -367,10 +367,16 @@
   transform: scale(1.1);
 }
 
-
 .status-active {
-  color: #00ff5e;          /* green text */
-  background: #00ff59;    /* light green bg */
+  color: #00ff5e;         
+  background: #00ff59;    
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.status-inactive {
+  color: #ff0000;          
+  background: #ff8c00;    
   padding: 4px 10px;
   border-radius: 6px;
   font-weight: 600;
