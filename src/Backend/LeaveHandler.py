@@ -133,7 +133,7 @@ class LeaveHandler:
                 #First update status to 'Leave' where leaveDuration is not null. / Will be null.
                 cursor.execute("""
                     UPDATE Attendance
-                    SET status = 'Leave'
+                    SET status = 'Leave', paidleave = 'True'
                     WHERE leaveDuration IS NOT NULL""")
 
                 #NOW We use subquery to first GET employeeID THEN update set.
