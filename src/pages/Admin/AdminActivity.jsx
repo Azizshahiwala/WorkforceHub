@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/HR/Activity.css";
-
+import MessageBox from "../../Misc/MessageBox";
 function Activity() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const [message,setMessage]=useState(null);
   const [activities, setActivities] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [showModal, setShowModal] = useState(false);
-
-  // Get session to identify the user
-  const MySession = JSON.parse(localStorage.getItem("MySession"));
 
   // Fetch announcements from the database on load
   const loadActivities = async () => {
@@ -17,7 +15,7 @@ function Activity() {
       const data = await response.json();
       setActivities(data);
     } catch (error) {
-      console.error("Error loading announcements:", error);
+      setMessage({ type: "Error", text: "Error loading announcements:", error });
     }
   };
 
@@ -31,8 +29,9 @@ function Activity() {
 
     try {
       // Post new announcement to backend using employeeId from session
-      const response = await fetch(`${API_BASE_URL}/insertAnnouncement/${MySession.employeeId}`, {
+      const response = await fetch(`${API_BASE_URL}/insertAnnouncement`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTask), // Backend expects the message directly as the JSON body
       });
@@ -41,17 +40,17 @@ function Activity() {
         setNewTask("");
         setShowModal(false);
         loadActivities(); // Refresh list to show new post
-        localStorage.setItem("hasNewNotification", "true");
       } else {
-        alert("Failed to post announcement");
+        setMessage({ type: "Error", text: response.message });
       }
     } catch (error) {
-      console.error("Post Activity Error:", error);
+      setMessage({ type: "Error", text: "Post activity error: "+error });
     }
   };
 
   return (
     <div className="activity-page">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <div className="activity-header">
         <h2>HR Activity Dashboard</h2>
         <button className="activity-btn" onClick={() => setShowModal(true)}>
@@ -69,7 +68,7 @@ function Activity() {
             <div className="activity-content">
               <span className="activity-time">{item.dateCreated}</span>
               <p className="activity-text">{item.message}</p>
-              {/* <small className="activity-sender">Posted by: {item.givenByRole}</small> */}
+              <small className="activity-sender">Posted by: {item.givenByRole}</small>
             </div>
           </div>
         ))}

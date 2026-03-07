@@ -1,5 +1,5 @@
 from flask import request as rq
-from flask import Blueprint,jsonify
+from flask import Blueprint,jsonify,session
 import sqlite3 as sq
 from datetime import datetime, date
 from PathConfig import CompanyUserPath,CredentialsPath
@@ -169,7 +169,7 @@ leavehandler = LeaveHandler(CompanyUserPath,CredentialsPath)
 def createLeave():
     leavehandler.create_tables()
 
-@leaveManager.route('/fetchAllRq/',methods=['GET'])
+@leaveManager.route('/fetchAllRq',methods=['GET'])
 def FetchAllLeaves():
     try:
         conn, cursor = leavehandler._get_connection()
@@ -202,8 +202,15 @@ def FetchAllLeaves():
         if conn:
             conn.close() 
 
-@leaveManager.route('/postLeaveRq/<string:empId>/<string:auth_id>',methods=['POST'])
-def PostLeave(empId,auth_id):
+@leaveManager.route('/postLeaveRq',methods=['POST'])
+def PostLeave():
+
+    if 'employeeId' not in session or 'id' not in session:
+        return jsonify({"status":"error"}),401
+    
+    empId = session.get("employeeId")
+    auth_id = session.get("id")
+
     data = rq.get_json()
 
     name = data.get('name')
@@ -228,7 +235,7 @@ def PostLeave(empId,auth_id):
         
     except Exception as e:
         print(e)
-        return jsonify({"message":f"{e}","status":"error"})
+        return jsonify({"error":f"{e}"})
     
     #When leave application is created, store it in incomingLeaves (yet to accept). 
     
@@ -239,15 +246,17 @@ def AcceptLeave(leaveID):
     #Remove from incomingLeaves
     #Transfer to LiveLeaves
     #Send notification.
+
+    if ('employeeId' not in session or 'id' not in session) and session.get("permission") != 1:
+        return jsonify({"status":"error"}),401
+    
     try:
         FetchedData = leavehandler.fetchData(leaveID)
         
         if not FetchedData:
             return jsonify({
                 "message": "Leave request not found or already processed.",
-                "status": "error"
-            }), 404
-        
+                "status": "error"}), 404
 
         conn,cursor = leavehandler._get_connection()
         toLiveQuery = """
@@ -291,6 +300,9 @@ def AcceptLeave(leaveID):
 def RejectLeave(leaveID):
     #When leave application is rejected,
     #Remove from incomingLeaves.
+    if ('employeeId' not in session or 'id' not in session) and session.get("permission") != 1:
+        return jsonify({"status":"error"}),401
+    
     try:
         FetchedData = leavehandler.fetchData(leaveID)
 

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Interviewer.css";
-
+import MessageBox from '../Misc/MessageBox';
 export default function Interviewer() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -15,7 +15,7 @@ export default function Interviewer() {
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState("");
   const [ready, setReady] = useState(false);
-
+  const [message, setMessage] = useState(null);
   const navigate = useNavigate();
 
   const handleButtonClick = async () => {
@@ -27,8 +27,8 @@ export default function Interviewer() {
     if (!ready) {
       try {
         const mediaStream = await navigator.mediaDevices.getUserMedia({
-          video: false,
-          audio: false,
+          video: true,
+          audio: true,
         });
 
         setStream(mediaStream);
@@ -73,6 +73,7 @@ export default function Interviewer() {
 
       const aiRes = await fetch(`${API_BASE_URL}/interview-process`, {
         method: "POST",
+        credentials: "include",
         body: formData,
       });
 
@@ -84,12 +85,13 @@ export default function Interviewer() {
       });
     } catch (err) {
       console.error(err);
-      alert(err.message);
+      setMessage({ type: "Error", text: err.message || "Failed to start interview." });
     }
   };
 
   return (
     <div className="interviewer-wrapper">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <div className="interviewer-card">
         <h1>🎤 AI Interview</h1>
         <p className="subtitle">

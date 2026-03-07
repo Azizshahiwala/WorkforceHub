@@ -3,12 +3,14 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "../../styles/HR/AttendanceDashboard.css";
 import { Link } from "react-router-dom";
+import MessageBox from "../../Misc/MessageBox";
 
 function AttendanceDashboard() {
   const [employees, setEmployees] = useState([]);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [selectedEmp, setSelectedEmp] = useState("");
   const [Myevent, setMyEvents] = useState([]);
+  const [message, setMessage] = useState(null);
   const calendarRef = useRef(null);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -17,11 +19,9 @@ function AttendanceDashboard() {
     try {
       const response = await fetch(`${API_BASE_URL}/fetchdashboard`);
       const attdata = await response.json();
-      const demo = attdata;
-      console.log(demo);
-      setAttendanceRecords(demo);
+      setAttendanceRecords(attdata);
      } catch (error) {
-      console.error("Error fetching attendance data:", error);
+      setMessage({ type: "Error", text: "Error fetching attendance data:", error});
     }
   };
   //fetch all employees from backend
@@ -35,7 +35,7 @@ function AttendanceDashboard() {
           setSelectedEmp(empdata[0].employeeId); 
         }
       } catch (error) {
-        console.error("Error fetching employees:", error);
+        setMessage({ type: "Error", text: "Error fetching employees:", error});
       }
     };
     //Setup entries for new month if exists
@@ -43,12 +43,13 @@ function AttendanceDashboard() {
       
         try {
       const response = await fetch(`${API_BASE_URL}/attendance/entrysetup`);
-      
+
+      const data = await response.json();
       if(response.ok)
-        console.log("Entry updated");
+        setMessage({ type: "Info", text: data.message});
        
      } catch (error) {
-      console.error("Error fetching attendance data:", error);
+      setMessage({ type: "Error", text: "Error fetching attendance data:", error});
       }
   };
 
@@ -97,6 +98,7 @@ function AttendanceDashboard() {
 
   return (
     <div className="attendance-page">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <div className="attendance-header">
         <h2>Attendance Dashboard</h2>
         <button onClick={fetchAttendance}>Refresh Data</button>

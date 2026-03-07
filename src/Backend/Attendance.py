@@ -121,7 +121,7 @@ def get_attendance_dashboard():
                 "date": r[3], "role": r[4], "status": r[5],"leaveDuration": r[6],"isHoliday": r[7]
             } for r in data
         ]
-        print("[====fetchdashboard====]",result[0])
+        #print("[====fetchdashboard====]",result[0])
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
@@ -177,7 +177,7 @@ def get_attendance_overview():
                 "date": r[3], "role": r[4], "status": r[5],"leaveDuration": r[6], "isHoliday":r[7]
             } for r in data
         ]
-        print("[====fetchOverview====]",result[0])
+        #print("[====fetchOverview====]",result[0])
         return jsonify(result), 200   
     except Exception as e:
         return jsonify({"status":"error","message":{str(e)}}),400  

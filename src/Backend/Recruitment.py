@@ -255,6 +255,8 @@ The HR Team MSP Concept"""
     except Exception as e:
         if 'conn' in locals(): conn.close()
         return jsonify({"message": f"Error during admission process: {e}", "status": "error"}), 500
+    except sq.IntegrityError:
+        return jsonify({"message": "Candidate already exists.", "status": "error"}), 409
     finally:
         if conn:
             conn.close() 
@@ -262,21 +264,25 @@ The HR Team MSP Concept"""
 @recruit.route("/recruit/reject/<int:id>", methods=["DELETE"])
 def reject_candidate(id):
 
-    conn,cursor = manager._get_connection()
-    cursor.execute("select name,email,role from TempStatusTable where id = ?",(id,))
-    rejdata = cursor.fetchone()
-    conn.close()
-    emailbody = f"""
-Dear {rejdata[0]},\n
-Thank you for giving us the opportunity to review your application and for participating in our recent interview process. We truly appreciate the time and effort you put into your candidacy for the {rejdata[2]} role.\n
-After careful consideration of your background, experience, and our current business needs, we have decided to move forward with other candidates at this time.\n
-Please note that this decision is specific to this particular role and does not reflect your overall potential. We were impressed with your [Specific Skill/Strength found by AI], and we encourage you to keep an eye on our careers page for future openings that may be a better match for your skillset.\n
-We wish you the very best in your job search and your future professional endeavors.\n\n
-Best regards,\n\n
-The HR Team MSP Concept"""
-    emailService.send_email(emailService.username,{rejdata[1]},f"Update regarding your application for {rejdata[2]} at MSP Concept",emailbody)
-    manager.cleanupTempTable(id)
-    return jsonify({"message": "Candidate rejected"}), 200  
+    try:
+        conn,cursor = manager._get_connection()
+        cursor.execute("select name,email,role from TempStatusTable where id = ?",(id,))
+        rejdata = cursor.fetchone()
+        conn.close()
+        emailbody = f"""
+    Dear {rejdata[0]},\n
+    Thank you for giving us the opportunity to review your application and for participating in our recent interview process. We truly appreciate the time and effort you put into your candidacy for the {rejdata[2]} role.\n
+    After careful consideration of your background, experience, and our current business needs, we have decided to move forward with other candidates at this time.\n
+    Please note that this decision is specific to this particular role and does not reflect your overall potential. We were impressed with your [Specific Skill/Strength found by AI], and we encourage you to keep an eye on our careers page for future openings that may be a better match for your skillset.\n
+    We wish you the very best in your job search and your future professional endeavors.\n\n
+    Best regards,\n\n
+    The HR Team MSP Concept"""
+        emailService.send_email(emailService.username,{rejdata[1]},f"Update regarding your application for {rejdata[2]} at MSP Concept",emailbody)
+        manager.cleanupTempTable(id)
+        return jsonify({"message": "Candidate rejected","status": "success"}), 200 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+     
 
 @recruit.route('/recruit/resume/<int:id>', methods=['GET'])
 def get_resume(id):
@@ -315,11 +321,10 @@ def get_ai_analysis(id,interview_transcript=None):
         if record and record[0]:
             binary_resume = record[0]
             
-            # Here, you would integrate with AISorter to get the score
             rawdata = ai_sorter_manager.convert_data_to_str(binary_resume)
-            cleaned_data = ai_sorter_manager.clean_text(rawdata)
-            final_score = ai_sorter_manager.find_score(interview_transcript,cleaned_data)
-            final_description = ai_sorter_manager.find_description(interview_transcript,cleaned_data,final_score)
+            #cleaned_data = ai_sorter_manager.clean_text(rawdata)
+            final_score = ai_sorter_manager.find_score(interview_transcript,rawdata[:4000])
+            final_description = ai_sorter_manager.find_description(interview_transcript,rawdata[:4000],final_score)
             
             print("Final AI Score: ",final_score)
             # Update the score and description in the database

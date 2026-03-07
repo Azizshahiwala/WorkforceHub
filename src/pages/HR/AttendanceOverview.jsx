@@ -6,13 +6,11 @@ import interactionPlugin from '@fullcalendar/interaction'; // Necessary for sele
 import {UserInfo} from "./CompanyUser";
 import "../../styles/HR/AttendanceOverview.css";
 import {useState,useEffect} from 'react';
+import MessageBox from "../../Misc/MessageBox";
 export function AttendanceOverview() {
 
-    
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-   
-    const MySession = JSON.parse(localStorage.getItem("MySession"));
-   
+    const [message, setMessage] = useState(null);
     const [employees, setEmployees] = useState([]);
 
         const fetchEmployees = () => {
@@ -57,28 +55,30 @@ export function AttendanceOverview() {
     ]);
 
     const UpdateLeaveFlag = async (mode,currDate) => {
-        console.log(currDate,mode);
+        
         if(currDate === "")
             return;
 
         if(mode === "Set".toLowerCase() || mode === "Remove".toLowerCase()){
             fetch(`${API_BASE_URL}/updateglobalLeave/${mode}`, {
             method: "POST",
+            credentials: "include",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({currDate: currDate})
   })
     .then(res => res.json())
     .then(data => {
       if (data.status === "success") {
+        setMessage({ type: "Success", text: data.message});
         fetchEmployees();
-      } else {
-        alert(data.message);
-      }
+      } 
+      else setMessage({ type: "Info", text: data.message});
+      
     })
-    .catch(err => {console.error("Error:", err);});
+    .catch(err => {setMessage({ type: "Error", text: err});});
         }
         else{
-            alert("An unexpected error occurred.");
+            setMessage({ type: "Error", text: "An unexpected error occurred."});
             return;
         }
     };
@@ -88,7 +88,7 @@ export function AttendanceOverview() {
         const preventoverlap = myEvents.filter((e) => e.date === ClickedDate);
         
         if(preventoverlap.length >= 1){
-            console.log(preventoverlap+" Entry already exists.");
+            setMessage({ type: "Info", text: preventoverlap+" Entry already exists."});
             return;
         }
         setMyEvents([...myEvents,event]);
@@ -133,6 +133,7 @@ export function AttendanceOverview() {
     // Absent: not logged in or last login not on clicked date
     const AbsentList = employees.filter(emp => emp.status === "Absent" &&  emp.date == ClickedDate);
     return (<>
+    <MessageBox message={message} onClose={() => setMessage(null)} />
     <div className="attendance-page">
         <h2>Attendance Dashboard</h2>
         <button onClick={fetchEmployees}>Refresh Data</button>

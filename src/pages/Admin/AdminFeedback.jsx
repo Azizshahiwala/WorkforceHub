@@ -1,30 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/HR/FeedbackEmployees.css";
-import { useNavigate } from "react-router-dom";
+
+import MessageBox from "../../Misc/MessageBox";
 function FeedbackEmployees() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  const navigate = useNavigate();
-  const MySession = JSON.parse(localStorage.getItem("MySession"));
-  
-
-  const [reviewers, setReviewers] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedEmp, setSelectedEmp] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [rate, setRate] = useState(0);
-
-  //Auto fill if logged in by admin
-  const [givenBy, setGivenBy] = useState(
-  MySession ? MySession.employeeId : ""
-  );
-
-  useEffect(() => {
-  fetch(`${API_BASE_URL}/fetchReviewers`)
-    .then(res => res.json())
-    .then(data => setReviewers(data))
-    .catch(err => console.error("Reviewer fetch error:", err));
-}, []);
+  const [message,setMessage]=useState(null);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -33,7 +18,7 @@ function FeedbackEmployees() {
         const data = await response.json();
         setEmployees(data);
       } catch (error) {
-        console.error("Error from FeedbackEmployees.jsx:", error);
+        setMessage({ type: "Error", text:"Dashboard error: ",err});
       }
     };
     loadUser();
@@ -48,39 +33,35 @@ function FeedbackEmployees() {
   const handleFormSubmit = async (e) => {
     e.preventDefault(); // Prevents page reload
 
-    if (!givenBy) {
-    alert("Reviewer not selected");
-    return;
-    }
-    
     const submissionData = {
       empId: selectedEmp.employeeId,
       name: selectedEmp.name,
       rating: rate,
       comment: feedback,
-      givenBy: givenBy
     };
 
     try {
       const response = await fetch(`${API_BASE_URL}/submitFeedback/${submissionData.empId}`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(submissionData),
       });
-
+      const data = await response.json();
       if (response.ok) {
-        alert("Feedback submitted successfully!");
+        setMessage({ type: "Success", text:data.message});
         setSelectedEmp(null);
       } else {
-        alert("Failed to submit feedback.");
+        setMessage({ type: "Error", text:data.message});
       }
     } catch (error) {
-      console.error("Submission error:", error);
+      setMessage({ type: "Error", text:"Could not publish feedback. Make sure server is running: "+error});
     }
   };
 
   return (
     <div className="leave-page">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <div className="leave-header">
         <h2>Feedback to Employees</h2>
       </div>
@@ -121,7 +102,6 @@ function FeedbackEmployees() {
                   <td>{emp.employeeId}</td>
                   <td>{emp.department}</td>
                   <td>
-                    {/* Changed type to "button" so it doesn't trigger onSubmit yet */}
                     <button
                       className="give-feedback-btn"
                       type="button"
@@ -157,14 +137,7 @@ function FeedbackEmployees() {
                 onChange={(e) => setFeedback(e.target.value)}
                 required/>
 
-              <select onChange={(e) => setGivenBy(e.target.value)}>
-              <option value="">Select Reviewer</option>
-              {reviewers.map(rev => (
-              <option key={rev.employeeId} value={rev.employeeId}>
-              {rev.name} ({rev.role})
-              </option>
-              ))}
-              </select>
+              
               <div className="modal-actions">
                 <button type="submit">Submit</button>
                 <button type="button" onClick={() => setSelectedEmp(null)}>Close</button>

@@ -4,18 +4,13 @@ import Navbar from "../HR/Navbar";
 import Sidebar from "../HR/Sidebar";
 import "./HRLayout.css";
 import { useState,useEffect, Children } from "react";
-
+import MessageBox from "../Misc/MessageBox";
 function HRLayout() {
   
   const MySession = JSON.parse(localStorage.getItem("MySession"));
-
-  if (!MySession || MySession.permission !== 1) {
-    alert("You do not have permission to visit this content.");
-    return <Navigate to="/" replace />;
-  }
-  
+  const [message, setMessage] = useState(null);
   const [darkMode, setDarkMode] = useState(()=>{
-    localStorage.getItem("theme") === "dark"
+    return localStorage.getItem("theme") === "dark"
   });
 
   useEffect(() => {
@@ -28,8 +23,14 @@ function HRLayout() {
     }
   }, [darkMode]);
   
+  if (!MySession || !MySession?.permission === 1) {
+    setMessage({ type: "Error", text: "You do not have permission to visit this content. Please Login." });
+    return <Navigate to="/" replace />;
+  }
+  
   return (
     <>
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} session={MySession}/>
       <div className="layout-body">
         <Sidebar darkMode={darkMode}/>

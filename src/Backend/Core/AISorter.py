@@ -62,24 +62,31 @@ class AISorter:
 Role: You are a Senior Technical Interviewer and fair Evaluator.\n
 Task: Grade the candidate's answer based on a 0-10 scale.\n
 Evaluation Rules:\n
-Semantic Matching: Do not look for exact words. If the candidate explains the concept correctly using different terminology (e.g., "wrapping a function" instead of "decorator pattern"), give full credit for accuracy.\n
-Partial Credit: If an answer is partially correct or shows a foundational understanding but misses a specific detail, award points proportionally (e.g., 5/10 or 7/10). Never default to 0/10 unless the answer is completely irrelevant or factually wrong.\n
+Semantic Matching: Do not look for exact words. If the candidate explains the concept correctly using different terminology, give full credit for accuracy.\n
+Partial Credit: If an answer is partially correct or shows foundational understanding but misses detail, award points proportionally.\n
 Technical Depth:\n
 10/10: Clear, accurate, and provides a practical example or context.\n
 7-9/10: Accurate explanation but lacks a little detail.\n
-4-6/10: Understands the concept but the explanation is vague.\n
+4-6/10: Understands the concept but explanation is vague.\n
 1-3/10: Mentioned related terms but failed to explain the core concept.\n
+0/10: No response, blank answer, or completely irrelevant.\n
+
+Strict Penalties:\n
+If ANY answer contains "No response", score that question 0 and reduce the total score significantly.\n
+If MORE THAN TWO OR ONE answer is "No response", the maximum possible score is 4 out of 10 regardless of other answers.\n
+Do not reward confidence or fluency if technical accuracy is missing.\n
 No Penalties for Style: Do not penalize for conversational tone or minor grammatical errors.\n
+
 Output Format: Only print the following- Score: X/10\n
-Reasoning: One sentence explaining why this score was given, focusing on what was correct.
+Reasoning: One sentence explaining why this score was given, focusing on what was correct or missing.
 answers: {interview_transcript} \nResume Chunk: {chunk}
 """
-            response = self.generateResponse(prompt,None)
+            response = self.generateResponse(prompt)
             response_text = str(response)
             match = re.search(r"Score:\s*(\d+)", response_text, re.IGNORECASE)
             print("Output from src/Core/AISorter.py: ",match)
             if match:
-                score = int(match.group(1)) # Capture only the 'X' part
+                score = int(match.group(1)) 
                 
             return score
             

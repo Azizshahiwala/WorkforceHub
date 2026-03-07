@@ -1,10 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./InterviewStart.css";
+import MessageBox from '../Misc/MessageBox';
 export default function InterviewStart() {
+  const [message,setMessage] = useState(null);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const location = useLocation();
   const navigate = useNavigate();
+
+  // ---- STATE ----
+  const videoRef = useRef(null);
+  const [stream, setStream] = useState(null);
+  const [muted, setMuted] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  //listening for vocal answers
+  const [listening, setListening] = useState(false);
+  const [answers, setAnswers] = useState({});
+  //snippet for coding answers
+  const [snippet,addsnippets] = useState("");
 
   // Redirect safely if state missing
   useEffect(() => {
@@ -28,16 +42,7 @@ export default function InterviewStart() {
   "Have a great day!";
   const allQuestions = [introQuestion, ...questions];
 
-  // ---- STATE ----
-  const videoRef = useRef(null);
-  const [stream, setStream] = useState(null);
-  const [muted, setMuted] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  //listening for vocal answers
-  const [listening, setListening] = useState(false);
-  const [answers, setAnswers] = useState({});
-  //snippet for coding answers
-  const [snippet,addsnippets] = useState("");
+  
   
   // ---- SPEAK FUNCTION ----
   const speak = (text) => {
@@ -84,15 +89,46 @@ export default function InterviewStart() {
   };
 
   // ---- END INTERVIEW ----
-  const endCall = () => {
-    if (stream) stream.getTracks().forEach((t) => t.stop());
-    navigate("/interviewer/end");
-  };
+
+  const SubmitAnswers = async (candidateId, answers) => {
+  const formattedAnswers = allQuestions
+    .map((q, i) => `Q: ${q}\nA: ${answers[i] || "No response"}`)
+    .join("\n\n");
+
+  const response = await fetch(`${API_BASE_URL}/recruit/process-test`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: candidateId, answers: formattedAnswers }),
+  });
+  if(response.ok){speak(closingMessage);}
+      else{
+        setMessage({ type: "Error", text: "Submission failed. Check your connection and try again." });
+        navigate(`/interviewer/end`);
+      }
+};
+
+  const endCall = async () => {
+  if (stream) stream.getTracks().forEach((t) => t.stop());
+
+  setSubmitting(true);
+  const queryParams = new URLSearchParams(window.location.search);
+  const candidateId = queryParams.get("ref");
+
+  if (candidateId) {
+    try {
+      await SubmitAnswers(candidateId, answers);
+    } catch (err) {
+      console.error("Failed to submit on end call:", err);
+    }
+  }
+  setSubmitting(false);
+  navigate("/interviewer/end");
+};
 
   const handleCodeChange = (event) => {
     //Update if textbox is changed
-      const codeText = event.target.value;
-      addsnippets(codeText);
+      addsnippets(event.target.value);
 
       setAnswers((prev) => ({
     ...prev,
@@ -102,7 +138,7 @@ export default function InterviewStart() {
   // ---- SPEECH TO TEXT ----
   const startListening = () => {
     if (!("webkitSpeechRecognition" in window)) {
-      alert("Speech recognition not supported in this browser");
+      setMessage({ type: "Info", text: "Speech recognition not supported in this browser." });
       return;
     }
 
@@ -137,37 +173,23 @@ export default function InterviewStart() {
     const candidateId = queryParams.get("ref");
 
     if (!candidateId) {
-      alert("Error: Candidate ID (ref) is missing from the URL.");
+      setMessage({ type: "Error", text: "Candidate ID is missing from the URL." });
       return;
     }
     const formattedAnswers = allQuestions
       .map((q, i) => `Q: ${q}\nA: ${answers[i] || "No response"}`)
       .join("\n\n");
 
+      setSubmitting(true);
     try {
-      // Reusing your existing analysis route via process-test
-      console.log("Submitting to:", `${API_BASE_URL}/recruit/process-test`);
-
-      const response = await fetch(`${API_BASE_URL}/recruit/process-test`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: candidateId,
-          answers: formattedAnswers
-        }),
-      });    
-      if(response.ok){
-        // Play the closing message before navigating
-        speak(closingMessage);
-        setTimeout(() => navigate(`/interviewer/end`), 5000);
-      }
-      else{
-        alert("Error: Make sure you have internet connection. If the error persists, please contact administrator.");
-        navigate(`/interviewer/end`);
-      }
+      await SubmitAnswers(candidateId, answers);
+      setTimeout(() => navigate("/interviewer/end"), 5000);
     } catch (err) {
-      console.error("Submission failed:", err);
+      setMessage({ type: "Error", text: "Something went wrong. Please try again." });
       navigate("/interviewer/end");
+    }
+    finally{
+      setSubmitting(false);
     }
   }
 };
@@ -175,6 +197,7 @@ export default function InterviewStart() {
   // ---- UI ----
   return (
     <div className="call-wrapper">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <h2>🤖 AI Interview In Progress</h2>
       <h3>Role: {profession}</h3>
 
@@ -223,14 +246,13 @@ export default function InterviewStart() {
         <button className="control-btn mute" onClick={startListening} disabled={listening}>
           {listening ? "🎙️ Listening..." : "🎤 Answer"}
         </button>
-
-        <button className="control-btn mute" onClick={nextQuestion}>
+        {submitting ? <div className="interview-loader"/> : <button className="control-btn mute" onClick={nextQuestion}>
           Next Question
-        </button>
+        </button>}
         
-        <button className="control-btn end" onClick={endCall}>
+        {submitting ? <div className="interview-loader"/> : <button className="control-btn end" onClick={endCall}>
           📞 End Call
-        </button>
+        </button>}
       </div>
     </div>
   );

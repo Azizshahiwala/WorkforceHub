@@ -8,7 +8,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-
+import MessageBox from "../../Misc/MessageBox";
 ChartJS.register(ArcElement, Tooltip, Legend);
 export function UserInfo(empID, name, lastLogin) {
     return (
@@ -22,9 +22,7 @@ export function UserInfo(empID, name, lastLogin) {
 
 function CompanyUser() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  
-  const MySession = JSON.parse(localStorage.getItem("MySession"));
- 
+  const [message,setMessage] =useState(null);
   const [employees, setEmployees] = useState(() => {
     const saved = localStorage.getItem("employees");
     return saved ? JSON.parse(saved) : [];
@@ -63,27 +61,27 @@ function CompanyUser() {
     
     fetch(`${API_BASE_URL}/updatePassByHR/${tempID}`, {
         method: "POST",
+        credentials:"include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({tempPass})
   })
     .then(res => res.json())
     .then(data => {
       if (data.status === "success") {
-        alert(data.message);
+        setMessage({ type: "Success", text:data.message});
         <Navigate to="/dashboard/users" replace></Navigate>
       } else {
-        alert(data.message);
+        setMessage({ type: "Error", text:data.message});
       }
     })
-    .catch(err => {console.error("Error:", err);});
+    .catch(err => {setMessage({ type: "Error", text: err});});
     setTempPass("");
     setShowModal(false);
   };
 
   const deleteAccount = async (auth_id,role,employeeId) => {
-    
     if(auth_id == "undefined" || role == "undefined" || employeeId == "undefined"){
-      alert("Un-identified attempt to remove an account");
+      setMessage({ type: "Error", text: "Un-identified attempt to remove an account"});
       return;
     }
     try {
@@ -91,17 +89,19 @@ function CompanyUser() {
 
         const response = await fetch(`${API_BASE_URL}/deleteAccount/${auth_id}`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({auth_id,role,employeeId}),
       });
-
+        const data = await response.json();
         if (response.ok) {
           const updated = employees.filter((emp) => emp.auth_id !== auth_id);
           setEmployees(updated);
+          setMessage({ type: "Success", text: data.message});
         } 
       }
     } catch (error) {
-      alert("Cannot remove Employee: ", error);
+      setMessage({ type: "Error", text: "Cannot remove Employee: ", error});
     }
   };
 
@@ -129,6 +129,7 @@ function CompanyUser() {
 
   return (
     <div className="leave-page">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <div className="leave-header">
         <h2>Users</h2>
        </div>
@@ -156,7 +157,6 @@ function CompanyUser() {
           <h3>All Employees</h3>
         </div>
 
-        {/* ✅ Grid instead of invalid table */}
         <div className="emp-grid">
           {employees
             .filter((emp) =>

@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import "../../styles/HR/Payroll.css";
+import MessageBox from "../../Misc/MessageBox";
 function PayRoll() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  const MySession = JSON.parse(localStorage.getItem("MySession"));
   const [devMode, setDevMode] = useState(false);
   const [loading, isloading] = useState(false);
   const [processingId, setprocessingId] = useState(null);
+  const [message,setMessage] = useState(null);
 
   const [Window, setWindow] = useState(false);
   const [salBreakup, setSalBreakup] = useState(null);
   const [Employee, setEmployee] = useState([]);
   const [search, setSearch] = useState("");
-  const [CurrentGatewayRes, setCurrentGatewayRes] = useState("");
-
+  
   const isMonthCompleted = (monthYearStr) => {
     const [year, month] = monthYearStr.split('-').map(Number);
     const now = new Date();
@@ -40,25 +40,26 @@ function PayRoll() {
     try {
       const response = await fetch(`${API_BASE_URL}/pay-gateway/${empID}`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ MonthYear: currentMonth, emailTo: emailTo, empName: empName }),
       });
       const data = await response.json();
       if (response.ok) {
-        setCurrentGatewayRes(data);
         //This filters out non-same employeeId entries. 
         //Meaning it removes entries whose payslip has been sent (empId = employeeId).
         setEmployee((prev) => prev.filter((emp) => emp.employeeId !== empID));
+        setMessage({type:"Success",text:"Email has been sent to "+data.name});
       }
       else {
-        alert("Error: Mail could not be processed.");
-        alert(`Failed: ${data.error || data.message || "Unknown server error"}`);
+        setMessage({type:"Info",text:"Mail could not be processed"});
+        setMessage({type:"Error",text:"Failed:"+data.error || data.message || "Unknown server error"});
       }
       isloading(false);
       setprocessingId(null);
     }
     catch (error) {
-      console.error("PayRoll.jsx Mail Error:", error);
+      setMessage({type:"Error",text:"PayRoll.jsx Mail Error:", error});
       isloading(false);
     }
   }
@@ -71,10 +72,10 @@ function PayRoll() {
         setSalBreakup(data[0]);
         setWindow(true); // Open window ONLY after data is received
       } else {
-        alert("Error fetching breakup data");
+        setMessage({type:"Error",text:"Error fetching breakup data"});
       }
     } catch (error) {
-      console.error("Fetch Error:", error);
+      setMessage({type:"Error",text:error});
     }
   }
 
@@ -87,7 +88,7 @@ function PayRoll() {
           setEmployee(empdata);
         }
       } catch (error) {
-        console.error("Load Error:", error);
+        setMessage({type:"Error",text:"Load Error:", error});
       }
     };
     loadEmployees();
@@ -98,6 +99,7 @@ function PayRoll() {
 
   return (
     <div className="leave-page">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <div className="leave-header">
         <h2>Employee Salary</h2>
       </div>
@@ -160,8 +162,7 @@ function PayRoll() {
                       {loading && emp.employeeId == processingId ?
                         (
                           <div className="loader-container">
-                            {/* Added the loading circle and it will appear when loading is true / when we click on send Link */}
-                            <div className="loader"></div>
+                            <div className="loader"/>
                           </div>) : (
                           <button
                             onClick={() => MailProcess(emp.email, emp.name, emp.employeeId)}
@@ -174,7 +175,6 @@ function PayRoll() {
             ))}
         </div>
 
-        {/* MODAL SECTION */}
         {Window && salBreakup && (
           <div className="SalBreakup-overlay">
             <div className="SalBreakup-page">

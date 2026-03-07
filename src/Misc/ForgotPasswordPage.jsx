@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import './ForgotPasswordPage.css';
-
+import MessageBox from "./MessageBox";
 function ForgotPasswordPage() {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [message, setMessage] = useState(null);
+    
     const [email, setemail] = useState("");
     const [step, setStep] = useState(1); // 1: Email, 2: OTP, 3: Password
     const [currentotp, setotp] = useState("");
@@ -34,17 +36,19 @@ function ForgotPasswordPage() {
             formData.append('email', email);
             const response = await fetch(`${API_BASE_URL}/Forgotpassword-process`, {
                 method: "POST",
+                credentials: "include",
                 body: formData,
             });
             const data = await response.json();
             if (data.success === true || response.ok) {
-                setforid(data.forId); // Ensure we get the raw ID from the tuple
+                setforid(data.forId); 
                 setStep(2);
+                setMessage({ type: "Info", text: data.message });
             } else {
-                alert("Error: " + data.message);
+                setMessage({ type: "Error", text: data.message });
             }
         } catch (error) {
-            console.error("❌ Email error:", error);
+            setMessage({ type: "Error", text: "Error while sending email." });
         }
     };
 
@@ -54,17 +58,19 @@ function ForgotPasswordPage() {
         try {
             const response = await fetch(`${API_BASE_URL}/getserverOTP`, {
                 method: "POST",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ currentotp, forid })
             });
             const data = await response.json();
             if (data.success === true || response.ok) {
                 setStep(3);
+                setMessage({ type: "Info", text: data.message });
             } else {
-                alert("OTP incorrect.");
+                setMessage({ type: "Error", text: data.message });
             }
         } catch (error) {
-            alert("Connection error during OTP verification.");
+            setMessage({ type: "Error", text: "Connection error during OTP verification." });
         }
     };
 
@@ -74,26 +80,29 @@ function ForgotPasswordPage() {
         try {
             const response = await fetch(`${API_BASE_URL}/finalize-password-updation`, {
                 method: "POST",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ finalPassword, email })
             });
             const data = await response.json();
             if (data.success === true || response.ok) {
-                alert("Password changed successfully. Please login.");
+                setMessage({ type: "Success", text: data.message });
                 navigate("/");
             } else {
-                alert(data.message || "Failed to update password.");
+                setMessage({ type: "Error", text: data.message });
             }
         } catch (error) {
-            alert("Error updating password.");
+            setMessage({ type: "Error", text: "Error updating password." });
         }
     };
 
     return (
+        <>
+        <MessageBox message={message} onClose={() => setMessage(null)} />
         <div className="login-wrapper">
             <div className="login-card">
                 {step === 1 ? (
-                    /* UI for Step 1: Email */
+                    /*Email */
                     <form onSubmit={validateEmail}>
                         <h2>Enter your email</h2>
                         <input type="email" placeholder="email@gmail.com" className="fp-email"
@@ -101,7 +110,7 @@ function ForgotPasswordPage() {
                         <button type="submit">Send OTP</button>
                     </form>
                 ) : step === 2 ? (
-                    /* UI for Step 2: OTP */
+                    /*OTP */
                     <form onSubmit={verifyotp}>
                         <h2>Verify Identity</h2>
                         <p>A 6 digit OTP has been sent to {email}.</p>
@@ -111,7 +120,7 @@ function ForgotPasswordPage() {
                         <button type="button" onClick={() => setStep(1)} className="back-btn">Back</button>
                     </form>
                 ) : (
-                    /* UI for Step 3: New Password */
+                    /*New Password */
                     <form onSubmit={ConfirmPassChange}>
                         <h2>Set New Password</h2>
                         <input type="password" placeholder="Min 9 characters" className="fp-finalpass"
@@ -122,6 +131,8 @@ function ForgotPasswordPage() {
                 )}
             </div>
         </div>
+        </>
+        
     );
 }
 

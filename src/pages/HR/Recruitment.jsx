@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/HR/Recruitment.css";
+import MessageBox from "../../Misc/MessageBox";
+
 function Recruitment() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+  // This usestate is to replace window.confirm because .confirm blocks message usestate.
+  const [confirmAction, setConfirmAction] = useState(null);
   const [loading, isloading] = useState(false);
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState("All");
+  const [message, setMessage] = useState(null);
 
   // States for the Review & Admission Modal
   const [showModal, setShowModal] = useState(false);
@@ -25,46 +30,80 @@ function Recruitment() {
       });
   };
 
-  // Original Logic: Admit Employee (Moves from Temp to Main/Login tables)
+  //Step 1:
+  // Admit is set by Admitbtn 
   function Admit(Tempid) {
-    if (!window.confirm("Create official employee account for this candidate?")) return;
-    isloading(true);
-    fetch(`${API_BASE_URL}/RegisterConfirm/${Tempid}`, {
-      method: "POST",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "success") {
-          alert("Account Created: Employee can now log in.");
-          setShowModal(false);
-          fetchApplications(); // Refresh list to remove admitted user
-        } else {
-          alert(data.message);
-        }
-        isloading(false);
-      });
+    setShowModal(false);
+    setConfirmAction({ type: "admit", id: Tempid });
+  }
+  // Reject is set by Rejectbtn
+  function Reject(Tempid) {
+    setShowModal(false);
+    setConfirmAction({ type: "reject", id: Tempid });
   }
 
-  function Reject(id) {
-    if (!window.confirm("Permanently reject this candidate?")) return;
-    fetch(`${API_BASE_URL}/recruit/reject/${id}`, {
-      method: "DELETE",
-    }).then(() => {
-      setApplications((prev) => prev.filter((item) => item.id !== id));
-      alert("Candidate rejected.");
-    });
+  //Setp 2:
+  // This creates a popup box for accept/reject. If accept -> admit else reject
+  function handleConfirm() {
+    if (confirmAction.type === "admit") {
+      isloading(true);
+      fetch(`${API_BASE_URL}/RegisterConfirm/${confirmAction.id}`, {
+        method: "POST",
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === "success") {
+            setMessage({ type: "Success", text: "Account created. Employee can now log in." });
+            setShowModal(false);
+            fetchApplications();
+          } else {
+            setMessage({ type: "Error", text: data.message});
+          }
+          isloading(false);
+          setConfirmAction(null);
+        })
+        .catch((err) => {
+          console.error(err);
+          isloading(false);
+          setConfirmAction(null);
+        });
+    }
+    else if (confirmAction.type === "reject") {
+      isloading(true);
+      fetch(`${API_BASE_URL}/recruit/reject/${confirmAction.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      })
+        .then((data) => {
+          setApplications((prev) => prev.filter((item) => item.id !== confirmAction.id));
+          isloading(false);
+          setConfirmAction(null);
+          setMessage({ type: "Success", text: data.message });
+        })
+        .catch((err) => {
+          console.error(err);
+          isloading(false);
+          setConfirmAction(null);
+        });
+    }
+    else {
+      setConfirmAction(null);
+    }
   }
 
-  function SendLink(id, email, name) {
+  // Renamed from SendLink → Accept (send interview link is the acceptance step)
+  function Accept(id, email, name) {
     isloading(true);
     fetch(`${API_BASE_URL}/recruit/send-invite/${id}`, {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: id, email: email, name: name }),
     })
       .then((res) => res.json())
       .then((data) => {
-        alert(data.message);
+        setMessage({ type: "Success", text: data.message});
         isloading(false);
       })
       .catch((err) => {
@@ -91,6 +130,29 @@ function Recruitment() {
 
   return (
     <>
+      <MessageBox message={message} onClose={() => setMessage(null)} />
+
+      {/**Step 3: This confirmAction triggers if Admit / Reject is set. */}
+      {confirmAction && (
+        <div className="modal-overlay" onClick={() => setConfirmAction(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Confirm Action</h3>
+            </div>
+            <div className="modal-body">
+              <p>
+                {confirmAction.type === "admit" ?
+                 "Create official employee account for this candidate?" : "Permanently reject this candidate?"}
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button className="Admitbtn" onClick={handleConfirm}>Confirm</button>
+              <button className="Rejbtn" onClick={() => setConfirmAction(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="recruitment-container">
         <table className="Inner-table" border={1} cellPadding={10} cellSpacing={0}>
           <thead>
@@ -121,30 +183,24 @@ function Recruitment() {
                 </td>
                 <td className="action-btns">
                   <div className="button-group">
-                    {/* If loading is true, show the loader. Otherwise, show the active button */}
                     {loading ? (
                       <div className="loader-container">
-                        {/* Added the loading circle and it will appear when loading is true / when we click on send Link */}
-                        <div className="loader"></div>
-                      </div>
-                    ) : (
-                      <button
+                        <div className="loader"/>
+                      </div>) : (<button
                         className="Accbtn"
-                        onClick={() => SendLink(Submission.id, Submission.email, Submission.name)}
-                      >
+                        onClick={() => Accept(Submission.id, Submission.email, Submission.name)}>
                         Send link
                       </button>
                     )}
 
-                    {/* Disable the Reject button while loading to prevent conflicts */}
-                    <button
-                      className="Rejbtn"
-                      onClick={() => Reject(Submission.id)}
-                      disabled={loading}
-                      style={{ opacity: loading ? 0.5 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
-                    >
-                      Reject
-                    </button>
+                    {loading ? (<div className="loader-container">
+                        <div className="loader"/>
+                      </div>) : (<button
+                        className="Rejbtn"
+                        onClick={() => Reject(Submission.id)}>
+                        Reject
+                      </button>
+                    )}
                   </div>
                 </td>
                 <td className={`status-badge ${Submission.status.toLowerCase()}`}>
@@ -165,7 +221,6 @@ function Recruitment() {
         </table>
       </div>
 
-      {/* --- ANALYSIS & ADMISSION MODAL --- */}
       {showModal && selectedCandidate && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -184,8 +239,11 @@ function Recruitment() {
               </div>
             </div>
             <div className="modal-footer">
-              {/* This is where HR officially creates the account after reviewing the result */}
-              {loading ? <b className="processstage">Processing</b> : <button className="Admitbtn" onClick={() => Admit(selectedCandidate.id)}>Admit & Create Account</button>}
+              {loading ? (
+                <b className="processstage">Processing</b>) :
+                (<button className="Admitbtn" onClick={() => Admit(selectedCandidate.id)}>
+                  Admit & Create Account
+                </button>)}
             </div>
           </div>
         </div>

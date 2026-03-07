@@ -104,7 +104,7 @@ def start_parsing():
 
     applyingFor = queHandler.fetch_role(candidateId)
     
-    # 4. Call AI (limit size for safety)
+    
     ai_raw = queHandler.generate_questions(resume_text[:6000],candidateId,applyingFor)
 
     print("===== AI RAW OUTPUT =====")
@@ -114,13 +114,10 @@ def start_parsing():
     # 5. Parse json from AI
     try:
         ai_data = json.loads(ai_raw)
-    except Exception:
-        ai_data = {
-            "profession": "",
-            "skills": [],
-            "questions": [],
-            "role_mismatch":True
-        }
+    except json.JSONDecodeError:
+        return jsonify({"message": "AI returned invalid response. Try again.", "status": "error"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Interview processing failed: {str(e)}"}), 500
 
     # 6. Always return JSON
     return jsonify(ai_data), 200
