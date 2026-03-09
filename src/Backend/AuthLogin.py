@@ -185,12 +185,12 @@ def deleteAccount(auth_id):
         if 'role' not in session or 'permission' not in session:
             print("Role : ",role)
             print("Permission : ",permission)
-            return jsonify({"status":"error"}),500
+            return jsonify({"message":"Un-authorized access."}),500
         
         if not isNonStaff(role) or not (permission == 1):
             print("Role : ",role)
             print("Permission : ",permission)
-            return jsonify({"status":"error"}),401
+            return jsonify({"message":"User account does not have access to this function."}),401
 
         conn,cursor = LoginHandler._conn_get()
 
@@ -208,6 +208,7 @@ def deleteAccount(auth_id):
         conn.commit()
 
         conn.close()
+        session.clear()
         notifManager.insert_notification(message=f"User {name} has been removed, and will no longer work from today with us.. ",isGlobal=True)
         return jsonify({"status":"success","message":"Account removed successfully"}),200
     except Exception as e:

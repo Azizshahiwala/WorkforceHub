@@ -35,13 +35,13 @@ function Activity() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTask), // Backend expects the message directly as the JSON body
       });
-
+      const data = await response.json() 
       if (response.ok) {
         setNewTask("");
         setShowModal(false);
         loadActivities(); // Refresh list to show new post
       } else {
-        setMessage({ type: "Error", text: response.message });
+        setMessage({ type: "Error", text: data.message });
       }
     } catch (error) {
       setMessage({ type: "Error", text: "Post activity error: "+error });

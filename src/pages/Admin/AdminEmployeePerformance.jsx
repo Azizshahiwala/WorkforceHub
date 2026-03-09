@@ -29,7 +29,7 @@ function AdminEmployeePerformance() {
 
   const removeFeedback = async (feedbackId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/feedback/${feedbackId}`, {
+      const response = await fetch(`${API_BASE_URL}/feedback/${feedbackId}`, {
         method: "DELETE",
         credentials: "include",
       });

@@ -99,6 +99,9 @@ function CompanyUser() {
           setEmployees(updated);
           setMessage({ type: "Success", text: data.message});
         } 
+        else{
+          setMessage({ type: "Error", text: data.message});
+        }
       }
     } catch (error) {
       setMessage({ type: "Error", text: "Cannot remove Employee: ", error});

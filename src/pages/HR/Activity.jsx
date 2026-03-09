@@ -34,15 +34,15 @@ function Activity() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTask), // Backend expects the message directly as the JSON body
       });
-
+      const data = await response.json();
       if (response.ok) {
         setNewTask("");
         setShowModal(false);
         loadActivities(); // Refresh list to show new post
         localStorage.setItem("hasNewNotification", "true");
       } else {
-        setMessage({ type: "Error", text: response.message });
-        console.log(response.error)
+        setMessage({ type: "Error", text: data.message });
+        console.log(data.error)
       }
     } catch (error) {
       setMessage({ type: "Error", text: "Post activity error: "+error });
