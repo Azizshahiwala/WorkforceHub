@@ -52,7 +52,7 @@ Core Features
 - OpenAI-powered chat/assistant can suggest suitable time slots based on participant availability.
   
 4. Final Onboarding
-- Successful candidates’ profiles are automatically pushed into the Employee Module database with their resumes and test/interview records.
+- Successful candidates’ profiles are pushed by admin/HR into the Employee Module database with their resumes and test/interview records.
 
 Workflow
 
