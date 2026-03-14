@@ -1,0 +1,289 @@
+/* ===============================
+   Page Layout
+================================ */
+.userconfig-page {
+  padding: 24px 32px 32px;
+  background-color: #f0f4ff;
+  min-height: 100vh;
+  color: #111827;
+}
+
+/* ===============================
+   Header
+================================ */
+.userconfig-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.userconfig-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.userconfig-header button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.userconfig-header button:hover {
+  background: #bfdbfe;
+}
+
+/* ===============================
+   Main Card
+================================ */
+.userconfig-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 26px 28px;
+  max-width: 500px;
+  border: 1px solid #bfdbfe;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+}
+
+/* ===============================
+   Info Rows
+================================ */
+.userconfig-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.userconfig-row span {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.userconfig-row strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+/* ===============================
+   Input Fields
+================================ */
+.userconfig-row input[type="text"],
+.userconfig-row input[type="number"] {
+  padding: 7px 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111827;
+  background: #f0f4ff;
+  outline: none;
+  width: 200px;
+}
+
+.userconfig-row input[type="text"]:focus,
+.userconfig-row input[type="number"]:focus {
+  border-color: #2563eb;
+  background: #fff;
+}
+
+/* ===============================
+   Divider
+================================ */
+.userconfig-divider {
+  border: none;
+  border-top: 1px solid #dbeafe;
+  margin: 18px 0;
+}
+
+/* ===============================
+   Action Buttons
+================================ */
+.userconfig-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.userconfig-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.userconfig-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-promote {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.btn-promote:hover {
+  background: #1d4ed8;
+}
+
+.btn-demote {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.btn-demote:hover {
+  background: #bfdbfe;
+}
+
+.btn-bonus {
+  background: #22c55e;
+  color: #ffffff;
+}
+
+.btn-bonus:hover {
+  background: #16a34a;
+}
+
+/* ===============================
+   Hint Text
+================================ */
+.userconfig-hint {
+  margin-top: 16px;
+  font-size: 12.5px;
+  color: #6b7280;
+  line-height: 1.6;
+  border-left: 3px solid #bfdbfe;
+  padding-left: 10px;
+}
+
+/* ===============================
+   Role Assignment Modal
+================================ */
+.role-modal-box {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 28px 30px;
+  width: 420px;
+  max-width: 92%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.12);
+  border: 1px solid #bfdbfe;
+}
+
+.role-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin: 0 0 8px;
+}
+
+.role-modal-current {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.role-group {
+  margin-bottom: 14px;
+}
+
+.role-group-label {
+  color: #2563eb;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.role-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.role-list-item {
+  margin-bottom: 6px;
+}
+
+.role-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #111827;
+  cursor: pointer;
+}
+
+.role-radio {
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: #2563eb;
+  width: 15px;
+  height: 15px;
+}
+
+.role-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* ===============================
+   Configure Button (used in AdminCompanyUser)
+================================ */
+.configure-btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+}
+
+.configure-btn:hover {
+  background: #1d4ed8;
+}
+
+/* ===============================
+   Loading / Access Denied
+================================ */
+.userconfig-loading {
+  font-size: 14px;
+  color: #2563eb;
+  margin-top: 12px;
+}
+
+.userconfig-denied {
+  padding: 24px;
+  background-color: #f0f4ff;
+  min-height: 100vh;
+}
+
+.userconfig-denied h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 8px;
+}
+
+.userconfig-denied p {
+  font-size: 14px;
+  color: #6b7280;
+}

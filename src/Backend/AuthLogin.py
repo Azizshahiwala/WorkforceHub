@@ -373,8 +373,8 @@ def ForgotpasswordPhase3():
         finalPassword = data.get("finalPassword")
         email = data.get("email")
 
-        if len(finalPassword) <= 8:
-            return jsonify({"success": "Retry", "message":"Successfully updated password."}), 200
+        if len(finalPassword) < 9:
+            return jsonify({"success": False, "message":"Password must be at least 9 characters."}), 200
 
         hashed = encrypter.create_hash(finalPassword)
 

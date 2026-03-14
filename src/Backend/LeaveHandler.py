@@ -3,8 +3,11 @@ from flask import Blueprint,jsonify,session
 import sqlite3 as sq
 from datetime import datetime, date
 from PathConfig import CompanyUserPath,CredentialsPath
+
 #Now we use NotifManager (send , update, recieve notification)
 from Notification import notifManager
+#We use Attendance for creating entries in leave.
+from Attendance import attendance_manager
 leaveManager = Blueprint('Leave', __name__, url_prefix='/api')
 
 class LeaveHandler:
@@ -110,11 +113,11 @@ class LeaveHandler:
 
         for leave in activeLeaves:
             leaveId = leave[0]
-            enddate_str = leave[1]  # ← THIS is enddate_str
+            enddate_str = leave[1] 
 
             enddate = datetime.strptime(enddate_str, "%Y-%m-%d").date()
 
-            # 🔑 Rule: close if today is enddate OR passed
+            #if today is enddate OR passed
             if today >= enddate:
                 #First update the column val to completed. IF time has passed.
                 cursor.execute("""
@@ -340,8 +343,15 @@ def CloseLeaveDuration():
 def updateAttTable(conn,cursor,CompleteDuration,ToEmpId,startDate,endDate):
     #We need employeeId, attendance table, start and end date.
     #Update set leaveduration to "start to end" where empId = employeeId
-    attUpdateDurationQuery = """
-    update Attendance set leaveDuration = ? where empId = ? and date between ? and ?
+    #we also update the flag: paidleave to avoid getting re-written
+
+    if attendance_manager.SetupPaidHolidayEntries(ToEmpId,startDate,endDate):
+        attUpdateDurationQuery = """
+    update Attendance set leaveDuration = ?, paidleave = True, status = 'Leave' where empId = ? and date between ? and ?
     """
-    cursor.execute(attUpdateDurationQuery,(CompleteDuration,ToEmpId,startDate,endDate))
+        cursor.execute(attUpdateDurationQuery,(CompleteDuration,ToEmpId,startDate,endDate))
+    
     conn.commit()
+
+def checkifdateExists():
+    pass 

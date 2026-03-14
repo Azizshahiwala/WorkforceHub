@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import "../../styles/HR/CompanyUser.css";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -43,6 +43,7 @@ function CompanyUser() {
     };
     loadUser(); }, []);
    
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
   const [tempPass, setTempPass] = useState("");
@@ -69,7 +70,7 @@ function CompanyUser() {
     .then(data => {
       if (data.status === "success") {
         setMessage({ type: "Success", text:data.message});
-        <Navigate to="/dashboard/users" replace></Navigate>
+        <Navigate to='/dashboard/users' replace></Navigate>
       } else {
         setMessage({ type: "Error", text:data.message});
       }
@@ -204,6 +205,14 @@ function CompanyUser() {
                 <div className="emp-card-row">
                   <span>Last Login:</span>
                   <strong>{emp.lastLogin}</strong>
+                </div>
+                <div className="emp-card-row">
+                  <button
+                    type="button"
+                    className="configure-btn"
+                    onClick={() => navigate(`/dashboardAdmin/usersAdmin/config/${emp.auth_id}`)}>
+                    Configure
+                  </button>
                 </div>
               </div>
             ))}

@@ -1,7 +1,7 @@
 # src/Database/Attendance.py
 from flask import Blueprint, jsonify
 from flask import request as rq
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import sqlite3 as sq
 from PathConfig import CompanyUserPath,CredentialsPath
 attendance = Blueprint('Attendance', __name__, url_prefix='/api')
@@ -30,8 +30,6 @@ class AttendanceDB:
             isHoliday BOOLEAN NOT NULL Default 'False',
             FOREIGN KEY (empId) REFERENCES user(employeeId) ON DELETE CASCADE,
             UNIQUE(empId, date)
-            
-
         );            
         """
         cursor.execute(query)
@@ -104,7 +102,41 @@ class AttendanceDB:
         except Exception as e:
             print(e)
             return jsonify({"status":"error","message":str(e)})
+    
+    #This function will create entries when leave is accepted by HR. it will update paid leave.
+    def SetupPaidHolidayEntries(self,ToEmpId,startDate,endDate):
+        try:
+            conn,cursor = self._get_connection()
+            
+            #Check if user exist
+            cursor.execute("""select auth_id from user where employeeId = ?""",(ToEmpId,))
+            
+            user = cursor.fetchone()
+            if not user:
+                conn.close()
+                return False 
+            
+            current_date = startDate
+            batch = []
+            one_day = timedelta(days=1)
+            while current_date <= endDate:
+                batch.append((ToEmpId, current_date, 'Leave'))
+                current_date += one_day
+            
+            cursor.executemany("INSERT OR IGNORE INTO Attendance(empId, date, status) VALUES(?, ?, ?)", batch)
+            conn.commit()
+            conn.close()
+
+            return True
         
+        except Exception as e:
+            print(e)
+            try:
+                conn.close()
+            except Exception:
+                pass
+            return False
+      
 attendance_manager = AttendanceDB(CompanyUserPath, CredentialsPath)
 
 def createAttendance():
@@ -190,7 +222,7 @@ def entrysetup():
         cursor.execute('SELECT distinct employeeId FROM "user"')
         employees = cursor.fetchall()
         if employees:
-            #Pre-process data before reaching UI. this prevents stacking of labels.
+            #Pre-process. this prevents stacking of labels.
             batch = [(emp[0],today,'Absent') for emp in employees]
             cursor.executemany("INSERT OR IGNORE INTO Attendance(empId, date, status) VALUES(?, ?, ?)",
             batch)

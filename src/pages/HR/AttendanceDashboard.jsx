@@ -80,13 +80,11 @@ function AttendanceDashboard() {
   title: (item.isHoliday === "True" || item.isHoliday === true) ? "Holiday" : item.status,
   date: item.date,
   color: 
-        (item.isHoliday === "True" || item.isHoliday === true) ? "blue" : 
+        (item.isHoliday === "True" || item.isHoliday === true || item.paidleave === true || item.paidleave === "True") ? "blue" : 
         item.status === "Present" ? "green" : "red"
 }));
     //Logic: IF status is not null, change colour to blue (leave)
-    // Directly set events as we no longer need to merge with holidays
     setMyEvents(mappedEvents);
-    console.log(mappedEvents);
   }, [selectedEmp, attendanceRecords]);
   
   useEffect(() => {

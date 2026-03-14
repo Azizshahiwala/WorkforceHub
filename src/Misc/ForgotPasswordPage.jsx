@@ -124,7 +124,7 @@ function ForgotPasswordPage() {
                     <form onSubmit={ConfirmPassChange}>
                         <h2>Set New Password</h2>
                         <input type="password" placeholder="Min 9 characters" className="fp-finalpass"
-                            onChange={(e) => setfinalPassword(e.target.value)} value={finalPassword} required />
+                            onChange={(e) => setfinalPassword(e.target.value)} value={finalPassword} required minLength="9" />
                         <button type="submit">Change password</button>
                         <button type="button" onClick={() => setStep(2)} className="back-btn">Back</button>
                     </form>

@@ -1,4 +1,3 @@
-// App.jsx
 import {
   BrowserRouter,
   Routes,
@@ -28,6 +27,7 @@ import InterviewStart from "./Login/InterviewStart";
 import InterviewEnd from "./Login/InterviewEnd";
 import RegisterForm from "./Login/RegisterForm";
 import ForgotPasswordPage from "./Misc/ForgotPasswordPage";
+import UserConfig from "./Misc/UserConfig";
 /* ================= Admin Layout ================= */
 import AdminLayout from "./layout/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
@@ -104,12 +104,10 @@ function MainContent() {
       <Route path="/dashboardAdmin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
         <Route path="usersAdmin" element={<AdminCompanyUser />} />
+        <Route path="usersAdmin/config/:auth_id" element={<UserConfig />} />
         <Route path="feedbackAdmin" element={<AdminFeedback />} />
         <Route path="activityAdmin" element={<AdminActivity />} />
-        <Route
-          path="performanceAdmin"
-          element={<AdminEmployeePerformance />}
-        />
+        <Route path="performanceAdmin" element={<AdminEmployeePerformance />}/>
       </Route>
 
       {/* ================= Employee Routes ================= */}

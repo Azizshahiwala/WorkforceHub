@@ -238,9 +238,8 @@ Congratulations! We are thrilled to officially offer you the position of {accept
 Your performance during our interview process was exceptional, and we were particularly impressed by your insights and alignment with our company values. We believe your skills will be a significant asset to our department.\n
 Account Activation & Next Steps: To begin your onboarding, we have created your official employee profile. You can now log in to our internal portal to complete your documentation:\n
 Portal URL: {manager._compURL}\n
-Username: {acceptdata[1]}\n
-Temporary Password: placeholder\n\n
-Please change your password immediately upon your first login for security purposes.\n
+Email: {acceptdata[1]}\n\n
+To login, you need to click reset password, in order to create your account.\n
 We are excited to have you join us and look forward to your contributions. If you have any questions regarding the onboarding process, please feel free to reach out to the HR department.\n
 Welcome to the team!\n
 Best regards,\n\n

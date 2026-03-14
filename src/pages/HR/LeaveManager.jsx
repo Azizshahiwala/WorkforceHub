@@ -30,7 +30,6 @@ function LeaveManager() {
       const data = await response.json();
         if(data.status == "success"){
           setMessage({ type: "Success", text:data.name+"'s leave accepted."});
-          return;
         }
         else{
           setMessage({ type: "Info", text:"Employee leave cannot be accepted. Please check for dates"});
