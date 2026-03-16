@@ -116,7 +116,7 @@ function MainContent() {
         <Route path="applyLeave" element={<ApplyLeave />} />
         <Route path="performance" element={<EmployeePersonalPerformance />}/>
         <Route path="activityEmployee" element={<EmployeeActivity />} />
-        {/* <Route path="assignedTaskByHR" element={<AssignTaskByHR />}/> */}
+        <Route path="assignedTaskByHR" element={<AssignTaskByHR />}/>
       </Route>
 
       {/* ================= Interview ================= */}

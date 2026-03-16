@@ -27,11 +27,11 @@ function EmpSidebar({ darkMode }) {
             Apply Leave
           </NavLink>
         </li>
-        {/* <li>
+        <li>
           <NavLink to="/dashboardEmployee/assignedTaskByHR" className="sidebar-item">
             Check Assigned Task
           </NavLink>
-        </li> */}
+        </li>
         <li>
           <NavLink to="/dashboardEmployee/activityEmployee" className="sidebar-item">
             Check Activity
