@@ -2,21 +2,18 @@
 import React from "react";
 import "../../styles/HR/LeaveManager.css";
 import { useState,useEffect } from "react";
+import MessageBox from "../../Misc/MessageBox";
 // Getting existing leave data from [Employee ApplyLeave.jsx] localStorage
-
-const data=JSON.parse(localStorage.getItem("leaveData")) || [];
 
 function LeaveManager() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [leaveRequests, setLeaveRequests] = useState([]);
-
-  const MySession = JSON.parse(localStorage.getItem("MySession"));
-  //This use effects fetches all emp rq leaves
+  const [message, setMessage] = useState(null);
   useEffect(() => {
         fetch(`${API_BASE_URL}/fetchAllRq`)
           .then(res => res.json())
           .then(data => setLeaveRequests(data))
-          .catch(err => console.error("Error loading personal leaves:", err));
+          .catch(err => setMessage({ type: "Error", text:err}));
       }, []);
 
   const handleLeaveOption = async (Leaveid,option,employeeId) => {
@@ -25,32 +22,34 @@ function LeaveManager() {
       if(option === "accept"){
         const response = await fetch(`${API_BASE_URL}/acceptLeave/${Leaveid}`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({employeeId, Leaveid}),
       });
 
       const data = await response.json();
         if(data.status == "success"){
-          alert(data.name+"'s leave accepted.");
+          setMessage({ type: "Success", text:data.name+"'s leave accepted."});
         }
         else{
-          alert("Employee leave cannot be accepted. Please check for dates");
+          setMessage({ type: "Info", text:"Employee leave cannot be accepted. Please check for dates"});
           return;
         }
       }
       else if(option == "reject"){
         const response = await fetch(`${API_BASE_URL}/rejectLeave/${Leaveid}`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({employeeId, Leaveid}),
       });
 
       const data = await response.json();
         if(data.status == "success"){
-          alert(data.name+"'s leave rejected.");
+          setMessage({ type: "Success", text:data.name+"'s leave rejected."});        
         }
         else{
-          alert("Employee id not found. Make sure the person has applied/enrolled.");
+          setMessage({ type: "Success", text:"Employee id not found. Make sure the person has applied/enrolled."});
           return;
         }
       }
@@ -58,14 +57,14 @@ function LeaveManager() {
       setLeaveRequests(updatedData);
       }
     catch(e){
-      console.error("Error from leavemanger.jsx: "+e);
-      alert("An error occurred");
+      setMessage({ type: "Error", text:"Error:",e});
       return;
     }
 };
 
   return (
     <div className="leave-page">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <div className="leave-header">
         <div>
           <h2>Leave Request</h2>
@@ -96,7 +95,6 @@ function LeaveManager() {
                 <td>
                   <div className="emp-cell">
                     <div className="emp-avatar">
-                      {/* {req.name.charAt(0)} */}
                     </div>
                     <span>{req.name}</span>
                   </div>

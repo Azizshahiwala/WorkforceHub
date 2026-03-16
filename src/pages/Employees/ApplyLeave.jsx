@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/Employees/ApplyLeave.css";
+import MessageBox from "../../Misc/MessageBox";
 function ApplyLeave() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   
+  const [message,setMessage]=useState(null);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [reason, setReason] = useState("");
@@ -25,45 +27,41 @@ function ApplyLeave() {
     e.preventDefault()    
 
     if (!MySession) {
-      alert("Please login again");
+      setMessage({ type: "Error", text: "Please log in again."});
       return;
     }
 
     if (!startDate || !endDate || !reason) {
-      alert("Please fill all fields.");
+      setMessage({ type: "Info", text: "Please fill all the fields."});
       return;
     }
     
     try{
-      
-      const response = await fetch(`${API_BASE_URL}/postLeaveRq/${MySession.employeeId}/${MySession.auth_id}`, {
+      const response = await fetch(`${API_BASE_URL}/postLeaveRq`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(leaveData),
       });
 
       const data = await response.json();
       if(data.status === "reason not provided"){
-        alert("Reason is not given. Cannot approve. Please reject this leave.");
+        setMessage({ type: "Info", text: "Reason is not given. Cannot approve. Please reject this leave."});
         return;
       }
       if(data.status === "datetime compare error"){
-        alert("start and end date syntax is invalid. Please reject this leave.");
+        setMessage({ type: "Info", text: "start and end date is invalid. Please reject this leave."});
         return;
       }
       if (data.status === "success") {
-        alert("Leave applied successfully");
-        // Refresh local list after successful post
-        
-        alert("Leave applied successfully");
-
+        setMessage({ type: "Success", text: data.message});
         setStartDate("");
         setEndDate("");
         setReason("");
       }
     }
     catch(err){
-      console.error("Submission error:", err);
+      setMessage({ type: "Error", text: "Submission error:"+ err});
     }
     
   };
@@ -76,6 +74,7 @@ function ApplyLeave() {
 
   return (
     <div className="apply-leave-page">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <form className="apply-leave-card" onSubmit={handleLeave}>
         <h2>Apply Leave</h2>
 

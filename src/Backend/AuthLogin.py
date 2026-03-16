@@ -1,6 +1,6 @@
 from flask import request as rq
-from flask import Blueprint, jsonify
-import os,random
+from flask import Blueprint, jsonify, session
+import random
 import sqlite3 as sq
 from datetime import datetime
 from Core.EmailService import emailService
@@ -36,8 +36,8 @@ def createCredentials():
         return False
     finally:
         if conn:
-            conn.close() # This runs even if the code crashes
-# ✅ FIXED: Exact role names matching your DummyDataFiller
+            conn.close() 
+
 def isStaff(role):
     staff = ["Sales manager", "Designer", "Developer", 
     "Marketing",  "Finance"]
@@ -53,7 +53,7 @@ def isStaff(role):
     
     return False
 def isNonStaff(role):
-    nonstaff = ["Admin", "CEO", "HR","Interviewer"]
+    nonstaff = ["Admin", "CEO", "HR"]
     nonstaffmap = [item.strip().lower() == role.strip().lower() for item in nonstaff]
     
     if any(nonstaffmap):
@@ -89,7 +89,7 @@ def login():
         data = rq.get_json()
         email = data.get("email")
         password = data.get("password")
-        
+
         conn = sq.connect(CredentialsPath)
         cursor = conn.cursor()
 
@@ -108,8 +108,9 @@ def login():
         
         #If data found, fetch data.
         if user_info:
-            role, name, employeeId, email, id, stored_hash = user_info  
             
+            role, name, employeeId, email, id, stored_hash = user_info  
+             
             #Now you verify hash passwords. string with another string.
             if encrypter.verify_hash(password,stored_hash):
                 permission = 0  
@@ -122,6 +123,14 @@ def login():
                 else:
                     permission = 0
 
+                session['permission'] = permission
+                session['role'] = role 
+                session['name'] = name 
+                session['email'] = email
+                session['employeeId'] = employeeId
+                session['id'] = str(id) 
+                session['status'] = "Logged In"
+                
                 # Update status and lastLogin
                 current_time = datetime.now().strftime("%Y-%m-%d %H:%M %p")
                 current_date = datetime.now().strftime("%Y-%m-%d")
@@ -144,17 +153,17 @@ def login():
                 update_conn.commit()
                 update_conn.close()
 
-            return jsonify({
+                return jsonify({
                 "success": True,
-                "Permission": permission,
-                "role": role,
-                "name": name,
-                "id":id,
-                "employeeId": employeeId,
-                "email": email,
+                "Permission": session['permission'],
+                "role": session['role'],
+                "name": session['name'],
+                "id":session['id'],
+                "employeeId": session['employeeId'],
+                "email": session['email'],
                 "message": "Login successful",
-                "status": "Logged in"
-            }), 200
+                "status": session['status']
+                    }), 200
         else:
             return jsonify({"success": False,"message": "Invalid credentials"}), 200
             
@@ -170,8 +179,24 @@ LoginHandler = Login(CredentialsPath,CompanyUserPath)
 def deleteAccount(auth_id):
     conn = None
     try:
+        role = session.get('role')
+        permission = session.get('permission')
+
+        if 'role' not in session or 'permission' not in session:
+            print("Role : ",role)
+            print("Permission : ",permission)
+            return jsonify({"message":"Un-authorized access."}),500
         
+        if not isNonStaff(role) or not (permission == 1):
+            print("Role : ",role)
+            print("Permission : ",permission)
+            return jsonify({"message":"User account does not have access to this function."}),401
+
         conn,cursor = LoginHandler._conn_get()
+
+        cursor.execute("select name FROM emp.'user' WHERE auth_id = ?",(auth_id,))
+        name = cursor.fetchone()
+
         #Using the rule of on delete cascade, IF auth_id from user is deleted, 
         #ALL the user database table using the cascade will automatically delete the row containing matching empid.
         #Hence i do not need to use JOIN
@@ -182,15 +207,13 @@ def deleteAccount(auth_id):
         
         conn.commit()
 
-        cursor.execute("select name FROM emp.'user' WHERE auth_id = ?",(auth_id,))
-        name = cursor.fetchone()
-
         conn.close()
+        session.clear()
         notifManager.insert_notification(message=f"User {name} has been removed, and will no longer work from today with us.. ",isGlobal=True)
-        return jsonify({"status":"success"}),200
+        return jsonify({"status":"success","message":"Account removed successfully"}),200
     except Exception as e:
         print(e)
-        return jsonify({"status":"error"}),500
+        return jsonify({"error":str(e)}),500
     finally:
         if conn:
             conn.close()
@@ -199,6 +222,20 @@ def deleteAccount(auth_id):
 def updatePassByHR(auth_id):
     conn = None 
     try:
+
+        role = session.get('role')
+        permission = session.get('permission')
+
+        if 'role' not in session or 'permission' not in session:
+            print("Role : ",role)
+            print("Permission : ",permission)
+            return jsonify({"status":"error"}),500
+        
+        if not isNonStaff(role) or not (permission == 1):
+            print("Role : ",role)
+            print("Permission : ",permission)
+            return jsonify({"status":"error"}),401
+        
         conn,cursor = LoginHandler._conn_get()
 
         #Fetch data
@@ -208,7 +245,7 @@ def updatePassByHR(auth_id):
         #Update placeholder data
         cursor.execute("update login set password = ? where id = ?",(newPassword,auth_id,))
 
-        #Set status as Logged out to remove the btn from frontend.
+        #Set status as Logged Out to remove the btn from frontend.
         cursor.execute("UPDATE emp.'user' SET status = 'Logged Out' WHERE auth_id = ?", (auth_id,))
         conn.commit()
 
@@ -221,7 +258,7 @@ def updatePassByHR(auth_id):
         
         if data:
             #Create a notification for user.
-            notifManager.insert_notification(role=data[1],employeeId=data[0],message=f"Your password has been updated by HR. New pass: {newPassword}")
+            notifManager.insert_notification(role=data[0],employeeId=data[1],message=f"Your password has been updated by HR. New pass: {newPassword}")
 
         conn.close()
         #Create a json result
@@ -232,17 +269,23 @@ def updatePassByHR(auth_id):
     finally:
         if conn:
             conn.close()
-@authlogin.route("/TabCloseLogout/<string:employeeId>", methods=['POST'])
-def TabCloseLogout(employeeId):
+@authlogin.route("/TabCloseLogout", methods=['POST'])
+def TabCloseLogout():
     try:
+        if 'employeeId' not in session:
+            return jsonify({"error": "unauthorized"}), 401
+        
         conn = sq.connect(CompanyUserPath)
         cursor = conn.cursor()
-        
+
         # Update status to Logged Out
+        empId = session.get('employeeId') 
+         
         cursor.execute("""
             UPDATE user SET status = 'Logged Out' WHERE employeeId = ?
-        """, (employeeId,))
+        """, (empId,))
         
+        session.clear()
         conn.commit()
         conn.close()
         return jsonify({"success": True}), 200
@@ -267,7 +310,7 @@ def ForgotpasswordPhase1():
             body = f"Your verification code is: {OTP}. It expires in 2 minutes."
             emailService.send_email(emailService.username, reqEmail, subject, body)
 
-            return jsonify({"success": True, "message":"Email found.", "forId":FetchedId[0]}), 200
+            return jsonify({"success": True, "message":"Email sent to your mail box.", "forId":FetchedId[0]}), 200
         
         return jsonify({"success": False, "message":"Email not found. make sure you typed the email correctly.","forId":None}), 200
     except Exception as e:
@@ -307,7 +350,7 @@ def ForgotpasswordPhase2():
                 seconds_passed = time_diff.total_seconds()
                 if serverotp == typed_otp and seconds_passed <= 120:  
                     cursor.execute("UPDATE login SET OTP = NULL,OTP_TIMESTAMP = NULL WHERE id = ?",(forid,))
-                    return jsonify({"success": True, "message":"OTP match."}), 200
+                    return jsonify({"success": True, "message":"OTP matched successfully."}), 200
                 elif seconds_passed > 120:
                     cursor.execute("UPDATE login SET OTP = NULL,OTP_TIMESTAMP = NULL WHERE id = ?",(forid,))
                     return jsonify({"success": False, "message":"OTP time out."}), 200
@@ -330,8 +373,8 @@ def ForgotpasswordPhase3():
         finalPassword = data.get("finalPassword")
         email = data.get("email")
 
-        if len(finalPassword) <= 8:
-            return jsonify({"success": "Retry", "message":"Successfully updated password."}), 200
+        if len(finalPassword) < 9:
+            return jsonify({"success": False, "message":"Password must be at least 9 characters."}), 200
 
         hashed = encrypter.create_hash(finalPassword)
 

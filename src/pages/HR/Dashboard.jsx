@@ -12,7 +12,7 @@ import {
 
 import Lottie from "lottie-react";
 import performanceAnimation from "../../assets/lottie/performance.json";
-
+import MessageBox from "../../Misc/MessageBox";
 import "../../styles/Admin/AdminDashboard.css";
 
 ChartJS.register(
@@ -26,22 +26,16 @@ ChartJS.register(
 
 export default function AdminDashboard() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-  /* ===============================
-     STATE (ALL HOOKS AT TOP)
-  ================================ */
+  
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [message,setMessage]= useState(null);
   const [task, setTask] = useState("");
   const [store, setStore] = useState(() => {
     const saved = localStorage.getItem("tasks");
     return saved ? JSON.parse(saved) : [];
   });
 
-  /* ===============================
-     API CALLS
-  ================================ */
   useEffect(() => {
     setLoading(true);
 
@@ -49,23 +43,17 @@ export default function AdminDashboard() {
       .then(res => res.json())
       .then(data => {
         setEmployees(data);
-        setLoading(false); // ✅ dashboard ready
+        setLoading(false); 
       })
       .catch(err => {
-        console.error("Dashboard load error:", err);
+        setMessage({ type: "Error", text:"Dashboard error: ",err});
         setLoading(false);
       });
   }, []);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/CloseLeaveDuration`)
-      .then(res => res.json())
-      .then(data => console.log(data.closedCount));
-  }, []);
+    fetch(`${API_BASE_URL}/CloseLeaveDuration`)}, []);
 
-  /* ===============================
-     SAVE TASKS
-  ================================ */
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(store));
   }, [store]);
@@ -132,9 +120,6 @@ export default function AdminDashboard() {
   const reviewsCount =
     JSON.parse(localStorage.getItem("feedback") || "[]").length;
 
-  /* ===============================
-     TASK HANDLERS
-  ================================ */
   const addTask = () => {
     if (!task.trim()) return;
     setStore(prev => [...prev, task.trim()]);
@@ -145,9 +130,6 @@ export default function AdminDashboard() {
     setStore(prev => prev.filter((_, i) => i !== index));
   };
 
-  /* ===============================
-     FULL SCREEN LOADER
-  ================================ */
   if (loading) {
     return (
       <div className="dashboard-loader">
@@ -161,11 +143,9 @@ export default function AdminDashboard() {
     );
   }
 
-  /* ===============================
-     DASHBOARD UI
-  ================================ */
   return (
     <div className="dashboard">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <h3>HR Dashboard</h3>
 
       <div className="emp-summary">

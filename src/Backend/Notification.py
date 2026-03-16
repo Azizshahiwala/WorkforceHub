@@ -48,7 +48,7 @@ class Notification:
             return False 
         finally:
             if conn:
-                conn.close() # This runs even if the code crashes
+                conn.close()
     def insert_notification(self,employeeId="", role="", message="", isGlobal=False, adminOnly=False):
         try:
             conn ,cursor = self._conn_user()
@@ -96,14 +96,12 @@ class Notification:
                 
                 cutoff = TotalNotifs[9][0]
 
-                cursor.execute("""DELETE from Notification where employeeId = ? and NotifsId < ? """,employeeId,cutoff)
+                cursor.execute("""DELETE from Notification where employeeId = ? and NotifsId < ? """,(employeeId,cutoff))
                 
             conn.commit() 
         except Exception as e:
             print(e)        
-        
-    
-
+     
 notifManager = Notification(CompanyUserPath,CredentialsPath)    
 def createNotifs():
     notifManager.createNotifsTable()
@@ -153,4 +151,4 @@ def mark_as_read(notifId):
         return jsonify({"error": str(e)}), 500
     finally:
         if conn:
-            conn.close() # This runs even if the code crashes
+            conn.close()

@@ -9,30 +9,26 @@ import {
   Tooltip, 
   Legend 
 } from "chart.js";
+import MessageBox from "../../Misc/MessageBox";
 import "../../styles/HR/Dashboard.css";
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Dashboard() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  
-  const MySession = JSON.parse(localStorage.getItem("MySession"));
-  
-  const [employees,setEmployees] = useState([])
+  const [message,setMessage]=useState(null);
+  const [employees,setEmployees] = useState([]);
   
   useEffect(() => {
     fetch(`${API_BASE_URL}/getCompanyUsers`)
       .then(res => res.json())
       .then(data => setEmployees(data))
-      .catch(err => console.error("Dashboard load error:", err));
+      .catch(err => setMessage({ type: "Error", text:"Dashboard error: "+err}));
   }, []);
 
   //This use effects checks if leave is expired or not.
   useEffect(() => {
-        fetch(`${API_BASE_URL}/CloseLeaveDuration`)
-          .then(res => res.json())
-          .then(data => console.log(data.closedCount));
-      }, []);
+        fetch(`${API_BASE_URL}/CloseLeaveDuration`)}, []);
 
   // Gender data
   const genderData = {
@@ -119,6 +115,7 @@ const removeTask = (index) => {
 };
   return (
     <div className="dashboard">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <h2>Admin Dashboard</h2>
 
       {/* Staff Pie */}
@@ -145,7 +142,7 @@ const removeTask = (index) => {
         </div>
       </div>
 
-      <div className="emp-summary performance-card"> {/* CHANGED: small card */}
+      <div className="emp-summary performance-card">
         <div className="avg-score">
           <span>Avg Performance</span>
           <strong>{getAvgPerformance()}</strong>
@@ -153,7 +150,6 @@ const removeTask = (index) => {
         </div>
       </div>
 
-{/* TO-DO list */}
 <div className="emp-summary todo-card">
   <h1 className="card-title">TO-DO List 📃</h1>
 

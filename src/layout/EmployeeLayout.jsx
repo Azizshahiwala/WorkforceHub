@@ -4,18 +4,15 @@ import Navbar from "../Employees/EmployeeNavBar";
 import Sidebar from "../Employees/EmployeeSidebar";
 import "./AdminLayout.css";
 import { useState,useEffect, Children } from "react";
+import MessageBox from "../Misc/MessageBox";
 import { Navigate } from "react-router-dom";
 function EmployeeLayout() {
+  const [message, setMessage] = useState(null);
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   const isAuthorized = MySession?.permission === 2 || MySession?.permission === 3;
 
-  if (!MySession || !isAuthorized) {
-    alert("You do not have permission to visit this content. Please Login.");
-    return <Navigate to="/" replace />;
-  }
-
   const [darkMode, setDarkMode] = useState(()=>{
-    localStorage.getItem("theme") === "dark"
+    return localStorage.getItem("theme") === "dark"
   });
 
   useEffect(() => {
@@ -28,8 +25,13 @@ function EmployeeLayout() {
     }
   }, [darkMode]);
   
+  if (!MySession || !isAuthorized) {
+    setMessage({ type: "Error", text: "You do not have permission to visit this content. Please Login." });
+    return <Navigate to="/" replace />;
+  }
   return (
     <>
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} session={MySession} />
       <div className="layout-body">
         <Sidebar darkMode={darkMode}/>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/HR/AssignTask.css";
-
+import MessageBox from "../../Misc/MessageBox";
 function AssignTask() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const projectName = "Project InfiniTech";
   const companyName = "InfiniTech Solutions Pvt. Ltd.";
-
+  const [message, setMessage] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [showModal, setShowModal] = useState(false);

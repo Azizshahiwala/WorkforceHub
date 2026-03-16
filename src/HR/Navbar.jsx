@@ -90,7 +90,6 @@ function Navbar({ darkMode, setDarkMode, session }) {
           </span>
         </button>
       <Logout SessionName={"MySession"}></Logout>
-
       {notifWindow && (
           <div className="notification-dropdown">
             <NotificationSystem session={session} />

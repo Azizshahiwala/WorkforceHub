@@ -1,0 +1,556 @@
+[33mcommit 6011635e4ef371ed4ccfa517745626f982d110d6[m[33m ([m[1;36mHEAD[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Feb 25 18:24:27 2026 +0530
+
+    loader Added
+
+[33mcommit 775ba1e3d8aaf909ad041a53d72470e039318394[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Feb 25 10:32:37 2026 +0530
+
+    prompt updated
+
+[33mcommit 55af03ee44a971ddac3363081491fd9c8462a8b5[m
+Merge: 671d570 8e648f6
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Feb 25 10:26:39 2026 +0530
+
+    Merge branch 'master' of https://github.com/Azizshahiwala/WorkforceHub
+
+[33mcommit 671d57028fc20d8d9d1898b8a59c5f46ead99317[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Feb 25 10:22:07 2026 +0530
+
+    ,,
+
+[33mcommit 687d1ea07917945450c9ccc259b2958d7e1fa7b1[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Feb 25 10:21:16 2026 +0530
+
+    ..
+
+[33mcommit df2f1634a7d95af31424986bdaedda906cdd8490[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Feb 25 10:14:38 2026 +0530
+
+    ..
+
+[33mcommit 8e648f6a7d4773d29721e9c667566f296408ac77[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Tue Feb 17 18:59:04 2026 +0530
+
+    update 3: bug fix
+
+[33mcommit 1599cfa70ce167488561799689639470481b1196[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Tue Feb 17 08:32:55 2026 +0530
+
+    vite.config.js
+
+[33mcommit 5a151427cab5aec3a42dbf395a63d212a0ee93e5[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 16 20:03:39 2026 +0530
+
+    update 2
+
+[33mcommit df99346312fdde31d7d1e82f02b15bfcc285c045[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 16 19:44:14 2026 +0530
+
+    update 1: packagejson
+
+[33mcommit c56826194d83a7cbd19a940e32849f2faa9bdde8[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 16 19:14:57 2026 +0530
+
+    Stage 1: Deployed - 1
+
+[33mcommit 5699fe620a11be42e9bb28c789c90dfc41d8ee67[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 16 19:09:23 2026 +0530
+
+    Stage 1: Deployed - 1
+
+[33mcommit 6fd46af8dc80e9e5d99f7b4906583e1670b72a9a[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 16 19:02:02 2026 +0530
+
+    Stage 1: Deployed
+
+[33mcommit 5091efea0684af2d538ec131b2890d5241d9cd83[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 16 17:55:30 2026 +0530
+
+    commit
+
+[33mcommit feac624d0990e31100d4fceb62afd1a5866deb0a[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 16 17:48:07 2026 +0530
+
+    commit
+
+[33mcommit 4b49f2a86ae249ace2e4292570527bff0db0c1eb[m
+Merge: f17c88e 04e8db4
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 16 17:35:32 2026 +0530
+
+    Merge branch 'master' of https://github.com/Azizshahiwala/WorkforceHub
+
+[33mcommit 04e8db40b93d8e57b8c208e8232846035d84b3c1[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Mon Feb 16 15:02:57 2026 +0530
+
+    Welcome
+
+[33mcommit 8cf4ff111c8a7bc2c30726454e3cf5f3a9060836[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Mon Feb 16 14:52:49 2026 +0530
+
+    .
+
+[33mcommit e3a18e3ee0f2455dfa7504bb7feed9151e39de95[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Mon Feb 16 14:47:53 2026 +0530
+
+    Clean commit without API keys
+
+[33mcommit f17c88ebef900107f2aaa5dc54e5f6ef2f6a0dd1[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 16 13:54:46 2026 +0530
+
+    backup
+
+[33mcommit 29eb20751075e278ce052cdf21179cbc8f58caa8[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 16 13:46:19 2026 +0530
+
+    animation update
+
+[33mcommit 6aaad655b497bde4b6a99dbbb395772432fb2814[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 16 13:20:28 2026 +0530
+
+    test phase 4
+
+[33mcommit addc2107365099490f686adb1c28eb8c45a46e5d[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Sun Feb 15 17:30:15 2026 +0530
+
+    test phase 3
+
+[33mcommit 1d66fda17b70aeba43d8a671d99a2ab92625afba[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Sun Feb 15 15:27:28 2026 +0530
+
+    test phase 2
+
+[33mcommit 5e06c67cd219ecafac6eae2cdef5536dc3a1905a[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Fri Feb 13 21:33:41 2026 +0530
+
+    test phase 1
+
+[33mcommit b9440d0c00ae4c25f5167dce55d9c384b9dddb9b[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Fri Feb 13 11:40:54 2026 +0530
+
+    ai was being too strict. so i toned him down
+
+[33mcommit c21688b5d39744aaa9afee6ea358acf7fe549d43[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Fri Feb 13 11:26:59 2026 +0530
+
+    added comments only.
+
+[33mcommit 4d53e1035d29e4db2045d85f4152f2af88a5dd25[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Thu Feb 12 19:39:55 2026 +0530
+
+    path change
+
+[33mcommit 3544f14427e8ec54c8086787c00fbc6d11edbccb[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Thu Feb 12 19:33:39 2026 +0530
+
+    More bug fix: dummy data filler is now independent
+
+[33mcommit 6634d50a2d0291c197de980b622804c213c05c1b[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Thu Feb 12 19:25:18 2026 +0530
+
+    otp bug fix
+
+[33mcommit c6d1d0da6bb8dff0f0de531dc6630e2e5b9ace65[m
+Merge: 1e84b25 cbc0f59
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Thu Feb 12 18:53:18 2026 +0530
+
+    Merge branch 'master' of https://github.com/Azizshahiwala/WorkforceHub
+
+[33mcommit 1e84b25ed81b2bfcf87b310a7223256b709d7cce[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Thu Feb 12 18:52:55 2026 +0530
+
+    Added: Forget password, base salary fix and documents
+
+[33mcommit cbc0f59319a641182c0c461f725507566b913f04[m
+Author: Azizshahiwala <143518759+Azizshahiwala@users.noreply.github.com>
+Date:   Wed Feb 11 12:12:34 2026 +0530
+
+    Update Activity.py
+
+[33mcommit 16117b1ce7648e702c000da0d8a6b2a527f5e27a[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Fri Feb 6 17:12:26 2026 +0530
+
+    payroll now tracks month and added a dev option for it
+
+[33mcommit ae35c08e161e876cfc27fb5591b5fe7f543e3c50[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Fri Feb 6 15:22:36 2026 +0530
+
+    added textbox to interview pages
+
+[33mcommit 912480b7d56120e12a66f978b15d3d853aa97093[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Fri Feb 6 15:17:19 2026 +0530
+
+    bug fix phase 1: Payroll, sending mail
+
+[33mcommit dce64874b854de6fc488903435e1274527f90b2f[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Thu Feb 5 21:17:59 2026 +0530
+
+    Added a textbox for coding questions in interviewerpage
+
+[33mcommit 13232565c787fc8eeea37bec528e9c4337c78308[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Thu Feb 5 21:04:15 2026 +0530
+
+    admin data panel update
+
+[33mcommit 2b6d3ecafce229d87912c7dea070320e40709fa4[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Thu Feb 5 16:01:17 2026 +0530
+
+    patch for AI component 1
+
+[33mcommit 2e2dc58774a61725052e5b4d1e7f75e657a8a51b[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Thu Feb 5 16:00:39 2026 +0530
+
+    patch for AI component 1
+
+[33mcommit cc7033e36eea1010f54e0ca401ad1c6341705bbd[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Thu Feb 5 15:27:59 2026 +0530
+
+    AI NOW EVALUATES INTERVIEW ANSWERS WITH RESUME. YESSS! Core module part 1 fin.
+
+[33mcommit 60694057cdf1429b5d30941365fa187683bfda73[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Tue Feb 3 15:25:33 2026 +0530
+
+    added doc
+
+[33mcommit 8fa1ada53b2dd348ca5533b63c6a3b749fb5339e[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Tue Feb 3 15:21:47 2026 +0530
+
+    smtp added
+
+[33mcommit a17cfe2b3993212094e079c72c9603e82e640ce0[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 2 21:49:40 2026 +0530
+
+    commit
+
+[33mcommit dfdb0c82c7dc578a3921b3edabc385cd8bce57b8[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Feb 2 16:34:50 2026 +0530
+
+    .
+
+[33mcommit 03a986cecdbdad880fb42587a93b5e26a35f1b7f[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Sun Feb 1 21:25:57 2026 +0530
+
+    removed unnecessary imports
+
+[33mcommit f75936df940e49718e875b59ace93b591373edb6[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Sun Feb 1 16:10:56 2026 +0530
+
+    Link for interview can be sent now.
+
+[33mcommit 96b6ff4660e9c008990c26e2d833b41c50b68794[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Sat Jan 31 19:11:37 2026 +0530
+
+    Added templates for: AI, limiter and SMTP
+
+[33mcommit e8b55b12d426ee4de6d0356b802293d5912f7de5[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 28 21:17:43 2026 +0530
+
+    Leave, absent and present  is now mapped to Attendence dashboard dynamically
+
+[33mcommit 10ffad3e714491172fa609f36e425c20ad806f0d[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 28 18:35:48 2026 +0530
+
+    CompanyUser , AdminUser now tracks Active and inactiveness of an account
+
+[33mcommit 39ff7b9ee44563ef6c93ede29a04bc407ef6323d[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Tue Jan 27 20:08:54 2026 +0530
+
+    Added limit for personal notifs. Saves db memory.
+
+[33mcommit 1f7f731721bbd8671638baca18f9c8f040d5ec88[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Jan 26 19:58:39 2026 +0530
+
+    Encryption update
+
+[33mcommit 0a6ba5882d2610ff1ad18551e88b77a3ef8caa96[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Jan 26 19:03:33 2026 +0530
+
+    Added encryption using bcrypt
+
+[33mcommit 67f6d4ea80d9b541c785b2d339ce1d9520cccf12[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Jan 26 18:16:17 2026 +0530
+
+    req txt change
+
+[33mcommit 749fd51e4f39d12bd0a9893287bb97cec2a4ae5f[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Sat Jan 24 12:29:58 2026 +0530
+
+    req txt change
+
+[33mcommit fbe573b666d402220e3f384d84e95c8a5acb48b6[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Fri Jan 23 18:29:40 2026 +0530
+
+    req txt update
+
+[33mcommit 7077ac9df694a53afcecf88d60aaf1ca4bd43f19[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Fri Jan 23 13:05:50 2026 +0530
+
+    registerform path
+
+[33mcommit 30c8dd8d2b9cb2c93d0a0c2b11dac51e1cedacd9[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Fri Jan 23 13:05:04 2026 +0530
+
+    index delete
+
+[33mcommit 517d7d0c7bd5621f1780805fcbeabfca364b121c[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Thu Jan 22 20:19:53 2026 +0530
+
+    Notifs works :D
+
+[33mcommit a567366ec3354aee24ce59bef20abf663377464b[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Thu Jan 22 19:47:21 2026 +0530
+
+    Notification now connected and works! thank god
+
+[33mcommit 076ad3fc3d1979e00c107c186169f3b796689e61[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 20:59:49 2026 +0530
+
+    Updated folders
+
+[33mcommit fcbb791200357e0c0e3e9059fd1c660a56fef5e8[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 19:01:51 2026 +0530
+
+    UNIQUE CONSTRAINT ISSUE FIXXXS
+
+[33mcommit 99df48b8406ad738f17bb324be6c912b49d35037[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 18:25:32 2026 +0530
+
+    FIX FIX FIX FIX
+
+[33mcommit f11edbe8adb17415b23feb6ce28f6957e6f11d46[m
+Merge: 47761d8 6870212
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 18:21:24 2026 +0530
+
+    Merge branch 'master' of https://github.com/Azizshahiwala/WorkforceHub
+
+[33mcommit 47761d860cf3854fd2802624c5804e71033abcb7[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 18:20:25 2026 +0530
+
+    PATH FIXSIHDIAOSHDIOAS
+
+[33mcommit df56a819f6ce4325b06c7be58a8a9fc3959fb6a7[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 18:01:21 2026 +0530
+
+    change in attendance
+
+[33mcommit 6870212681f45cb81f283b6a5ee7f5f0dee36b9e[m
+Merge: 7858c5f 77d0a2e
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Jan 21 17:56:39 2026 +0530
+
+    Merge branch 'master' of https://github.com/Azizshahiwala/WorkforceHub
+
+[33mcommit 7858c5feceab25025f6b8fd0cce8840b4fd70d6a[m
+Merge: b764634 08b8546
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Jan 21 17:56:36 2026 +0530
+
+    Merge branch 'master' of https://github.com/Azizshahiwala/WorkforceHub
+
+[33mcommit 77d0a2e09529cd3e45087044be2ac0399e12f87d[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 17:53:14 2026 +0530
+
+    commit
+
+[33mcommit b764634b67e16ed80f8c03896d08ac664a4114a7[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Jan 21 17:52:57 2026 +0530
+
+    commit
+
+[33mcommit 08b8546c83fddea1d1b7047f5a071c0538ac9283[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 17:46:20 2026 +0530
+
+    path change
+
+[33mcommit ed55624ba302d83bbc4a74319de155ffc713440b[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 17:46:16 2026 +0530
+
+    Dummy file change
+
+[33mcommit b24500ac2340e5aa6b1b823b98bb4aca637c6be2[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Jan 21 17:35:17 2026 +0530
+
+    commit
+
+[33mcommit 40c0a498b928d3e1d10170ce7d82f33f852bc687[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 16:34:25 2026 +0530
+
+    Sending Email Functionality added
+
+[33mcommit f7194bd1d818d8cb48b72be356943d1835c9b0c1[m
+Merge: 3fac774 8eea4e4
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 15:22:56 2026 +0530
+
+    Merge branch 'master' of https://github.com/Azizshahiwala/WorkforceHub
+
+[33mcommit 3fac774b54826a7d2f7de42d811897613cc8339c[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 15:22:38 2026 +0530
+
+    CompUser.jsx can now upate pass once
+
+[33mcommit 8eea4e4bec19e39332df6371e14d5e22e91df4ae[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Jan 21 15:16:20 2026 +0530
+
+    commit PayRoll and Add SendingEmail
+
+[33mcommit eb4c20d156357c4a6271f6eb7631eec143a2c21e[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Jan 21 15:02:42 2026 +0530
+
+    .
+
+[33mcommit b1b18e960c2ed4b50dd7c7ff7a69f4870bcb2b26[m
+Merge: 3472c73 0262935
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Jan 21 14:23:47 2026 +0530
+
+    Merge branch 'master' of https://github.com/Azizshahiwala/WorkforceHub
+
+[33mcommit 3472c732afa5776f62b61fc0ff3fa32aa879c50e[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Wed Jan 21 14:23:23 2026 +0530
+
+    .
+
+[33mcommit 026293545b6ca70933e80390a428686184288c28[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Wed Jan 21 14:22:58 2026 +0530
+
+    added one time pass change by nonstaff
+
+[33mcommit 1caebd1707eef0179f0a1ceefe4c029cea4770cd[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Jan 19 21:12:39 2026 +0530
+
+    Website now remembers user on load.
+
+[33mcommit 4e3ef149ef1d99346853ad0beab832d9c96ee993[m
+Merge: 9ea9d68 818eb4b
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Jan 19 20:00:17 2026 +0530
+
+    Merge branch 'master' of https://github.com/Azizshahiwala/WorkforceHub
+
+[33mcommit 9ea9d687cd725fc3520bf5856f67fc1533781dfd[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Jan 19 19:59:47 2026 +0530
+
+    fix
+
+[33mcommit 818eb4b0cf8e8d50168db8b026900e5341b1444b[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Mon Jan 19 19:31:55 2026 +0530
+
+    css change
+
+[33mcommit 38653e84ca3863750f60f6d1750fcb237abe45f5[m
+Merge: d84cdca 6a84ba5
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Mon Jan 19 19:11:05 2026 +0530
+
+    Merge branch 'master' of https://github.com/Azizshahiwala/WorkforceHub
+
+[33mcommit d84cdcabc2c04bae2cb984d5b6935a52b4f20639[m
+Author: w_vivek <wvivek.181@gmail.com>
+Date:   Mon Jan 19 19:10:39 2026 +0530
+
+    commit
+
+[33mcommit 6a84ba5165a8da33f29012fecc41883fe891ed6a[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Jan 19 18:26:45 2026 +0530
+
+    Syntax fix
+
+[33mcommit 924dc874b746974e249142c165ceaa8a0d8d1ce7[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Jan 19 18:15:32 2026 +0530
+
+    syntax fix
+
+[33mcommit 04de25ceb7fe343c864b85e18a749de2bd877fe0[m
+Merge: 6230d4e 834cc7a
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Jan 19 17:57:13 2026 +0530
+
+    Merge branch 'main'
+
+[33mcommit 834cc7afc023cef3cc8f9ad88536c1053f2958f9[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: Azizshahiwala <shahiwalaaziz8@gmail.com>
+Date:   Mon Jan 19 17:43:24 2026 +0530
+
+    env file change in main branch

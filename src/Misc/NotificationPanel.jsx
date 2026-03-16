@@ -10,12 +10,11 @@ function NotificationSystem({session}) {
     
     if (session && session.employeeId) {
       // 2. Fetch notifications specific to this ID
-      fetch(`${API_BASE_URL}/getNotifs/${session.employeeId}/${session.role}`)
-        .then((res) => res.json())
+      fetch(`${API_BASE_URL}/getNotifs/${session.employeeId}/${session.role}`, {method : 'GET',credentials:"include"})
+.then((res) => res.json())
         .then((data) => {
           setNotifications(data);
-          console.info("Session: ",session);
-          
+
           // 3. Trigger visual cues if there are unread messages
           const hasUnread = data.some(n => n.status === "Unread");
           console.info(session.status);
@@ -26,12 +25,15 @@ function NotificationSystem({session}) {
             localStorage.setItem("hasNewNotification", "false");
           }
         })
-        .catch((err) => console.error("Notification fetch error:", err));
+        .catch((err) => {
+      console.error("Notification fetch error:", err);
+      setNotifications([]); 
+      });
     }
   }, [session]);
 
   const markAsRead = (id) => {
-    fetch(`${API_BASE_URL}/markRead/${id}`, { method: 'POST' })
+    fetch(`${API_BASE_URL}/markRead/${id}`, { method: 'POST',credentials: "include", })
       .then(() => {
         // Update local state to reflect change without re-fetching stack
         setNotifications(prev => prev.map(n => 
@@ -41,10 +43,10 @@ function NotificationSystem({session}) {
   };
 
   return (
-    // Render your notification list here
     <div className="notification-stack">
-      {notifications.map((n) => {
-  // Logic to determine display type
+      {notifications.length === 0 ? <p className="notif-empty">
+        No notifications.</p> : notifications.map((n) => {
+  
   const isGlobal = n.isGlobal === 1 || n.employeeId === "All";
   const isAdminOnly = n.employeeId === "Special";
 

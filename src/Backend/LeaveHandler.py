@@ -1,10 +1,13 @@
 from flask import request as rq
-from flask import Blueprint,jsonify
+from flask import Blueprint,jsonify,session
 import sqlite3 as sq
 from datetime import datetime, date
 from PathConfig import CompanyUserPath,CredentialsPath
+
 #Now we use NotifManager (send , update, recieve notification)
 from Notification import notifManager
+#We use Attendance for creating entries in leave.
+from Attendance import attendance_manager
 leaveManager = Blueprint('Leave', __name__, url_prefix='/api')
 
 class LeaveHandler:
@@ -110,11 +113,11 @@ class LeaveHandler:
 
         for leave in activeLeaves:
             leaveId = leave[0]
-            enddate_str = leave[1]  # ← THIS is enddate_str
+            enddate_str = leave[1] 
 
             enddate = datetime.strptime(enddate_str, "%Y-%m-%d").date()
 
-            # 🔑 Rule: close if today is enddate OR passed
+            #if today is enddate OR passed
             if today >= enddate:
                 #First update the column val to completed. IF time has passed.
                 cursor.execute("""
@@ -133,7 +136,7 @@ class LeaveHandler:
                 #First update status to 'Leave' where leaveDuration is not null. / Will be null.
                 cursor.execute("""
                     UPDATE Attendance
-                    SET status = 'Leave'
+                    SET status = 'Leave', paidleave = 'True'
                     WHERE leaveDuration IS NOT NULL""")
 
                 #NOW We use subquery to first GET employeeID THEN update set.
@@ -169,7 +172,7 @@ leavehandler = LeaveHandler(CompanyUserPath,CredentialsPath)
 def createLeave():
     leavehandler.create_tables()
 
-@leaveManager.route('/fetchAllRq/',methods=['GET'])
+@leaveManager.route('/fetchAllRq',methods=['GET'])
 def FetchAllLeaves():
     try:
         conn, cursor = leavehandler._get_connection()
@@ -202,8 +205,15 @@ def FetchAllLeaves():
         if conn:
             conn.close() 
 
-@leaveManager.route('/postLeaveRq/<string:empId>/<string:auth_id>',methods=['POST'])
-def PostLeave(empId,auth_id):
+@leaveManager.route('/postLeaveRq',methods=['POST'])
+def PostLeave():
+
+    if 'employeeId' not in session or 'id' not in session:
+        return jsonify({"status":"error"}),401
+    
+    empId = session.get("employeeId")
+    auth_id = session.get("id")
+
     data = rq.get_json()
 
     name = data.get('name')
@@ -228,7 +238,7 @@ def PostLeave(empId,auth_id):
         
     except Exception as e:
         print(e)
-        return jsonify({"message":f"{e}","status":"error"})
+        return jsonify({"error":f"{e}"})
     
     #When leave application is created, store it in incomingLeaves (yet to accept). 
     
@@ -239,15 +249,17 @@ def AcceptLeave(leaveID):
     #Remove from incomingLeaves
     #Transfer to LiveLeaves
     #Send notification.
+
+    if ('employeeId' not in session or 'id' not in session) and session.get("permission") != 1:
+        return jsonify({"status":"error"}),401
+    
     try:
         FetchedData = leavehandler.fetchData(leaveID)
         
         if not FetchedData:
             return jsonify({
                 "message": "Leave request not found or already processed.",
-                "status": "error"
-            }), 404
-        
+                "status": "error"}), 404
 
         conn,cursor = leavehandler._get_connection()
         toLiveQuery = """
@@ -291,6 +303,9 @@ def AcceptLeave(leaveID):
 def RejectLeave(leaveID):
     #When leave application is rejected,
     #Remove from incomingLeaves.
+    if ('employeeId' not in session or 'id' not in session) and session.get("permission") != 1:
+        return jsonify({"status":"error"}),401
+    
     try:
         FetchedData = leavehandler.fetchData(leaveID)
 
@@ -328,8 +343,15 @@ def CloseLeaveDuration():
 def updateAttTable(conn,cursor,CompleteDuration,ToEmpId,startDate,endDate):
     #We need employeeId, attendance table, start and end date.
     #Update set leaveduration to "start to end" where empId = employeeId
-    attUpdateDurationQuery = """
-    update Attendance set leaveDuration = ? where empId = ? and date between ? and ?
+    #we also update the flag: paidleave to avoid getting re-written
+
+    if attendance_manager.SetupPaidHolidayEntries(ToEmpId,startDate,endDate):
+        attUpdateDurationQuery = """
+    update Attendance set leaveDuration = ?, paidleave = True, status = 'Leave' where empId = ? and date between ? and ?
     """
-    cursor.execute(attUpdateDurationQuery,(CompleteDuration,ToEmpId,startDate,endDate))
+        cursor.execute(attUpdateDurationQuery,(CompleteDuration,ToEmpId,startDate,endDate))
+    
     conn.commit()
+
+def checkifdateExists():
+    pass 

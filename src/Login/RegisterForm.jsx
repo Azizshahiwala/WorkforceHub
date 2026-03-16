@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RegisterForm.css";
 import { Link } from "react-router-dom";
+import MessageBox from "../Misc/MessageBox";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const roles = [
   { id: "Sales manager", label: "Sales manager",BaseSalary:62000},
@@ -26,7 +27,7 @@ export default function RegisterForm() {
   const [gender,setGender] = useState("");
   const [personExperience, setpersonExperience] = useState("");
   const [name, setName] = useState("");
-  
+  const [message,setMessage] = useState(null);
   const handleRoleChange = (e) => {
   const roleId = e.target.value;
   setSelectedRole(roleId);
@@ -48,12 +49,13 @@ export default function RegisterForm() {
   const handleRegister = async (e) => {
   e.preventDefault();
   if (!selectedRole || !email || !phoneNumber || !file || !gender || !personExperience || !name) {
-      alert("Please fill all required fields correctly.");
+      setMessage({type:"Info",text:"Please fill all required fields correctly."});
       return;
     }
 
-    if (phoneNumber.length !== 13) {
-        alert("Phone number must be of 12 digits.");
+    let countrycodesyntax = (phoneNumber.includes("+") && phoneNumber.charAt(0) == "+");
+    if (phoneNumber.length !== 13 && !countrycodesyntax) {
+        setMessage({type:"Info",text:"Phone number must be of this syntax: +01xxxxxxxxxx"});
         return;
     }
   try {
@@ -68,6 +70,7 @@ export default function RegisterForm() {
     formData.append('selectedSal',selectedSal)
     const response = await fetch(`${API_BASE_URL}/RegisterForm/applications/upload`, {
       method: "POST",
+      credentials: "include",
       body: formData,
       });
       const data = await response.json();
@@ -77,16 +80,18 @@ export default function RegisterForm() {
       navigate("/"); // Redirect to root which will now show Login
     }
     else{
-      alert("Registration failed: " + data.message);
+      setMessage({type:"Error",text:"Registration failed: " + data.message});
       return;
     }
     
   } catch (error) {
-    console.error("❌ Registration error:", error);
+    console.error("Registration error:", error);
+    setMessage({type:"Error",text:"Registration error:", error});
   }
 }   
   return (
     <div className="login-wrapper">
+      <MessageBox message={message} onClose={() => setMessage(null)}/>
       <form className="Register-form" onSubmit={handleRegister}>
         <div className="SensitiveInfo">
           <p>Enter your name: 

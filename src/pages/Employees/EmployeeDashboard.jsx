@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import MessageBox from "../../Misc/MessageBox";
 function EmployeeDashboard() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [employee, setEmployee] = useState(() => {

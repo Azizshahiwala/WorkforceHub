@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/HR/Activity.css";
+import MessageBox from "../../Misc/MessageBox";
 function Activity() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [activities, setActivities] = useState([]);
-
-  const MySession = JSON.parse(localStorage.getItem("MySession"));
-
+  const [message,setMessage] = useState(null);
   useEffect(() => {
 
     const loadActivities = async () => {
@@ -16,28 +15,16 @@ function Activity() {
         setActivities(data);
         localStorage.removeItem("hasNewNotification");
       } catch (error) {
-        console.error("Error loading announcements:", error);
+        setMessage({ type: "Error", text: "Could not get announcement "+error });
       }
     };
 
     loadActivities();
   }, []);
-  useEffect(() => {
-        const loadActivities = async () => {
-          try {
-            const response = await fetch(
-              `${API_BASE_URL}/fetchAnnouncements`);
-            const data = await response.json();
-            setActivities(data)
-          } catch (error) {
-            console.error("Error loading announcements:", error);
-          }
-        };
-    
-        loadActivities();
-      }, []);
+  
   return (
     <div className="activity-page">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <div className="activity-header">
         <h2>Activity Dashboard</h2>
       </div>

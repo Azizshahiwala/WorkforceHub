@@ -1,4 +1,3 @@
-// App.jsx
 import {
   BrowserRouter,
   Routes,
@@ -28,6 +27,7 @@ import InterviewStart from "./Login/InterviewStart";
 import InterviewEnd from "./Login/InterviewEnd";
 import RegisterForm from "./Login/RegisterForm";
 import ForgotPasswordPage from "./Misc/ForgotPasswordPage";
+import UserConfig from "./Misc/UserConfig";
 /* ================= Admin Layout ================= */
 import AdminLayout from "./layout/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
@@ -44,14 +44,12 @@ import EmployeePersonalPerformance from "./pages/Employees/MyPerformance";
 import EmployeeActivity from "./pages/Employees/EmployeeActivity";
 import AssignTaskByHR from "./pages/Employees/AssignedTaskByHR";
 
-/* ================= Main Content ================= */
 function MainContent() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
   const location = useLocation();
   
   useEffect(() => {
-    /* ---------- Initialize DB (only once per reload) ---------- */
     const initDB = async () => {
       try {
         await fetch(`${API_BASE_URL}/init-db`);
@@ -60,30 +58,25 @@ function MainContent() {
       }
     };
     initDB();
-
-    /* Check for sessions */
     let session = null;
+
+    if (location.pathname !== "/" || !session) return;
+    
     try {
       session = JSON.parse(localStorage.getItem("MySession"));
     } catch (err) {
       console.error("Invalid session data");
     }
 
-    if (session && location.pathname === "/") {
-      const role = session.role?.toLowerCase();
-      let targetPath = "";
+    const role = session.role?.toLowerCase();
+    let targetPath = "";
 
-      if (session.permission === 2 || session.permission === 3) {
-        targetPath = "/dashboardEmployee";
-      } else if (session.permission === 1) {
-        targetPath = role === "hr" ? "/dashboard" : "/dashboardAdmin";
-      }
+      if (session.permission === 2 || session.permission === 3) targetPath = "/dashboardEmployee";
+      else if (session.permission === 1) targetPath = role === "hr" ? "/dashboard" : "/dashboardAdmin";
 
-      if (targetPath) {
-        navigate(targetPath, { replace: true });
-      }
-    }
-  }, [navigate, location.pathname, API_BASE_URL]);
+      if (targetPath) navigate(targetPath, { replace: true });
+    
+  }, [navigate, location.pathname, navigate]);
 
   return (
     <Routes>
@@ -111,12 +104,10 @@ function MainContent() {
       <Route path="/dashboardAdmin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
         <Route path="usersAdmin" element={<AdminCompanyUser />} />
+        <Route path="usersAdmin/config/:auth_id" element={<UserConfig />} />
         <Route path="feedbackAdmin" element={<AdminFeedback />} />
         <Route path="activityAdmin" element={<AdminActivity />} />
-        <Route
-          path="performanceAdmin"
-          element={<AdminEmployeePerformance />}
-        />
+        <Route path="performanceAdmin" element={<AdminEmployeePerformance />}/>
       </Route>
 
       {/* ================= Employee Routes ================= */}

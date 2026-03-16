@@ -6,24 +6,39 @@ import interactionPlugin from '@fullcalendar/interaction'; // Necessary for sele
 import {UserInfo} from "./CompanyUser";
 import "../../styles/HR/AttendanceOverview.css";
 import {useState,useEffect} from 'react';
+import MessageBox from "../../Misc/MessageBox";
 export function AttendanceOverview() {
 
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-   
-    const MySession = JSON.parse(localStorage.getItem("MySession"));
-   
+    const [message, setMessage] = useState(null);
     const [employees, setEmployees] = useState([]);
 
-    const fetchEmployees = () => {
-        fetch(`${API_BASE_URL}/getCompanyUsers`)
-          .then(res => res.json())
-          .then(data => setEmployees(data))
-          .catch(err => console.error("data from dashboard load error:", err));
-    };
+        const fetchEmployees = () => {
+    fetch(`${API_BASE_URL}/fetchOverview`)
+      .then(res => res.json())
+      .then(data => {
+        setEmployees(data);
+        
+        // Derive unique holiday labels based on isHoliday flag
+        const persistentHolidays = data
+            .filter(emp => emp.isHoliday === "True" || emp.isHoliday === true)
+            .map(emp => ({
+                id: `holiday-${emp.date}`, // Unique by date for Overview
+                title: 'Holiday', 
+                date: emp.date, 
+                color: 'blue' 
+            }));
 
-    useEffect(() => {
-        fetchEmployees();
-    }, []);
+        // Deduplicate so only one label appears per day
+        const uniqueHolidays = Array.from(new Map(persistentHolidays.map(h => [h.date, h])).values());
+
+        setMyEvents([
+            { title: 'Today', date: new Date() }, 
+            ...uniqueHolidays
+        ]);
+      })
+      .catch(err => console.error("Load error:", err));
+};
 
     //Track if window is open
     const [Window,isWindowVisible] = useState(false);
@@ -38,9 +53,46 @@ export function AttendanceOverview() {
     const [myEvents,setMyEvents]=useState([ 
         {title: 'Today', date: new Date()}
     ]);
+
+    const UpdateLeaveFlag = async (mode,currDate) => {
+        
+        if(currDate === "")
+            return;
+
+        if(mode === "Set".toLowerCase() || mode === "Remove".toLowerCase()){
+            fetch(`${API_BASE_URL}/updateglobalLeave/${mode}`, {
+            method: "POST",
+            credentials: "include",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({currDate: currDate})
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        setMessage({ type: "Success", text: data.message});
+        fetchEmployees();
+      } 
+      else setMessage({ type: "Info", text: data.message});
+      
+    })
+    .catch(err => {setMessage({ type: "Error", text: err});});
+        }
+        else{
+            setMessage({ type: "Error", text: "An unexpected error occurred."});
+            return;
+        }
+    };
     //This function will call event and append it to myEvents list
     const addEvent = (event) =>{
+        
+        const preventoverlap = myEvents.filter((e) => e.date === ClickedDate);
+        
+        if(preventoverlap.length >= 1){
+            setMessage({ type: "Info", text: preventoverlap+" Entry already exists."});
+            return;
+        }
         setMyEvents([...myEvents,event]);
+        UpdateLeaveFlag("set",ClickedDate);
     }
 
     //This function will run when a date is clicked
@@ -51,34 +103,37 @@ export function AttendanceOverview() {
     };
     const ShowAttendance = () => {
         //Use css to layer over submenu
-        if(Window){
-            isAttendanceVisible(true);
-        }
+        if(Window) isAttendanceVisible(true);
+        
     }
     const SetHoliday = () => {
         const template ={id: Date.now(), title: 'Holiday', date : ClickedDate, color:'blue'}; 
         addEvent(template);
-        isWindowVisible(false);  
+        isWindowVisible(false); 
     }
     //When event runs, This function from eventClick is triggered instead of DateClick
     
     const handleEventClick = (info) =>{
-        const clickedId = info.event.id;
+        const clickedId = info.event.id
+        const clickedDate = info.event.startStr;
+        if (clickedId === "today") return;
         const updatedEvents = myEvents.filter(item => {
             //Check if id is not equal to clicked id
             return item.id != clickedId;
         });
         setMyEvents(updatedEvents);
+        UpdateLeaveFlag("remove",clickedDate);
     }
     //Check for Absent and Present using ClickedDate state.
-    const PresentList = employees.filter(emp => emp.status === "Logged In" && emp.lastLogin && emp.lastLogin.includes(ClickedDate));
+    const PresentList = employees.filter(emp => emp.status === "Present" &&  emp.date == ClickedDate);
     
     //backup real time date
     const RealToday = new Date();
 
     // Absent: not logged in or last login not on clicked date
-    const AbsentList = employees.filter(emp => emp.status !== "Logged In" || !emp.lastLogin || !emp.lastLogin.includes(ClickedDate));
+    const AbsentList = employees.filter(emp => emp.status === "Absent" &&  emp.date == ClickedDate);
     return (<>
+    <MessageBox message={message} onClose={() => setMessage(null)} />
     <div className="attendance-page">
         <h2>Attendance Dashboard</h2>
         <button onClick={fetchEmployees}>Refresh Data</button>
@@ -104,7 +159,7 @@ export function AttendanceOverview() {
                             </thead>
                             <tbody>
                                 {AbsentList.map(emp => 
-                                    UserInfo(emp.employeeId, emp.name, emp.lastLogin)
+                                    UserInfo(emp.empId, emp.name, emp.lastLogin)
                                 )}
                             </tbody>
                     </table>
@@ -115,7 +170,7 @@ export function AttendanceOverview() {
                             </thead>
                             <tbody>
                                 {PresentList.map(emp => 
-                                    UserInfo(emp.employeeId, emp.name, emp.lastLogin)
+                                    UserInfo(emp.empId, emp.name, emp.lastLogin)
                                 )}
                             </tbody>
                     </table>

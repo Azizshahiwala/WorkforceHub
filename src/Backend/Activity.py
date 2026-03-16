@@ -1,7 +1,6 @@
 
 from flask import request as rq
-from flask import Blueprint,jsonify
-import os 
+from flask import Blueprint,jsonify,session
 import sqlite3 as sq
 from datetime import datetime
 from Notification import notifManager
@@ -72,41 +71,35 @@ def fetchAnnouncements():
         } for r in rows
     ])
 
-@activity.route("/insertAnnouncement/<string:givenById>",methods=["POST"])
-def insertAccouncement(givenById):
-
-    if givenById == None:
-        return jsonify([])
-    
-    dataReq = rq.get_json()
-    message = dataReq
-
-    conn,curosr = activityManager._conn_globalInfo()
-    
-    CurrentTimeStamp = datetime.now().strftime("%y-%m-%d %I:%M:%S %p")
-    CurrentRoleQuery = """select department from comp_db.user where employeeId = ?;"""
-    
-    curosr.execute(CurrentRoleQuery,(givenById,))
-
-    fetchedData = curosr.fetchone()
-
-    if not fetchedData:
-        return jsonify({"error": "Invalid user"}), 400
-
-    givenByRole = fetchedData[0]
-    
-    conn.close()
-    activityManager.insertAnnouncement(message,givenById,givenByRole,CurrentTimeStamp)
-    
-    #Notification area - global message
-    notifManager.insert_notification(message=f"An announcement has been posted by {givenByRole}.",isGlobal=True)
+@activity.route("/insertAnnouncement",methods=["POST"])
+def insertAccouncement():
+    try:
+        if 'employeeId' not in session or session.get('permission') != 1:
+            return jsonify({"message": "Un-identified access"}), 401
         
-    return jsonify({
-    "dateCreated": CurrentTimeStamp,
-    "message": message,
-    "givenById": givenById,
-    "givenByRole": givenByRole
-}), 200  
+        givenById = session.get("employeeId")
+        givenByRole = session.get("role")
+
+        if givenById == None or givenByRole == None:
+            return jsonify([])
+        
+        dataReq = rq.get_json()
+        message = dataReq
+
+        CurrentTimeStamp = datetime.now().strftime("%y-%m-%d %I:%M:%S %p")
     
+        activityManager.insertAnnouncement(message,givenById,givenByRole,CurrentTimeStamp)
+        
+        #Notification area - global message
+        notifManager.insert_notification(message=f"An announcement has been posted by {givenByRole}.",isGlobal=True)
+            
+        return jsonify({
+        "dateCreated": CurrentTimeStamp,
+        "message": message,
+        "givenById": givenById,
+        "givenByRole": givenByRole
+    }), 200  
+    except Exception as e:
+        return jsonify({"error": "Could not insert announcement."}), 500
 
 

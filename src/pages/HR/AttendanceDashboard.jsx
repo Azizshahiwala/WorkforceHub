@@ -3,12 +3,14 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "../../styles/HR/AttendanceDashboard.css";
 import { Link } from "react-router-dom";
+import MessageBox from "../../Misc/MessageBox";
 
 function AttendanceDashboard() {
   const [employees, setEmployees] = useState([]);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [selectedEmp, setSelectedEmp] = useState("");
   const [Myevent, setMyEvents] = useState([]);
+  const [message, setMessage] = useState(null);
   const calendarRef = useRef(null);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -17,10 +19,9 @@ function AttendanceDashboard() {
     try {
       const response = await fetch(`${API_BASE_URL}/fetchdashboard`);
       const attdata = await response.json();
-      const demo = attdata;
-      setAttendanceRecords(demo);
+      setAttendanceRecords(attdata);
      } catch (error) {
-      console.error("Error fetching attendance data:", error);
+      setMessage({ type: "Error", text: "Error fetching attendance data:", error});
     }
   };
   //fetch all employees from backend
@@ -34,44 +35,55 @@ function AttendanceDashboard() {
           setSelectedEmp(empdata[0].employeeId); 
         }
       } catch (error) {
-        console.error("Error fetching employees:", error);
+        setMessage({ type: "Error", text: "Error fetching employees:", error});
       }
     };
+    //Setup entries for new month if exists
+    const setupAttendanceEntries = async () => {
+      
+        try {
+      const response = await fetch(`${API_BASE_URL}/attendance/entrysetup`);
+
+      const data = await response.json();
+      if(response.ok)
+        setMessage({ type: "Info", text: data.message});
+       
+     } catch (error) {
+      setMessage({ type: "Error", text: "Error fetching attendance data:", error});
+      }
+  };
 
   useEffect(() => {
     fetchAttendance();
     loadEmployees();
+    setupAttendanceEntries();
   }, []);
 
   //Map and Display attendance events for the selected employee
   useEffect(() => {
-    if (!selectedEmp || attendanceRecords.length === 0) {
+    if (!selectedEmp || attendanceRecords.length === 0 ||!Array.isArray(attendanceRecords)) 
     return;
-    }
     
     const filteredRecords = attendanceRecords.filter(
       (rec) => rec.empId === selectedEmp
     );
 
-    const mappedEvents = filteredRecords.map((item) => ({
+    const uniqueRecordsMap = new Map();
+  filteredRecords.forEach(rec => {
+    // This effectively "groups" duplicates by date
+    uniqueRecordsMap.set(rec.date, rec); 
+  });
+
+    const mappedEvents = Array.from(uniqueRecordsMap.values()).map((item) => ({
+      
   id: `${item.empId}-${item.date}-${item.status}`,
-  title: item.status,
+  title: (item.isHoliday === "True" || item.isHoliday === true) ? "Holiday" : item.status,
   date: item.date,
   color: 
-    // 1. Check for Leave first
-    (item.leaveDuration && item.leaveDuration?.toLowerCase() !== "null") || item.status?.toLowerCase() === "leave" 
-      ? "blue" 
-      // 2. Check for Present or Logged In
-      : item.status?.toLowerCase() === "present" || item.status === "Logged In" 
-        ? "green" 
-        // 3. Check for Absent
-        : item.status?.toLowerCase() === "absent" 
-          ? "red" 
-          // 4. Default color
-          : "gray",
+        (item.isHoliday === "True" || item.isHoliday === true || item.paidleave === true || item.paidleave === "True") ? "blue" : 
+        item.status === "Present" ? "green" : "red"
 }));
     //Logic: IF status is not null, change colour to blue (leave)
-    // Directly set events as we no longer need to merge with holidays
     setMyEvents(mappedEvents);
   }, [selectedEmp, attendanceRecords]);
   
@@ -84,6 +96,7 @@ function AttendanceDashboard() {
 
   return (
     <div className="attendance-page">
+      <MessageBox message={message} onClose={() => setMessage(null)} />
       <div className="attendance-header">
         <h2>Attendance Dashboard</h2>
         <button onClick={fetchAttendance}>Refresh Data</button>

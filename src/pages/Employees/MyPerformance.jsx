@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HR/EmployeePerformance.css";
+import MessageBox from "../../Misc/MessageBox";
 //THIS file is for individual Employee ONLY
 function EmployeePersonalPerformance() {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -16,7 +17,7 @@ useEffect(() => {
 
 useEffect(() => {
   if (!loggedInEmployee?.employeeId) return;
-  fetch(`${API_BASE_URL}/myPeformancesAndFeedbacks/${loggedInEmployee.employeeId}`)
+  fetch(`${API_BASE_URL}/myPeformancesAndFeedbacks`,{method:'GET',credentials:"include"})
     .then(res => res.json())
     .then(data => {
       setPerformance(data);

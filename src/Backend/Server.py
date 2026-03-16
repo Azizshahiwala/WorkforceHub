@@ -1,5 +1,5 @@
 #This file is used to run flask file
-from flask import Flask,jsonify
+from flask import Flask,jsonify,session
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -31,6 +31,9 @@ from Core.Limiter import limiter
 
 #Create flask application
 app = Flask(__name__)
+app.secret_key = os.getenv("FLASK_SECRET_KEY")
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 #Register blueprint 
 app.register_blueprint(authlogin)
@@ -52,7 +55,7 @@ allowed_origins = [
     os.getenv("VITE_WEB_PATH"),
     os.getenv("EXTRA_NETWORK_PATH")
 ]
-CORS(app, resources={r"/api/*": {"origins": allowed_origins,"methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],"allow_headers": ["Content-Type", "Authorization"]}})
+CORS(app, resources={r"/api/*": {"origins": allowed_origins,"methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],"allow_headers": ["Content-Type", "Authorization"],"supports_credentials": True}})
 @app.route("/api/init-db",methods=['GET'])
 def createDatabases():
     try:
@@ -100,7 +103,6 @@ def createDatabases():
     admin@workforce.com - admin123 - Admin - Male - +911111111111
     ceo@workforce.com - ceo999 - CEO - Female - +912222222222
     hr@workforce.com - hr_secure - HR - Male - +913333333333
-    interview@workforce.com - test456 - Interviewer - Female - +914444444444
     finance@workforce.com - money123 - Finance - Male - +915555555555
 
     dev1@workforce.com - dev123 - Developer - Male - +916666666666
@@ -135,6 +137,6 @@ def createDatabases():
     
 #Run app
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=5000,debug=False)
+    app.run(host='0.0.0.0',port=5000,debug=True)
     
 
