@@ -110,7 +110,6 @@ def start_parsing():
     print("===== AI RAW OUTPUT =====")
     print(ai_raw)
     print("=========================")
-
     # 5. Parse json from AI
     try:
         ai_data = json.loads(ai_raw)

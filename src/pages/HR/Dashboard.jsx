@@ -36,6 +36,11 @@ export default function AdminDashboard() {
     return saved ? JSON.parse(saved) : [];
   });
 
+  /* ===============================
+     API CALLS + Loading
+  ================================ */
+
+if(loading){}
   useEffect(() => {
     setLoading(true);
 
@@ -43,12 +48,13 @@ export default function AdminDashboard() {
       .then(res => res.json())
       .then(data => {
         setEmployees(data);
-        setLoading(false); 
+         // ✅ dashboard ready
       })
       .catch(err => {
         setMessage({ type: "Error", text:"Dashboard error: ",err});
         setLoading(false);
       });
+      setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -145,7 +151,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="dashboard">
-      <MessageBox message={message} onClose={() => setMessage(null)} />
       <h3>HR Dashboard</h3>
 
       <div className="emp-summary">

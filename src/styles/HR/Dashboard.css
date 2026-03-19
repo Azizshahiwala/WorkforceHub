@@ -279,31 +279,44 @@ body.dark .pie-center-text strong {
 body.dark .dashboard {
   background-color: #f9fafb;
 }
+
 /* ===============================
-   Dark Mode Notes
-   (your global dark-mode CSS should NOT override .dashboard)
+   FULL SCREEN DASHBOARD LOADER
 ================================ */
-
-/*
-Example good dark-mode rules OUTSIDE this file:
-
-body.dark {
-  background-color: #0f172a;
-  color: #e5e7eb;
+.dashboard-loader {
+  position: fixed;
+  inset: 0;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }
 
-body.dark .navbar,
-body.dark .sidebar {
-  background-color: #020617;
+.dashboard-loader p {
+  margin-top: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #64748b;
 }
 
-Important: DO NOT add something like:
+/* Smooth entry when dashboard loads */
+.dashboard {
+  animation: fadeIn 0.4s ease-in-out;
+}
 
-body.dark .dashboard * { color: #fff; }
-body.dark canvas { filter: invert(1); }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-Those would break chart colors and text we fixed here.
-*/
 
 /* ===============================
    Responsive

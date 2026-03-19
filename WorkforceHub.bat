@@ -14,3 +14,4 @@ echo Closing all operations...
 taskkill /FI "WINDOWTITLE eq WorkforceBackend*" /T /F >nul 2>&1
 
 pause
+
