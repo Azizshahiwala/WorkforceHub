@@ -19,7 +19,7 @@ export default function Interviewer() {
   const navigate = useNavigate();
 
   const handleButtonClick = async () => {
-  
+
     if (!candidateId) {
       setStatus("❌ Candidate ID missing in URL");
       return;

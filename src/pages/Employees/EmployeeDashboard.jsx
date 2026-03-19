@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import MessageBox from "../../Misc/MessageBox";
+import "../../styles/Employees/AssignedTaskByHR.css";
 function EmployeeDashboard() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [employee, setEmployee] = useState(() => {
@@ -16,8 +16,12 @@ function EmployeeDashboard() {
   }
   
   return (
-    <div>
-      <h1>Welcome, {employee.name}!</h1>
+     <div className="employee-view-page">
+      <h1>Hello {employee.name};</h1>
+      <h3>Employee ID: {employee.employeeId}</h3>
+      <h2>Welcome to your dashboard!</h2>
+      <h3>Role:{employee.role}</h3>
+      <h3>Email: {employee.email}</h3>
     </div>
   );
 }
