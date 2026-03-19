@@ -1,0 +1,375 @@
+/* Recruitment.css - Enhanced with screenshot colors */
+/* Primary blue: #2563eb (buttons, headers) */
+/* Success green: #10b981 (pending, send) */
+/* Reject red: #ef4444 (reject) */
+/* Backgrounds: light blue-ish #f8fafc, white-ish #ffffff */
+/* Status green: #059669 */
+/* Text: dark #1e293b, medium #475569 */
+
+.recruitment-container {
+  padding: 20px;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.Inner-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+
+.Inner-table th {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  font-weight: 600;
+  padding: 16px 12px;
+  text-align: left;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.Inner-table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.Inner-table tr:hover {
+  background: #f8fafc;
+  transform: scale(1.002);
+  transition: all 0.2s ease;
+}
+
+.Inner-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Contact info styling */
+.contact-info {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.contact-info span {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.contact-info span:last-child {
+  font-weight: 500;
+  color: #2563eb;
+}
+
+/* Button styles matching screenshot */
+.Repbtn, .Accbtn, .Rejbtn, .Admitbtn, .ViewAnalysisBtn {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.Repbtn {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  color: white;
+}
+
+.Repbtn:hover {
+  background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.Accbtn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  margin-bottom: 8px;
+}
+
+.Accbtn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-1px);
+}
+
+.Rejbtn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+.Rejbtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  transform: translateY(-1px);
+}
+
+.Rejbtn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Action buttons container */
+.action-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Loader circle */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+}
+
+.loader {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #10b981;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Status badges */
+.status-badge {
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  min-width: 100px;
+}
+
+.status-badge.Pending {
+  background: linear-gradient(135deg, #10b98120 0%, #05966920 100%);
+  color: #059669;
+  border: 1px solid #10b981;
+}
+
+.status-badge.Interviewed {
+  background: #ecfdf5;
+  color: #166534;
+  border: 1px solid #22c55e;
+}
+
+/* Interview done section */
+.interview-done-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.interview-done-section span {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 0;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #f1f5f9;
+  color: #374151;
+}
+
+.modal-body {
+  padding: 0 24px 20px;
+}
+
+.score-summary {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, #2563eb10 0%, #1d4ed810 100%);
+  border-radius: 12px;
+  border: 1px solid #2563eb20;
+}
+
+.big-score {
+  font-size: 48px;
+  font-weight: 800;
+  color: #2563eb;
+  display: block;
+  margin-top: 8px;
+}
+
+.transcript-section {
+  margin-bottom: 24px;
+}
+
+.transcript-section h4 {
+  color: #1e293b;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.transcript-text {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  max-height: 300px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  color: #475569;
+}
+
+.modal-footer {
+  padding: 0 24px 24px;
+  text-align: center;
+  border-top: 1px solid #e2e8f0;
+}
+
+.processstage {
+  color: #10b981;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .recruitment-container {
+    padding: 10px;
+  }
+  
+  .Inner-table {
+    font-size: 12px;
+  }
+  
+  .Inner-table th,
+  .Inner-table td {
+    padding: 12px 8px;
+  }
+  
+  .action-btns {
+    flex-direction: row;
+    gap: 4px;
+  }
+  
+  .button-group {
+    flex-direction: row;
+    gap: 4px;
+  }
+  
+  .Accbtn, .Rejbtn {
+    padding: 6px 12px;
+    font-size: 12px;
+    flex: 1;
+  }
+}
+
+/* Filter styles (if added later) */
+.filter-container {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
