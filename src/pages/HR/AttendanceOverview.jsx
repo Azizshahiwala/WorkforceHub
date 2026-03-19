@@ -1,0 +1,195 @@
+/*npm install --save @fullcalendar/core @fullcalendar/react @fullcalendar/daygrid @fullcalendar/interaction
+*/
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from '@fullcalendar/interaction'; // Necessary for selectable
+import {UserInfo} from "./CompanyUser";
+import "../../styles/HR/AttendanceOverview.css";
+import {useState,useEffect} from 'react';
+import MessageBox from "../../Misc/MessageBox";
+export function AttendanceOverview() {
+
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+    const [message, setMessage] = useState(null);
+    const [employees, setEmployees] = useState([]);
+
+        const fetchEmployees = () => {
+    fetch(`${API_BASE_URL}/fetchOverview`)
+      .then(res => res.json())
+      .then(data => {
+        setEmployees(data);
+        
+        // Derive unique holiday labels based on isHoliday flag
+        const persistentHolidays = data
+            .filter(emp => emp.isHoliday === "True" || emp.isHoliday === true)
+            .map(emp => ({
+                id: `holiday-${emp.date}`, // Unique by date for Overview
+                title: 'Holiday', 
+                date: emp.date, 
+                color: 'blue' 
+            }));
+
+        // Deduplicate so only one label appears per day
+        const uniqueHolidays = Array.from(new Map(persistentHolidays.map(h => [h.date, h])).values());
+
+        setMyEvents([
+            { title: 'Today', date: new Date() }, 
+            ...uniqueHolidays
+        ]);
+      })
+      .catch(err => console.error("Load error:", err));
+};
+
+    //Track if window is open
+    const [Window,isWindowVisible] = useState(false);
+
+    //Track if attendancewindow is open
+    const [AttendanceWindow,isAttendanceVisible] = useState(false);
+
+    //Track which date is clicked
+    const [ClickedDate,setClickeddate] = useState("");
+
+    //We create useState event containing current title, date.
+    const [myEvents,setMyEvents]=useState([ 
+        {title: 'Today', date: new Date()}
+    ]);
+
+    const UpdateLeaveFlag = async (mode,currDate) => {
+        
+        if(currDate === "")
+            return;
+
+        if(mode === "Set".toLowerCase() || mode === "Remove".toLowerCase()){
+            fetch(`${API_BASE_URL}/updateglobalLeave/${mode}`, {
+            method: "POST",
+            credentials: "include",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({currDate: currDate})
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        setMessage({ type: "Success", text: data.message});
+        fetchEmployees();
+      } 
+      else setMessage({ type: "Info", text: data.message});
+      
+    })
+    .catch(err => {setMessage({ type: "Error", text: err});});
+        }
+        else{
+            setMessage({ type: "Error", text: "An unexpected error occurred."});
+            return;
+        }
+    };
+    //This function will call event and append it to myEvents list
+    const addEvent = (event) =>{
+        
+        const preventoverlap = myEvents.filter((e) => e.date === ClickedDate);
+        
+        if(preventoverlap.length >= 1){
+            setMessage({ type: "Info", text: preventoverlap+" Entry already exists."});
+            return;
+        }
+        setMyEvents([...myEvents,event]);
+        UpdateLeaveFlag("set",ClickedDate);
+    }
+
+    //This function will run when a date is clicked
+    const handleClick = (info) => {
+        //dateStr is inbuilt.
+        setClickeddate(info.dateStr);
+        isWindowVisible(true);
+    };
+    const ShowAttendance = () => {
+        //Use css to layer over submenu
+        if(Window) isAttendanceVisible(true);
+        
+    }
+    const SetHoliday = () => {
+        const template ={id: Date.now(), title: 'Holiday', date : ClickedDate, color:'blue'}; 
+        addEvent(template);
+        isWindowVisible(false); 
+    }
+    //When event runs, This function from eventClick is triggered instead of DateClick
+    
+    const handleEventClick = (info) =>{
+        const clickedId = info.event.id
+        const clickedDate = info.event.startStr;
+        if (clickedId === "today") return;
+        const updatedEvents = myEvents.filter(item => {
+            //Check if id is not equal to clicked id
+            return item.id != clickedId;
+        });
+        setMyEvents(updatedEvents);
+        UpdateLeaveFlag("remove",clickedDate);
+    }
+    //Check for Absent and Present using ClickedDate state.
+    const PresentList = employees.filter(emp => emp.status === "Present" &&  emp.date == ClickedDate);
+    
+    //backup real time date
+    const RealToday = new Date();
+
+    // Absent: not logged in or last login not on clicked date
+    const AbsentList = employees.filter(emp => emp.status === "Absent" &&  emp.date == ClickedDate);
+    return (<>
+    <MessageBox message={message} onClose={() => setMessage(null)} />
+    <div className="attendance-page">
+        <h2>Attendance Dashboard</h2>
+        <button onClick={fetchEmployees}>Refresh Data</button>
+        <h4>Click on a date for more info</h4>
+        {/*Check if window is true with &&*/}
+        {Window && (
+                <div className="EventWindow">
+                    <span>
+                    <button onClick={ShowAttendance}>Show attendance</button>
+                    <button onClick={SetHoliday}>Mark as Holiday</button>
+                    <button onClick={() => isWindowVisible(false)}>Close</button>
+                    </span>
+                </div>              
+            )
+            }
+            {Window && AttendanceWindow && (
+                <div className="AttendanceWindow">
+                    <h4>Absent (No Login Today)</h4>
+                    <span>
+                    <table border={1} className="Absent">
+                            <thead>
+                                <tr><th>ID</th><th>Name</th><th>Last Seen</th></tr>
+                            </thead>
+                            <tbody>
+                                {AbsentList.map(emp => 
+                                    UserInfo(emp.empId, emp.name, emp.lastLogin)
+                                )}
+                            </tbody>
+                    </table>
+                    <h4>Present (Logged in {ClickedDate})</h4>
+                    <table border={1} className="Present">
+                            <thead>
+                                <tr><th>ID</th><th>Name</th><th>Login Time</th></tr>
+                            </thead>
+                            <tbody>
+                                {PresentList.map(emp => 
+                                    UserInfo(emp.empId, emp.name, emp.lastLogin)
+                                )}
+                            </tbody>
+                    </table>
+                    <button onClick={() => isAttendanceVisible(false)}>Back</button>
+                    </span>
+                </div> 
+            )}
+        <FullCalendar
+            plugins={[dayGridPlugin,interactionPlugin]}
+            initialView="dayGridMonth"
+            height="auto"
+            selectable={true}
+            editable={true}
+            events={myEvents}
+            dateClick={handleClick}
+            eventClick={handleEventClick}
+        />
+        <button>Download CSV Report</button>
+    </div>
+    </>);
+}
+export default AttendanceOverview;
