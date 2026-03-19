@@ -2,7 +2,7 @@
 import { NavLink } from "react-router-dom";
 
 function Sidebar({ darkMode }) {
-  const hrUser = JSON.parse(localStorage.getItem("loggedInHR"));
+  const hrUser = JSON.parse(localStorage.getItem("MySession"));
   const displayName = hrUser ? hrUser.name : "HR User";
   return (
     
@@ -49,6 +49,11 @@ function Sidebar({ darkMode }) {
         <li>
           <NavLink to="/dashboard/activity" className="sidebar-item">
             Activity
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/dashboard/assignTask" className="sidebar-item">
+            Assign Task to Employees
           </NavLink>
         </li>
         <li>
