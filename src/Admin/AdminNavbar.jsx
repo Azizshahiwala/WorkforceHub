@@ -1,4 +1,4 @@
-import logo from "../../image/logo.jpeg";
+import logo from "../../Image/logo.jpeg";
 import Logout from "../Misc/Logout";  
 import NotificationSystem from "/src/Misc/NotificationPanel";
 import "../HR/Navbar.css";
