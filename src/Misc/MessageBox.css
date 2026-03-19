@@ -1,0 +1,21 @@
+.msgbox {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  border-radius: 8px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 320px;
+}
+.msgbtn{
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 16px;
+    color: #888;
+    padding: 0;
+}
