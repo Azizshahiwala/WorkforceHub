@@ -70,7 +70,8 @@ export default function UserConfig() {
     }
 
     setLoading(true);
-    fetch(`${API_BASE_URL}/getCompanyUsers`, { credentials: "include" })
+    fetch(`${API_BASE_URL}/getCompanyUsers`,{method: 'GET',
+  credentials: 'include'})
       .then((res) => res.json())
       .then((data) => {
         const found = Array.isArray(data)

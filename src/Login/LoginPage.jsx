@@ -85,7 +85,7 @@ export default function AccountLogin() {
         return;
       }
     } catch (error) {
-      console.error("❌ Login error:", error);
+      console.error("Login error:", error);
       setMessage({ type: "Error", text: "Failed to connect to server." });
     }
   };

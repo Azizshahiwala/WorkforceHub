@@ -10,7 +10,8 @@ function LeaveManager() {
   const [leaveRequests, setLeaveRequests] = useState([]);
   const [message, setMessage] = useState(null);
   useEffect(() => {
-        fetch(`${API_BASE_URL}/fetchAllRq`)
+        fetch(`${API_BASE_URL}/fetchAllRq`,{method: 'GET',
+  credentials: 'include'})
           .then(res => res.json())
           .then(data => setLeaveRequests(data))
           .catch(err => setMessage({ type: "Error", text:err}));

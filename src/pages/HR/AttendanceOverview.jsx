@@ -14,7 +14,8 @@ export function AttendanceOverview() {
     const [employees, setEmployees] = useState([]);
 
         const fetchEmployees = () => {
-    fetch(`${API_BASE_URL}/fetchOverview`)
+    fetch(`${API_BASE_URL}/fetchOverview`,{method: 'GET',
+  credentials: 'include'})
       .then(res => res.json())
       .then(data => {
         setEmployees(data);

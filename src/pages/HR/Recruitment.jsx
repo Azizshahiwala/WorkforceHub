@@ -22,7 +22,8 @@ function Recruitment() {
 
   const fetchApplications = () => {
     isloading(true);
-    fetch(`${API_BASE_URL}/RegisterForm/applications`)
+    fetch(`${API_BASE_URL}/RegisterForm/applications`,{method: 'GET',
+  credentials: 'include'})
       .then((res) => res.json())
       .then((data) => {
         setApplications(data);

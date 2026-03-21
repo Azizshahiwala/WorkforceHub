@@ -13,7 +13,8 @@ function AssignTask() {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
+        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`,{method: 'GET',
+  credentials: 'include'});
         const result = await response.json();
 
         const users = Array.isArray(result) ? result : result.users || [];
