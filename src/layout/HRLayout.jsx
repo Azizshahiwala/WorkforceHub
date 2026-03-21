@@ -1,14 +1,14 @@
-// layout/HRLayout.jsx
 import { Outlet } from "react-router-dom";
 import Navbar from "../HR/Navbar";
 import Sidebar from "../HR/Sidebar";
 import "./HRLayout.css";
-import { useState,useEffect, Children } from "react";
-function HRLayout() {
+import { useState, useEffect } from "react";
 
-  const [darkMode, setDarkMode] = useState(()=>{
-    localStorage.getItem("theme") === "dark"
+function HRLayout() {
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
   });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (darkMode) {
@@ -19,12 +19,13 @@ function HRLayout() {
       localStorage.setItem("theme", "light");
     }
   }, [darkMode]);
-  
+
   return (
     <>
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
       <div className="layout-body">
-        <Sidebar darkMode={darkMode}/>
+        <Sidebar darkMode={darkMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <main className="layout-content">
           <Outlet />
         </main>

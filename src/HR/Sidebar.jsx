@@ -1,12 +1,12 @@
 // components/Sidebar.jsx
 import { NavLink } from "react-router-dom";
 
-function Sidebar({ darkMode }) {
+function Sidebar({ darkMode, sidebarOpen, setSidebarOpen }  ) {
   const hrUser = JSON.parse(localStorage.getItem("MySession"));
   const displayName = hrUser ? hrUser.name : "HR User";
   return (
     
-    <div className={`sidebar ${darkMode ? "dark" : ""}`}>
+    <div className={`sidebar ${darkMode ? "dark" : ""} ${sidebarOpen ? "sidebar-open" : ""}`}>
       <ul>
         <h2 style={{ color: darkMode ? "#ffffff" : "#000000" }}>
           Hello, {displayName}
@@ -15,9 +15,7 @@ function Sidebar({ darkMode }) {
           <NavLink
                 to="/dashboard"
                 className={({ isActive }) =>
-                    "sidebar-item" + (isActive ? " active" : "")
-                }
-                >
+                    "sidebar-item" + (isActive ? " active" : "")}>
                 HR Dashboard
           </NavLink>
         </li>
