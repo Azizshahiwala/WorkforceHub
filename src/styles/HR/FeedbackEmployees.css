@@ -204,9 +204,28 @@
 /* ===============================
    Responsive
 ================================ */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
+  .leave-page {
+    padding: 12px;
+  }
+
+  .leave-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .leave-card {
+    overflow-x: auto;
+  }
+
   .leave-table {
     font-size: 12px;
+    min-width: 600px;
   }
 
   .leave-table th,
@@ -214,7 +233,8 @@
     padding: 8px 10px;
   }
 
-  .search-input {
-    width: 180px;
+  .modal-box {
+    width: 95%;
+    padding: 16px;
   }
-}        
+}      

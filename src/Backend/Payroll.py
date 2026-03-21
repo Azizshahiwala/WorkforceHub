@@ -4,13 +4,12 @@
 #Salary structure will be shown using react. 
 #When mail option clicked,payslip / any document will be sent to employee email.
 import sqlite3 as sq
+import calendar
 from flask import Blueprint,jsonify,request as rq
-import os
-
-# Paths
-databaseDir = os.path.join(os.getcwd(), "src", "Database")
-CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
-CredentialsPath = os.path.join(databaseDir, "Credentials.db")
+from PathConfig import CompanyUserPath,CredentialsPath
+from LeaveHandler import leavehandler
+from Notification import notifManager
+from Core.EmailService import emailService
 
 payroll = Blueprint('Payroll',__name__,url_prefix='/api')
 
@@ -34,13 +33,15 @@ class Payroll:
         empId text not null,
         MonthYear text not null,
         TotalDaysLoggedIn integer not null,
+        PaidLeaves INTEGER DEFAULT 0, 
+        AbsentDays INTEGER DEFAULT 0,
         BaseSalary real,
         TaxAmount real,
         ProvidentFund real,
         ProfessionalTax real,
         GrossSalary real,
         NetSalary real,
-        foreign key (empId) references "user"(employeeId));
+        foreign key (empId) references "user"(employeeId) ON DELETE CASCADE);
         """
         cursor.execute(Payrolltable)
         conn.commit()
@@ -85,7 +86,7 @@ class Payroll:
         """
         cursor.execute(fetchEmpTotalDay,(empId,MonthYear+"%"))
         TotalDays = cursor.fetchone()[0]
-        print("Payroll.py TotalDays fetch:",TotalDays)
+        #print("Payroll.py TotalDays fetch:",TotalDays)
         
         taxamount = 0.0
         ProvidentFund = 0.0
@@ -100,8 +101,24 @@ class Payroll:
             taxamount = BaseSalary * 0.15
         else:
             taxamount = BaseSalary * 0.2
+
+        #get paid leaves
+        paid_leaves = leavehandler.get_leave_count(empId, MonthYear)
         
-        LossOfPay = (BaseSalary / 30) * (30 - TotalDays)
+        #Split and get year, month individually
+        year,month = map(int,MonthYear.split('-'))
+
+        #Now calculate days by using range function from calendar
+        _, days_in_month = calendar.monthrange(year, month)
+        
+        #Now calc absent days
+        absent_days = days_in_month - (TotalDays + paid_leaves)
+
+        if absent_days < 0:
+            absent_days = 0
+
+        #Now at last, calc lossofpay
+        LossOfPay = (BaseSalary / days_in_month) * absent_days
         GrossSalary = BaseSalary
         NetSalary = GrossSalary - (taxamount + ProvidentFund + professionaltax + LossOfPay)
         conn.close()
@@ -112,6 +129,8 @@ class Payroll:
         "name": keydata[2],
         "MonthYear": MonthYear,
         "daysWorked": TotalDays,
+        "paidLeaves": paid_leaves,
+        "absentDays": absent_days,
         "BaseSalary": BaseSalary,
         "TaxAmount": taxamount,
         "ProvidentFund": ProvidentFund,
@@ -126,67 +145,44 @@ class Payroll:
         
 
     def processAndSaveData(self,empId,MonthYear):
+        
+        data_list, error = self.SalaryBreakup(empId, MonthYear)
+        if error:
+            print(f"Error calculating data: {error}")
+            return None
+        
+        item = data_list[0]
+
         conn,cursor = self._get_connection()
-        #Get base salary
-        fetchBaseSal = """
-        select BaseSalary from "user" where employeeId = ?;"""
-
-        cursor.execute(fetchBaseSal,(empId,))
-        BaseEmpSal = cursor.fetchone()
-
-        #Now get total days for a single emp.
 
         fetchEmpTotalDay = """
-        select count(*) from Attendance where empId = ? and (status = 'Present' or status = 'Logged in') and date like ?;
+            SELECT count(*) FROM Attendance 
+            WHERE empId = ? AND (status = 'Present' OR status = 'Logged in') 
+            AND date LIKE ?;
         """
-        cursor.execute(fetchEmpTotalDay,(empId,MonthYear))
+        cursor.execute(fetchEmpTotalDay,(empId,MonthYear+"%"))
         TotalDays = cursor.fetchone()[0]
 
-        if not BaseEmpSal:
-            conn.close()
-            print(f"Employee not found: {empId},{MonthYear}")
-            return jsonify("Employee not found."),401
-        else:
-            BaseEmpSal = BaseEmpSal[0]
-
-        taxamount = 0.0
-        ProvidentFund = 0.0
-        professionaltax = 0.0
-
-        if BaseEmpSal >= 0 and BaseEmpSal <= 300000:
-            taxamount = 0.0
-        elif BaseEmpSal > 300000 and BaseEmpSal <=700000:
-            taxamount = BaseEmpSal * 0.05
-        elif BaseEmpSal > 700000 and BaseEmpSal <=1000000:
-            taxamount = BaseEmpSal * 0.1
-        elif BaseEmpSal > 1000000 and BaseEmpSal <=1200000:
-            taxamount = BaseEmpSal * 0.15
-        else:
-            taxamount = BaseEmpSal * 0.2
-        
-        LossOfPay = (BaseEmpSal / 30) * (30 - TotalDays)
-        GrossSalary = BaseEmpSal
-        NetSalary = GrossSalary - (taxamount + ProvidentFund + professionaltax + LossOfPay)
-        #Insert leave records from Leave.py / LeaveManager.jsx
-        
         storeData = """
-        insert into Payroll(empId,MonthYear,TotalDaysLoggedIn,BaseSalary,TaxAmount,ProvidentFund,ProfessionalTax,GrossSalary,NetSalary)
-        values (?,?,?,?,?,?,?,?,?);
+        insert into Payroll(empId,MonthYear,TotalDaysLoggedIn,PaidLeaves, AbsentDays,BaseSalary,TaxAmount,ProvidentFund,ProfessionalTax,GrossSalary,NetSalary)
+        values (?,?,?,?,?,?,?,?,?,?,?);
         """
-        cursor.execute(storeData,(empId,MonthYear,TotalDays,BaseEmpSal,taxamount,ProvidentFund,professionaltax,GrossSalary,NetSalary))
+        cursor.execute(storeData,(empId,MonthYear,item['daysWorked'],item['paidLeaves'],item['absentDays'],item['BaseSalary'],item['TaxAmount'],item['ProvidentFund'],item['ProfessionalTax'],item['GrossSalary'],item['NetSalary']))
 
         conn.commit()
         result = [{"empId":empId,
-                   "daysWorked":TotalDays,
-                   "BaseSalary":BaseEmpSal,
-                   "TaxAmount":taxamount,
-                   "ProvidentFund":ProvidentFund,
-                   "ProfessionalTax":professionaltax,
-                   "GrossSalary":GrossSalary,
-                   "NetSalary":NetSalary}]
+                   "daysWorked":item['daysWorked'],
+                   "BaseSalary":round(item['BaseSalary'],2),
+                   "TaxAmount":item['TaxAmount'],
+                   "ProvidentFund":item['ProvidentFund'],
+                   "ProfessionalTax":item['ProfessionalTax'],
+                   "LossOfPay": round(item['LossOfPay'],2),
+                   "GrossSalary":round(item['GrossSalary'],2),
+                   "NetSalary":round(item['NetSalary'],2)}]
 
         conn.close()
         return result
+    
 Paymanager = Payroll(CompanyUserPath,CredentialsPath)
 
 def createPayroll():
@@ -201,7 +197,6 @@ def returnSalBreakup(empId,MonthYear):
     if error:
         return jsonify({"error": error}), 404
     
-    #print("Payroll raw data: ",data)
     return jsonify(data),200
 
 #Data is sent to frontend
@@ -218,12 +213,66 @@ def payrollprocess(empId):
     #taxamount -> backend calculation
     #ProvidentFund -> backend 
     #ProfessionalTax -> backend 
-
+    role = ""
     try:
-        data = rq.json
-        MonthYear = data.get("MonthYear")
+        formdata = rq.get_json()
+        MonthYear = formdata.get("MonthYear")
+        emailTo = formdata.get("emailTo")
+        empName = formdata.get("empName")
+        #Get role for notification.
+        conn , cursor = Paymanager._get_connection()
+        
+        cursor.execute("SELECT auth_id FROM 'user' WHERE employeeId = ?", (empId,))
+        data = cursor.fetchone()
+        auth_id = data[0]
+        
+        cursor.execute("SELECT role FROM cred_db.login WHERE id = ?", (auth_id,))
+        data = cursor.fetchone()
+        role = data[0]
+
+        conn.close()
+
         result = Paymanager.processAndSaveData(empId,MonthYear)
+        if result:
+            notifManager.insert_notification(employeeId=empId,role=role,message="Please check your email. Your salary has been paid for this month.")
+            sendFinalMail(emailTo=emailTo,empId=empId,empName=empName,MonthYear=MonthYear)
+        
         return jsonify(result),200
     except Exception as e:
+        print("Payrollprocess",e)
         return jsonify({"error":str(e)}),500
     
+def sendFinalMail(emailTo,empId,empName,MonthYear):
+#This fetches salary breakup and sends email to employee.
+    try:
+        #We need the following: emailfrom, emailto, name(optional), monthyear :)
+        emailFrom = emailService.username
+        
+        salarydata, error = Paymanager.SalaryBreakup(empId, MonthYear)
+
+        if error:
+            return jsonify({"error": error}), 404
+
+        #email content
+        subject = f"Salary Details for {MonthYear}"
+        body = f"Dear {empName},\n\nHere are your salary details for {MonthYear}:\n\n"
+        for item in salarydata:
+            body += (f"Employee ID: {item['empId']}\n"
+                     f"Name: {item['name']}\n"
+                     f"Days Worked: {item['daysWorked']}\n"
+                     f"Base Salary: {item['BaseSalary']}\n"
+                     f"Tax Amount: {item['TaxAmount']}\n"
+                     f"Provident Fund: {item['ProvidentFund']}\n"
+                     f"Professional Tax: {item['ProfessionalTax']}\n"
+                     f"Loss of Pay (un-paid leaves): {item['LossOfPay']}\n"
+                     f"Gross Salary: {item['GrossSalary']}\n"
+                     f"Net Salary: {item['NetSalary']}\n\n")
+        body += "Best regards,\nPayroll Department"
+        body += '\n\nDo not reply to this email.'
+
+        # Send email
+        emailService.send_email(from_email=emailFrom, to_email=emailTo, subject=subject, body=body)
+        
+    except Exception as e:
+        print("sendFinalMail",e)
+        

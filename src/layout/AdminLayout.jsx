@@ -4,10 +4,18 @@ import Navbar from "../Admin/AdminNavbar";
 import Sidebar from "../Admin/AdminSidebar";
 import "./AdminLayout.css";
 import { useState,useEffect, Children } from "react";
+import { Navigate } from "react-router-dom";
+import MessageBox from "../Misc/MessageBox";
 function AdminLayout() {
 
+  const [message, setMessage] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const MySession = JSON.parse(localStorage.getItem("MySession"));
+  const isAuthorized = MySession?.permission === 1
+  
   const [darkMode, setDarkMode] = useState(()=>{
-    localStorage.getItem("theme") === "dark"
+    return localStorage.getItem("theme") === "dark"
   });
 
   useEffect(() => {
@@ -20,12 +28,25 @@ function AdminLayout() {
     }
   }, [darkMode]);
   
+  // If no session or wrong permission, return the Navigate component
+  if (!MySession || !isAuthorized) {
+    setMessage({ type: "Error", text: "You do not have permission to visit this content. Please Login." });
+    return <Navigate to="/" replace />;
+  }
+  
   return (
     <>
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+    {/**This message box takes 2 arguments: [type:"" , message:""] and [onClose function]
+     * Where type of message is sent to messagebox.jsx along with message and a onclose function which uses a shorthand property
+     * to change state to null.
+     */}
+      <MessageBox message={message} onClose={() => setMessage(null)} />
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} session={MySession} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
       <div className="layout-body">
-        <Sidebar darkMode={darkMode}/>
+        <Sidebar darkMode={darkMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <main className="layout-content">
+          
           <Outlet />
         </main>
       </div>

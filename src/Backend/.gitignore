@@ -1,2 +1,13 @@
-./Backend/src/
-./Backend/__pycache__/
+# Databases
+*.db
+
+# Environment variables (API Keys)
+*.env
+
+# Python artifacts
+__pycache__/
+*.pyc
+
+# Local credentials
+DummyDataFiller.py
+tempCodeRunner.py

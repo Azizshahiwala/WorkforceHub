@@ -6,31 +6,28 @@
 
 from flask import request as rq
 from flask import Blueprint,jsonify
-import os 
+from Core.AISorter import ai_sorter_manager
+from Core.Limiter import limiter
+from Core.EmailService import emailService
 import sqlite3 as sq
-
+from PathConfig import CompanyUserPath,CredentialsPath,RecruitmentPath
+from Notification import notifManager
+from dotenv import load_dotenv
 #For pdf viewing, we need
-import io
+import io,os
 from flask import send_file
 
 #For unique user profile id. NOT auth_id
 from datetime import datetime, date, time, timezone
-recruitment = Blueprint('Recruitment', __name__, url_prefix='/api')
-
-# Paths
-databaseDir = os.path.join(os.getcwd(), "src", "Database")
-CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
-CredentialsPath = os.path.join(databaseDir, "Credentials.db")
-#This is where our resume will be stored.
-#This will be, Document Repository
-RecruitmentPath = os.path.join(databaseDir, "Recruitment.db")
+recruit = Blueprint('Recruitment', __name__, url_prefix='/api')
 
 class Recruitment:
     def __init__(self, compPath, credPath, recPath):
+        load_dotenv("../../.env")
         self.recPath = recPath
         self.credPath = credPath
         self.compPath = compPath
-
+        self._compURL = os.getenv("VITE_WEB_PATH")
     def _conn_login(self):
         conn = sq.connect(self.credPath)
         conn.execute("PRAGMA foreign_keys = ON;")
@@ -62,8 +59,11 @@ class Recruitment:
                 phoneNumber TEXT NOT NULL,
                 resume BLOB NOT NULL,
                 PersonExperience TEXT NOT NULL,
+                BaseSalary REAL null,
                 applied_date TEXT,
-                status TEXT DEFAULT 'Pending'
+                status TEXT DEFAULT 'Pending',
+                AI_SCORE TEXT DEFAULT 'Not calculated',
+                AI_DESCRIPTION TEXT DEFAULT 'Not generated'
             );
         """)
         conn.commit()
@@ -81,20 +81,25 @@ class Recruitment:
                 name TEXT NOT NULL,
                 phoneNumber TEXT NOT NULL,
                 resume BLOB NOT NULL,
-                PersonExperience TEXT NOT NULL
+                PersonExperience TEXT NOT NULL,
+                BaseSalary REAL null,
+                AI_SCORE TEXT null,
+                AI_DESCRIPTION TEXT null
             );
         """)
         conn.commit()
         conn.close()
+
     def cleanupTempTable(self,idToDelete):
         conn,cursor = self._get_connection()
         cursor.execute("delete from TempStatusTable where id = ?",(idToDelete,))   
         conn.commit()
         conn.close()
-    def createBackup(self,new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience):
+
+    def createBackup(self,new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience,basesalary,AI_SCORE="Not calculated",AI_DESCRIPTION="Not generated"):
         conn,cursor = self._get_connection()
         
-        cursor.execute("insert into MainStatusTable values(?,?,?,?,?,?,?,?)",(new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience)) 
+        cursor.execute("insert into MainStatusTable values(?,?,?,?,?,?,?,?,?,?,?)",(new_auth_id,email,role,gender,name,phoneNumber,binary_resume,PersonExperience,basesalary,AI_SCORE,AI_DESCRIPTION)) 
         conn.commit()
         conn.close()
 manager = Recruitment(CompanyUserPath, CredentialsPath, RecruitmentPath)
@@ -103,12 +108,12 @@ def createRecruitment():
     manager.create_table_TempStatusTable()
     manager.create_table_MainStatusTable()
 
-@recruitment.route('/RegisterForm/applications', methods=['GET'])
+@recruit.route('/RegisterForm/applications', methods=['GET'])
 def fetchApplications():
-    try:
+    try: 
         conn, cursor = manager._get_connection()
 
-        TempItems = "SELECT id, email, role, gender, name, phoneNumber, PersonExperience, status, applied_date FROM TempStatusTable"
+        TempItems = "SELECT id, email, role, gender, name, phoneNumber, PersonExperience, BaseSalary, status, applied_date, AI_SCORE, AI_DESCRIPTION FROM TempStatusTable"
         cursor.execute(TempItems)
         Candidates = cursor.fetchall()
 
@@ -121,22 +126,32 @@ def fetchApplications():
             "gender": r[3],
             "name": r[4],
             "phone": r[5],
-            "experience": r[6],        
-            "status": r[7],
-            "appliedDate": r[8]  # This is the new applied_date column
+            "experience": r[6],     
+            "basesalary":r[7],   
+            "status": r[8],
+            "appliedDate": r[9],  # This is the new applied_date column
+            "AI_SCORE": r[10],  # This is the new AI_Review column
+            "AI_DESCRIPTION": r[11]  # This is the new AI_Description column
+        
         } for r in Candidates]
 
         return jsonify(result), 200
     except Exception as e:
         print("Error from fetchApplications:",e)
         return jsonify({"error": str(e), "status": "error"}), 500
-
-@recruitment.route('/RegisterForm/applications/upload', methods=['POST'])
+    finally:
+        if conn:
+            conn.close()
+            
+@recruit.route('/RegisterForm/applications/upload', methods=['POST'])
 def resumeProcess():
     #We use rq.form and rq.file because we used formData
     email = rq.form.get('email')
     phoneNumber = rq.form.get('phoneNumber')
     role = rq.form.get('selectedRole')
+    role = role.split(",")
+    selectedSal = rq.form.get('selectedSal')
+    userrole = role[0]
     personExp = rq.form.get('personExperience')
     gender = rq.form.get('gender')
     name = rq.form.get('name')
@@ -149,16 +164,19 @@ def resumeProcess():
     try:
         conn, cursor = manager._get_connection()
         cursor.execute("""
-            INSERT INTO TempStatusTable (email, role, gender, name, phoneNumber, resume, PersonExperience, status, applied_date)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
-        """, (email, role, gender, name, phoneNumber, binary_resume, personExp, status, applied_date))
+            INSERT INTO TempStatusTable (email, role, gender, name, phoneNumber, resume, PersonExperience,BaseSalary, status, applied_date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        """, (email, userrole, gender, name, phoneNumber, binary_resume, personExp,selectedSal, status, applied_date))
         conn.commit()
         conn.close()
         return jsonify({"message": "Application uploaded. Please wait for approval.", "status": "success"}), 200
     except Exception as e:
         return jsonify({"message": f"Error uploading resume: {e}", "status": "error"}), 500
-    
-@recruitment.route('/RegisterConfirm/<int:Tempid>', methods=['POST'])
+    finally:
+        if conn:
+            conn.close()
+
+@recruit.route('/RegisterConfirm/<int:Tempid>', methods=['POST'])
 def admitEmployee(Tempid):
 
     conn,cursor = manager._get_connection()
@@ -176,6 +194,10 @@ def admitEmployee(Tempid):
     phoneNumber = Candidate[5]
     BinaryRes = Candidate[6]
     PersonExp = Candidate[7]
+    basesalary = Candidate[8]
+    AI_score = Candidate[-2]
+    AI_description = Candidate[-1]
+    
     conn.close()
     
     try:
@@ -184,7 +206,7 @@ def admitEmployee(Tempid):
 
         #Lets generate a entry
         loginEntry = "insert into login(email,password,role,gender,phoneNumber) values(?,?,?,?,?);"
-        cursor.execute(loginEntry,(email,"placeholder123",role,gender,phoneNumber))
+        cursor.execute(loginEntry,(email,"placeholder",role,gender,phoneNumber))
     
         # This is your autogenerated System ID
         new_auth_id = cursor.lastrowid
@@ -197,24 +219,71 @@ def admitEmployee(Tempid):
         #Lets create a profile
         userEntry = "insert into user(auth_id,name,employeeId,department,status,lastLogin,BaseSalary) values(?,?,?,?,?,?,?);"
         employeeId = 'P'+datetime.now().strftime("%y%m%d%H%M%S")
-        cursor.execute(userEntry,(new_auth_id,name,employeeId,role,'Just admitted',datetime.now().strftime("%S%M%H %d%m%y"),0.0))
+        cursor.execute(userEntry,(new_auth_id,name,employeeId,role,'Just admitted',datetime.now().strftime("%S%M%H %d%m%y"),basesalary))
         conn.commit()
 
         #Save
-        manager.createBackup(new_auth_id,email,role,gender,name,phoneNumber,BinaryRes,PersonExp)
+        manager.createBackup(new_auth_id,email,role,gender,name,phoneNumber,BinaryRes,PersonExp,basesalary,AI_score,AI_description)
+        notifManager.insert_notification(message=f"A new user: {name} has been admitted, will give interview shortly.. ",isGlobal=True)
+        
+        #Now send email to the person.
+        conn,cursor = manager._get_connection()
+        cursor.execute("select name,email,role from TempStatusTable where id = ?",(Tempid,))
+        acceptdata = cursor.fetchone()
+        conn.close()
+        subject = f"Offer of Employment: {acceptdata[2]} at MSP Concept"
+        emailbody=f"""Dear {acceptdata[0]},
+
+Congratulations! We are thrilled to officially offer you the position of {acceptdata[2]} with the MSP Concept team.\n\n
+Your performance during our interview process was exceptional, and we were particularly impressed by your insights and alignment with our company values. We believe your skills will be a significant asset to our department.\n
+Account Activation & Next Steps: To begin your onboarding, we have created your official employee profile. You can now log in to our internal portal to complete your documentation:\n
+Portal URL: {manager._compURL}\n
+Email: {acceptdata[1]}\n\n
+To login, you need to click reset password, in order to create your account.\n
+We are excited to have you join us and look forward to your contributions. If you have any questions regarding the onboarding process, please feel free to reach out to the HR department.\n
+Welcome to the team!\n
+Best regards,\n\n
+The HR Team MSP Concept"""
+        
+        #Remove tempstatusdata
         manager.cleanupTempTable(Tempid)
 
+        #Send email 
+        emailService.send_email(emailService.username,acceptdata[1],subject,emailbody)
         return jsonify({"message": "Employee successfully admitted", "status": "success"}), 200
     except Exception as e:
         if 'conn' in locals(): conn.close()
         return jsonify({"message": f"Error during admission process: {e}", "status": "error"}), 500
+    except sq.IntegrityError:
+        return jsonify({"message": "Candidate already exists.", "status": "error"}), 409
+    finally:
+        if conn:
+            conn.close() 
 
-@recruitment.route("/recruitment/reject/<int:id>", methods=["DELETE"])
+@recruit.route("/recruit/reject/<int:id>", methods=["DELETE"])
 def reject_candidate(id):
-    manager.cleanupTempTable(id)
-    return jsonify({"message": "Candidate rejected"}), 200  
 
-@recruitment.route('/recruitment/resume/<int:id>', methods=['GET'])
+    try:
+        conn,cursor = manager._get_connection()
+        cursor.execute("select name,email,role from TempStatusTable where id = ?",(id,))
+        rejdata = cursor.fetchone()
+        conn.close()
+        emailbody = f"""
+    Dear {rejdata[0]},\n
+    Thank you for giving us the opportunity to review your application and for participating in our recent interview process. We truly appreciate the time and effort you put into your candidacy for the {rejdata[2]} role.\n
+    After careful consideration of your background, experience, and our current business needs, we have decided to move forward with other candidates at this time.\n
+    Please note that this decision is specific to this particular role and does not reflect your overall potential. We were impressed with your [Specific Skill/Strength found by AI], and we encourage you to keep an eye on our careers page for future openings that may be a better match for your skillset.\n
+    We wish you the very best in your job search and your future professional endeavors.\n\n
+    Best regards,\n\n
+    The HR Team MSP Concept"""
+        emailService.send_email(emailService.username,{rejdata[1]},f"Update regarding your application for {rejdata[2]} at MSP Concept",emailbody)
+        manager.cleanupTempTable(id)
+        return jsonify({"message": "Candidate rejected","status": "success"}), 200 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+     
+
+@recruit.route('/recruit/resume/<int:id>', methods=['GET'])
 def get_resume(id):
     try:
         conn, cursor = manager._get_connection()
@@ -234,4 +303,83 @@ def get_resume(id):
         else:
             return jsonify({"message": "Resume not found"}), 404
     except Exception as e:
-        return jsonify({"error": str(e)}), 500    
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if conn:
+            conn.close()    
+
+@recruit.route('/recruit/getanalysis/<string:id>', methods=['POST'])
+@limiter.limit("2 per minute")
+def get_ai_analysis(id,interview_transcript=None):
+    try:
+        conn, cursor = manager._get_connection()
+        # Fetch only the resume BLOB for the specific ID
+        cursor.execute("SELECT resume FROM TempStatusTable WHERE id = ?", (id,))
+        record = cursor.fetchone()
+
+        if record and record[0]:
+            binary_resume = record[0]
+            
+            rawdata = ai_sorter_manager.convert_data_to_str(binary_resume)
+            #cleaned_data = ai_sorter_manager.clean_text(rawdata)
+            final_score = ai_sorter_manager.find_score(interview_transcript,rawdata[:4000])
+            final_description = ai_sorter_manager.find_description(interview_transcript,rawdata[:4000],final_score)
+            
+            print("Final AI Score: ",final_score)
+            # Update the score and description in the database
+            cursor.execute("UPDATE TempStatusTable SET AI_SCORE = ?, AI_DESCRIPTION = ? WHERE id = ?", (final_score,final_description,id))
+            conn.commit()
+            conn.close()
+
+            return jsonify({"status": "success", "message": "AI score calculated", "AI_SCORE": final_score, "AI_DESCRIPTION": final_description}), 200
+        else:
+            return jsonify({"message": "Resume not found"}), 404
+    except Exception as e:
+        if 'conn' in locals(): conn.close()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if conn:
+            conn.close()
+
+@recruit.route('/recruit/send-invite/<int:Tempid>', methods=['POST'])
+def send_interview_link(Tempid):
+    data = rq.get_json()
+    email = data.get('email')
+    name = data.get('name')
+    try:
+        
+        emailService.sendInterviewLink(to_email=email,candidate_name=name,Tempid=Tempid)
+
+        return jsonify({"message": "Interview link sent successfully", "status": "success"}), 200
+    except Exception as e:
+        return jsonify({"message": f"Error sending interview link: {e}", "status": "error"}), 500
+    
+
+@recruit.route('/recruit/process-test', methods=['POST','GET'])
+def processTestResults():
+    try:
+        data = rq.get_json()
+        candidate_id = data.get('id')
+        interview_transcript = data.get('answers') # From InterviewStart.jsx
+
+        # 1. Update the record with the transcript first
+        # We temporarily store this in AI_DESCRIPTION 
+        conn, cursor = manager._get_connection()
+        
+        #update the status so HR knows the interview is done
+        cursor.execute("""
+            UPDATE TempStatusTable 
+            SET AI_DESCRIPTION = ?, status = 'Interviewed' 
+            WHERE id = ?
+        """, (interview_transcript, candidate_id))
+        conn.commit()
+        conn.close()
+        
+        #recalculate the score based on the new data
+        result = get_ai_analysis(candidate_id,interview_transcript)
+        print("Analysis complete: ", result[0].get_json())
+        
+        return result
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

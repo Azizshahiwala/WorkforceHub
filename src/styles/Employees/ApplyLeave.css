@@ -99,3 +99,27 @@
 .cancel-btn:hover {
   background-color: #d1d5db;
 }
+
+
+@media (max-width: 768px) {
+  .apply-leave-page {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 30px;
+  }
+
+  .apply-leave-card {
+    width: 100%;
+    padding: 20px 16px;
+  }
+
+  .apply-leave-actions {
+    flex-direction: column;
+  }
+
+  .apply-btn,
+  .cancel-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -1,16 +1,15 @@
 from flask import request as rq
-from flask import Blueprint,jsonify
-import os 
+from flask import Blueprint,jsonify,session
 import sqlite3 as sq
-from datetime import datetime, date, time, timezone
+from datetime import datetime, date
+from PathConfig import CompanyUserPath,CredentialsPath
+
 #Now we use NotifManager (send , update, recieve notification)
 from Notification import notifManager
+#We use Attendance for creating entries in leave.
+from Attendance import attendance_manager
 leaveManager = Blueprint('Leave', __name__, url_prefix='/api')
 
-# Paths
-databaseDir = os.path.join(os.getcwd(), "src", "Database")
-CompanyUserPath = os.path.join(databaseDir, "CompanyUsers.db")
-CredentialsPath = os.path.join(databaseDir, "Credentials.db")
 class LeaveHandler:
     def __init__(self, compUser_path, cred_path):
         self.compUser_path = compUser_path
@@ -36,7 +35,8 @@ class LeaveHandler:
             enddate TEXT not null,
             reason TEXT not null,
             status TEXT default 'Not reviewed.',
-            dateSubmitted TEXT not null
+            dateSubmitted TEXT not null,
+            FOREIGN KEY (employeeId) REFERENCES "user"(employeeId) ON DELETE CASCADE
         );
         """
         cursor.execute(query)
@@ -52,7 +52,8 @@ class LeaveHandler:
             enddate TEXT not null,
             reason TEXT not null,
             status TEXT not null,
-            dateSubmitted TEXT not null
+            dateSubmitted TEXT not null,
+            FOREIGN KEY (employeeId) REFERENCES user(employeeId) ON DELETE CASCADE
         );
         """
         cursor.execute(query)
@@ -75,6 +76,10 @@ class LeaveHandler:
         except Exception as e:
             print("Error createLeaverq",e)
             return "error"
+        finally:
+            if conn:
+                conn.close() 
+
     def fetchData(self,Leaveid):
         try:
             conn,cursor = self._get_connection()
@@ -85,12 +90,14 @@ class LeaveHandler:
             cursor.execute(query,(Leaveid,))
             res = cursor.fetchone()
             conn.close()    
-            print(res)
+            #print(res)
             return res
         except Exception as e:
             print("Error createLeaverq",e)
             return jsonify(e)
-    
+        finally:
+            if conn:
+                conn.close() 
     def LeavesChecker(self):
         conn, cursor = self._get_connection()
         today = date.today()
@@ -106,35 +113,66 @@ class LeaveHandler:
 
         for leave in activeLeaves:
             leaveId = leave[0]
-            enddate_str = leave[1]  # ← THIS is enddate_str
+            enddate_str = leave[1] 
 
             enddate = datetime.strptime(enddate_str, "%Y-%m-%d").date()
 
-            # 🔑 Rule: close if today is enddate OR passed
+            #if today is enddate OR passed
             if today >= enddate:
+                #First update the column val to completed. IF time has passed.
                 cursor.execute("""
                     UPDATE LiveLeaves
                     SET status = 'Completed'
                     WHERE Leaveid = ?
                 """, (leaveId,))
-
+                #Delete the col value IF time has passed.
                 cursor.execute("""
                     delete from LiveLeaves
                     where status = 'Completed'
                     and Leaveid = ?
                 """, (leaveId,))
+                #Make sure to update attendance table.
+
+                #First update status to 'Leave' where leaveDuration is not null. / Will be null.
+                cursor.execute("""
+                    UPDATE Attendance
+                    SET status = 'Leave', paidleave = 'True'
+                    WHERE leaveDuration IS NOT NULL""")
+
+                #NOW We use subquery to first GET employeeID THEN update set.
+                cursor.execute("""update Attendance set leaveDuration = NULL 
+                                  where empId = (select employeeId from LiveLeaves where Leaveid = ?) 
+                """,(leaveId,))
                 closedCount += 1
+
+                #What happened:
+                #1.Delete from live leaves where completed.
+                #2.Update attendance set status to 'Leave' where leaveduration is not null. This will later help in dashboard fetch.
+                #3.Update attendance set leaveduration to null where empId = employeeId from live
+                #This way, the status is going to remain 'Leave' for that day, but leaveduration is null, so next time it won't be considered.
 
         conn.commit()
         conn.close()
         return closedCount
+    
+    def get_leave_count(self, empId, MonthYear):
+        conn, cursor = self._get_connection()
+        #This returns days which are flagged as leave from LeaveHandler.py
+        fetchPaidDays = """
+    SELECT count(*) FROM Attendance 
+    WHERE empId = ? AND status = 'Leave' 
+    AND date LIKE ?;
+    """
+        cursor.execute(fetchPaidDays, (empId, MonthYear + "%"))
+        leave_days = cursor.fetchone()[0]
+        conn.close()
+        return leave_days
 leavehandler = LeaveHandler(CompanyUserPath,CredentialsPath)
 
 def createLeave():
     leavehandler.create_tables()
 
-
-@leaveManager.route('/fetchAllRq/',methods=['GET'])
+@leaveManager.route('/fetchAllRq',methods=['GET'])
 def FetchAllLeaves():
     try:
         conn, cursor = leavehandler._get_connection()
@@ -163,9 +201,19 @@ def FetchAllLeaves():
     except Exception as e:
         print(e)
         return jsonify({"status":"error"}) ,500
+    finally:
+        if conn:
+            conn.close() 
 
-@leaveManager.route('/postLeaveRq/<string:empId>/<string:auth_id>',methods=['POST'])
-def PostLeave(empId,auth_id):
+@leaveManager.route('/postLeaveRq',methods=['POST'])
+def PostLeave():
+
+    if 'employeeId' not in session or 'id' not in session:
+        return jsonify({"status":"error"}),401
+    
+    empId = session.get("employeeId")
+    auth_id = session.get("id")
+
     data = rq.get_json()
 
     name = data.get('name')
@@ -185,12 +233,13 @@ def PostLeave(empId,auth_id):
             return jsonify({"message":"Invalid structure. ","status":"datetime compare error"})
 
         status = leavehandler.createLeaveRq(auth_id=auth_id,name=name,department=department,startdate=startdate,enddate=enddate,reason=reason,dateSubmitted=dateSubmitted,empId=empId)
+        notifManager.insert_notification(message=f"A leave request has been issued.",adminOnly=True)
         return jsonify({"message":"Leave request sent successfully.","status":status})
         
     except Exception as e:
         print(e)
-        return jsonify({"message":f"{e}","status":"error"})
-
+        return jsonify({"error":f"{e}"})
+    
     #When leave application is created, store it in incomingLeaves (yet to accept). 
     
 
@@ -200,19 +249,21 @@ def AcceptLeave(leaveID):
     #Remove from incomingLeaves
     #Transfer to LiveLeaves
     #Send notification.
+
+    if ('employeeId' not in session or 'id' not in session) and session.get("permission") != 1:
+        return jsonify({"status":"error"}),401
+    
     try:
         FetchedData = leavehandler.fetchData(leaveID)
         
         if not FetchedData:
             return jsonify({
                 "message": "Leave request not found or already processed.",
-                "status": "error"
-            }), 404
-        
+                "status": "error"}), 404
 
         conn,cursor = leavehandler._get_connection()
         toLiveQuery = """
-        INSERT INTO LiveLeaves(
+        INSERT OR IGNORE INTO LiveLeaves(
             LeaveId, auth_id, name, employeeId, department,
             startdate, enddate, reason, status, dateSubmitted
         ) VALUES (?,?,?,?,?,?,?,?,?,?)
@@ -221,25 +272,40 @@ def AcceptLeave(leaveID):
         remQuery = """
         delete from IncomingLeaves where LeaveId = ? and employeeId = ?;
         """
+        conn.commit()
         cursor.execute(remQuery,(FetchedData[0],FetchedData[3]))
-        
+        conn.commit()
+
+        #Update leaveDuration in attendance table for salary.
+        ToEmpId = FetchedData[3]
+        startDateObj = datetime.strptime(FetchedData[5], "%Y-%m-%d").date()
+        endDateObj = datetime.strptime(FetchedData[6], "%Y-%m-%d").date()
+        CompleteDuration = f"{startDateObj} to {endDateObj}"
+
+        updateAttTable(conn,cursor,CompleteDuration,ToEmpId,startDateObj,endDateObj)
+
+        conn.close()
+
+        #Create notification for user and admin
         notifManager.insert_notification(employeeId=FetchedData[3],
                                          role=FetchedData[4],
                                          message=f"Your leave request from {FetchedData[5]} - {FetchedData[6]} has been approved.")
-        conn.commit()
-        conn.close()
-
-
-        return jsonify({"message":"Leave request approved.","status":"success"})
+        notifManager.insert_notification(message=f"Leave req approved.",adminOnly=True)
+        return jsonify({"message":"Leave request approved.","status":"success", "name": FetchedData[2]})
     except Exception as e:
         print(e)
         return jsonify({"message":f"{e}","status":"error"})
-    
+    finally:
+        if conn:
+            conn.close() # This runs even if the code crashes
 
 @leaveManager.route('/rejectLeave/<string:leaveID>',methods=['POST'])
 def RejectLeave(leaveID):
     #When leave application is rejected,
     #Remove from incomingLeaves.
+    if ('employeeId' not in session or 'id' not in session) and session.get("permission") != 1:
+        return jsonify({"status":"error"}),401
+    
     try:
         FetchedData = leavehandler.fetchData(leaveID)
 
@@ -254,21 +320,38 @@ def RejectLeave(leaveID):
         delete from IncomingLeaves where LeaveId = ? and employeeId = ?;
         """
         cursor.execute(remQuery,(FetchedData[0],FetchedData[3]))
-        
+        conn.commit()
+        conn.close()
         notifManager.insert_notification(employeeId=FetchedData[3],
                                          role=FetchedData[4],
                                          message=f"Your leave request from {FetchedData[5]} - {FetchedData[6]} has been rejected.")
-        
-        conn.commit()
-        conn.close()
-        return jsonify({"message":"Leave request denied successfully.","status":"success"})
+        notifManager.insert_notification(message=f"Leave req denied.",adminOnly=True)
+        return jsonify({"message":"Leave request denied successfully.","status":"success","name": FetchedData[2]})
     except Exception as e:
         print(e)
         return jsonify({"message":f"{e}","status":"error"})
+    finally:
+        if conn:
+            conn.close()
+
+#This route will be called per refresh to see if a person's leave is finished / not.
 @leaveManager.route('/CloseLeaveDuration/',methods=['GET'])
 def CloseLeaveDuration():
     closedCount = leavehandler.LeavesChecker()
     return jsonify({"closedCount": closedCount}), 200
-    
 
+def updateAttTable(conn,cursor,CompleteDuration,ToEmpId,startDate,endDate):
+    #We need employeeId, attendance table, start and end date.
+    #Update set leaveduration to "start to end" where empId = employeeId
+    #we also update the flag: paidleave to avoid getting re-written
+
+    if attendance_manager.SetupPaidHolidayEntries(ToEmpId,startDate,endDate):
+        attUpdateDurationQuery = """
+    update Attendance set leaveDuration = ?, paidleave = True, status = 'Leave' where empId = ? and date between ? and ?
+    """
+        cursor.execute(attUpdateDurationQuery,(CompleteDuration,ToEmpId,startDate,endDate))
     
+    conn.commit()
+
+def checkifdateExists():
+    pass 

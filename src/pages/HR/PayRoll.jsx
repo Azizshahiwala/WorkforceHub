@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import "../../styles/HR/Payroll.css";
+import "../../styles/HR/PayRoll.css"
 import MessageBox from "../../Misc/MessageBox";
 function PayRoll() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;

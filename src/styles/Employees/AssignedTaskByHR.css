@@ -39,12 +39,6 @@
 }
 
 /* 🌙 DARK MODE */
-body.dark .employee-assigned-card,
-.dark .employee-assigned-card {
-  background-color: #020617; /* deep black/navy */
-  color: #e5e7eb;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.7);
-}
 
 body.dark .employee-assigned-card li {
   color: #cbd5f5;
@@ -75,4 +69,21 @@ body.dark .employee-assigned-card li {
   background-color: #ffffff;
   color: #000000;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+
+@media (max-width: 768px) {
+  .employee-view-page {
+    padding: 16px;
+  }
+
+  .employee-view-title {
+    font-size: 20px;
+  }
+
+  .employee-assigned-card {
+    width: 100%;
+    margin: 20px auto;
+    padding: 16px;
+  }
 }
