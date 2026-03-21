@@ -52,8 +52,8 @@ limiter.init_app(app)
 load_dotenv("../../.env")
 allowed_origins = [
     os.getenv("LOCALHOST_PATH"),
-    "https://workforce-hub-sable.vercel.app",
-    "https://workforce-69hnzcugo-azizshahiwalas-projects.vercel.app"
+    os.getenv("VITE_WEB_PATH"),
+    os.getenv("VITE_PY_PATH")
 ]
 CORS(app, resources={r"/api/*": {"origins": allowed_origins,"methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],"allow_headers": ["Content-Type", "Authorization"],"supports_credentials": True}})
 @app.route("/api/init-db",methods=['GET'])

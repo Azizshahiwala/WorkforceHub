@@ -1,13 +1,16 @@
 import logo from "../../Image/logo.jpeg";
-import Logout from "../Misc/Logout";  
-import NotificationSystem from "/src/Misc/NotificationPanel";
+import Logout from "../Misc/Logout";
+import NotificationSystem from "../Misc/NotificationPanel";
 import "../HR/Navbar.css";
-import { useState, useEffect, useRef } from "react";
 
-function Navbar({ darkMode, setDarkMode, session }) {
+import { useState, useEffect,useRef } from "react";
+
+function Navbar({ darkMode, setDarkMode, session, sidebarOpen, setSidebarOpen }) {
+
   const [RedDot, SetRedDot] = useState(false);
   const audioRef = useRef(null);
 
+  // Notification listener for Admin activities
   const [hasNotification, setHasNotification] = useState(false);
   const [notifWindow, setnotifWindow] = useState(false);
   useEffect(() => {
@@ -19,7 +22,7 @@ function Navbar({ darkMode, setDarkMode, session }) {
     }
 
     const handleStorageChange = (event) => {
-      if (event.key === "activities") {
+      if (event.key === "hasNewNotification" && event.newValue === "true") {
         setHasNotification(true);
         audio.play().catch(() => { });
       }
@@ -61,36 +64,47 @@ function Navbar({ darkMode, setDarkMode, session }) {
     setnotifWindow(!notifWindow);
     clearNotification();
   };
-
   return (
     <div className="navbar">
+      <button className="hamburger-btn" onClick={() => setSidebarOpen(prev => !prev)}>
+        <i className={`fa-solid ${sidebarOpen ? "fa-xmark" : "fa-bars"}`} style={{ color: darkMode ? "#ffffff" : "#444444" }}></i>
+      </button>
+
       <img src={logo} alt="HRMS Logo" className="logo" />
 
       <div className="notification-wrapper" onClick={togglePanel}>
         <button className="bell-btn">
-          <i
-            className="fa-regular fa-bell"
-            style={{ color: darkMode ? "#ffffff" : "#444444" }}
-          ></i>
+          <i className="fa-regular fa-bell" style={{ color: darkMode ? "#ffffff" : "#444444" }}></i>
           {RedDot && <span className="notification-dot"></span>}
         </button>
       </div>
-
-      <button
-        className="theme-toggle"
-        onClick={() => setDarkMode(prev => !prev)}
-      >
+      <button className="theme-toggle" onClick={() => setDarkMode(prev => !prev)}>
         <span className="icon">{darkMode ? "🌙" : "☀️"}</span>
         <span className="label">{darkMode ? "Dark" : "Light"}</span>
       </button>
-
       <Logout SessionName={"MySession"} />
       {notifWindow && (
-          <div className="notification-dropdown">
-            <NotificationSystem session={session} />
-          </div>
-        )}
+        <div className="notification-dropdown">
+          <NotificationSystem session={session} />
+        </div>
+      )}
     </div>
   );
 }
 export default Navbar;
+
+
+/*Logic for notification: WHEN this page loads, check if notification localvalue 
+is turned to true. IF its true, do the following:
+run checkNotification once -> if localstorage is set, put a red dot on bell
+run useeffect once -> if localstorage ALREADY exists, put a red dot
+
+WHEN red dot is clicked (classname = notification-wrapper), run:
+- togglePanel 
+- clearNotification()
+
+A session variable is passed from Layout to make this notifs work for unique person.
+
+THEN, show a div tag from condition: notifWindow && <div>. THIS fetches notifications from databases.
+Using both: localstorage for validation and fetching from db.
+*/

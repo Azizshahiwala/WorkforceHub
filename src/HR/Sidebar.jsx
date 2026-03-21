@@ -2,8 +2,8 @@
 import { NavLink } from "react-router-dom";
 
 function Sidebar({ darkMode, sidebarOpen, setSidebarOpen }) {
-  const hrUser = JSON.parse(localStorage.getItem("MySession"));
-  const displayName = hrUser ? hrUser.name : "HR User";
+  const User = JSON.parse(localStorage.getItem("MySession"));
+  const displayName = User ? User.name : "HR User";
 
   const handleNav = () => {
     setSidebarOpen(false);

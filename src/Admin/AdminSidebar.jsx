@@ -1,30 +1,21 @@
 // components/Sidebar.jsx
 import { NavLink } from "react-router-dom";
 
-function AdminSidebar({ darkMode }) {
+function AdminSidebar({ darkMode, sidebarOpen, setSidebarOpen }) {
+  const User = JSON.parse(localStorage.getItem("MySession"));
+  const displayName = User ? User.name : "Admin User";
+
+  const handleNav = () => {
+    setSidebarOpen(false);
+  };
+
   return (
     
-    <div className={`sidebar ${darkMode ? "dark" : ""}`}>
+    <div className={`sidebar ${darkMode ? "dark" : ""} ${sidebarOpen ? "sidebar-open" : ""}`}>
       <ul>
-        <h2
-        style={
-          {
-            
-          color: darkMode ? "#ffffff" : "#000000"
-        }}
-      >
-        Hello Admin
-      </h2>
-        <li>
-          <NavLink
-                to="/dashboardAdmin"
-                className={({ isActive }) =>
-                    "sidebar-item" + (isActive ? " active" : "")
-                }
-                >
-                Admin Dashboard
-          </NavLink>
-        </li>
+        <h2 style={{ color: darkMode ? "#ffffff" : "#000000" }}>Hello, {displayName}</h2>
+        <li><NavLink to="/dashboardAdmin" className={({ isActive }) => "sidebar-item" + (isActive ? " active" : "")} onClick={handleNav}>Admin Dashboard</NavLink></li>
+        
         <li>
           <NavLink to="/dashboardAdmin/usersAdmin" className="sidebar-item">
             Users

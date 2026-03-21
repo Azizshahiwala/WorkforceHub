@@ -8,6 +8,7 @@ import MessageBox from "../Misc/MessageBox";
 import { Navigate } from "react-router-dom";
 function EmployeeLayout() {
   const [message, setMessage] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   const isAuthorized = MySession?.permission === 2 || MySession?.permission === 3;
 
@@ -32,9 +33,10 @@ function EmployeeLayout() {
   return (
     <>
       <MessageBox message={message} onClose={() => setMessage(null)} />
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} session={MySession} />
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} session={MySession} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
       <div className="layout-body">
-        <Sidebar darkMode={darkMode}/>
+        <Sidebar darkMode={darkMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <main className="layout-content">
           <Outlet />
         </main>
