@@ -45,6 +45,7 @@ function ApplyLeave() {
       });
 
       const data = await response.json();
+      console.log(data);
       if(data.status === "reason not provided"){
         setMessage({ type: "Info", text: "Reason is not given. Cannot approve. Please reject this leave."});
         return;
