@@ -62,6 +62,7 @@ function ApplyLeave() {
     }
     catch(err){
       setMessage({ type: "Error", text: "Submission error:"+ err});
+      console.log("Submission error:"+ err);
     }
     
   };

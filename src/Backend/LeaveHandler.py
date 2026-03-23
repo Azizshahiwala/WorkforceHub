@@ -208,7 +208,7 @@ def FetchAllLeaves():
 @leaveManager.route('/postLeaveRq',methods=['POST'])
 def PostLeave():
 
-    if 'employeeId' not in session or 'id' not in session:
+    if ('employeeId' not in session or 'id' not in session) and session.get("permission") not in [2,3]:
         return jsonify({"status":"error"}),401
     
     empId = session.get("employeeId")
@@ -234,7 +234,7 @@ def PostLeave():
 
         status = leavehandler.createLeaveRq(auth_id=auth_id,name=name,department=department,startdate=startdate,enddate=enddate,reason=reason,dateSubmitted=dateSubmitted,empId=empId)
         notifManager.insert_notification(message=f"A leave request has been issued.",adminOnly=True)
-        return jsonify({"message":"Leave request sent successfully.","status":status})
+        return jsonify({"message":"Leave request sent successfully.","status":"success"})
         
     except Exception as e:
         print(e)
