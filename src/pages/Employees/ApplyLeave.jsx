@@ -38,11 +38,11 @@ function ApplyLeave() {
     
     try{
       const response = await fetch(`${API_BASE_URL}/postLeaveRq`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-})
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(leaveData),
+      });
 
       const data = await response.json();
       if(data.status === "reason not provided"){
