@@ -208,8 +208,8 @@ def FetchAllLeaves():
 @leaveManager.route('/postLeaveRq',methods=['POST'])
 def PostLeave():
 
-    if ('employeeId' not in session or 'id' not in session) and session.get("permission") not in [2,3]:
-        return jsonify({"status":"error"}),401
+    if 'employeeId' not in session or 'id' not in session or session.get("permission") not in [2, 3]:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
     
     empId = session.get("employeeId")
     auth_id = session.get("id")
