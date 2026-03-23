@@ -32,7 +32,7 @@ export default function InterviewStart() {
   const { profession = "", questions = [] } = location.state;
 
   // ---- GREETING + INTRO QUESTION (FRONTEND CONTROLLED) ----
-  const interviewerName = "MSP Concept HR Team";
+  const interviewerName = "Workforce Hub AI System";
   const introQuestion = `Hello, I am ${interviewerName}. Please tell me about yourself and your background.`;
 
   // ---- Last greeting message ----
