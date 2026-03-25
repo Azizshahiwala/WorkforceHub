@@ -15,6 +15,11 @@ function HRLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
+    window._isNavigating = false;  
+  }, []);
+
+  useEffect(() => {
+    
     if (darkMode) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("theme", "dark");
