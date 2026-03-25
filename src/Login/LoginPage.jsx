@@ -62,7 +62,7 @@ export default function AccountLogin() {
         name:       data.name,
         email:      data.email,
         role:       data.role,
-        permission: data.permission,
+        permission: data.Permission,
         status:     data.status,
       };
       localStorage.setItem("MySession", JSON.stringify(userSession));
