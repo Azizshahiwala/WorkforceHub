@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../Admin/AdminNavbar";
 import Sidebar from "../Admin/AdminSidebar";
 import "./AdminLayout.css";
-import { useState,useEffect, Children } from "react";
+import { useState,useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import MessageBox from "../Misc/MessageBox";
 function AdminLayout() {
@@ -17,6 +17,10 @@ function AdminLayout() {
   const [darkMode, setDarkMode] = useState(()=>{
     return localStorage.getItem("theme") === "dark"
   });
+
+  useEffect(() => {
+    window._isNavigating = false; 
+}, []);
 
   useEffect(() => {
     if (darkMode) {

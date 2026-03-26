@@ -42,8 +42,6 @@ export default function InterviewStart() {
   "Have a great day!";
   const allQuestions = [introQuestion, ...questions];
 
-  
-  
   // ---- SPEAK FUNCTION ----
   const speak = (text) => {
     if (!window.speechSynthesis) return;

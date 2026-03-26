@@ -20,7 +20,8 @@ export default function Dashboard() {
   const [employees,setEmployees] = useState([]);
   
   useEffect(() => {
-    fetch(`${API_BASE_URL}/getCompanyUsers`)
+    fetch(`${API_BASE_URL}/getCompanyUsers`,{method: 'GET',
+  credentials: 'include'})
       .then(res => res.json())
       .then(data => setEmployees(data))
       .catch(err => setMessage({ type: "Error", text:"Dashboard error: "+err}));

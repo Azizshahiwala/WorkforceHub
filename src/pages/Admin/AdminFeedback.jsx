@@ -14,7 +14,8 @@ function FeedbackEmployees() {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
+        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`,{method: 'GET',
+  credentials: 'include'});
         const data = await response.json();
         setEmployees(data);
       } catch (error) {

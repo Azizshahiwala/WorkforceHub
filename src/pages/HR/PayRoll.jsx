@@ -82,7 +82,8 @@ function PayRoll() {
   useEffect(() => {
     const loadEmployees = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
+        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`,{method: 'GET',
+  credentials: 'include'});
         const empdata = await response.json();
         if (Array.isArray(empdata)) {
           setEmployee(empdata);

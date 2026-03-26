@@ -63,9 +63,9 @@ function ForgotPasswordPage() {
                 body: JSON.stringify({ currentotp, forid })
             });
             const data = await response.json();
-            if (data.success === true || response.ok) {
-                setStep(3);
+            if (data.success) {
                 setMessage({ type: "Info", text: data.message });
+                setStep(3);
             } else {
                 setMessage({ type: "Error", text: data.message });
             }

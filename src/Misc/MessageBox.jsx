@@ -23,19 +23,15 @@ function MessageBox({ message, onClose }) {
 
   let backgroundColor = "";
   let borderColor = "";
-  
   if (message.type === "Success") {
     backgroundColor = "#e6f9ee";
     borderColor = "#22c55e";
-   
   } else if (message.type === "Error") {
     backgroundColor = "#fdecea";
     borderColor = "#ef4444";
-    
   } else if (message.type === "Info") {
     backgroundColor = "#e8f0fe";
     borderColor = "#3b82f6";
-    
   }
 
   return (
@@ -44,7 +40,6 @@ function MessageBox({ message, onClose }) {
       border: `1px solid ${borderColor}`,
       
     }} className="msgbox">
-      <span>{emoji}</span>
       <span style={{ fontSize: "14px", color: "#333", flex: 1 }}>
         {message.text}
       </span>

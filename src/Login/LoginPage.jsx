@@ -13,6 +13,7 @@ export default function AccountLogin() {
   useEffect(()=>{
     const handleClose = () => {
       
+        if (window._isNavigating) return;
         //Get url which updates session to log out
         //everything is checked using backend flask sessions.
 
@@ -67,6 +68,7 @@ export default function AccountLogin() {
       };
       localStorage.setItem("MySession", JSON.stringify(userSession));
 
+      window._isNavigating = true;
       // staff (EMPLOYEE)
       if (data.Permission === 2 || data.Permission === 3) {  
         navigate("/dashboardEmployee");
@@ -85,7 +87,7 @@ export default function AccountLogin() {
         return;
       }
     } catch (error) {
-      console.error("❌ Login error:", error);
+      console.error("Login error:", error);
       setMessage({ type: "Error", text: "Failed to connect to server." });
     }
   };
