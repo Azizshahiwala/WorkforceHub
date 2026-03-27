@@ -348,7 +348,7 @@ def ForgotpasswordPhase2():
                 # Calculate time difference
                 time_diff = datetime.now() - stored_time
                 seconds_passed = time_diff.total_seconds()
-                if serverotp == typed_otp and seconds_passed <= 120:  
+                if int(serverotp) == int(typed_otp) and seconds_passed <= 120:  
                     cursor.execute("UPDATE login SET OTP = NULL,OTP_TIMESTAMP = NULL WHERE id = ?",(forid,))
                     return jsonify({"success": True, "message":"OTP matched successfully."}), 200
                 elif seconds_passed > 120:
@@ -362,6 +362,7 @@ def ForgotpasswordPhase2():
         if conn:
             conn.commit()
             conn.close()
+            
 @authlogin.route('/finalize-password-updation',methods=['POST'])
 def ForgotpasswordPhase3():
     try:
