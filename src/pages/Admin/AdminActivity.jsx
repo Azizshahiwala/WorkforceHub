@@ -53,7 +53,7 @@ function Activity() {
     <div className="activity-page">
       <MessageBox message={message} onClose={() => setMessage(null)} />
       <div className="activity-header">
-        <h2>HR Activity Dashboard</h2>
+        <h2>Admin Activity Dashboard</h2>
         <button className="activity-btn" onClick={() => setShowModal(true)}>
           + New Activity
         </button>

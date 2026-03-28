@@ -119,7 +119,7 @@ function FeedbackEmployees() {
           <form onSubmit={handleFormSubmit}>
           <div className="modal-overlay">
             <div className="modal-box">
-              <h3>HR Feedback</h3>
+              <h3>Admin Feedback</h3>
               <p>For: <strong>{selectedEmp.name}</strong></p>
               <div>
                 {[1, 2, 3, 4, 5].map(i => (
