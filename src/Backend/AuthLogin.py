@@ -249,8 +249,8 @@ def updatePassByHR(auth_id):
         cursor.execute("UPDATE emp.'user' SET status = 'Logged Out' WHERE auth_id = ?", (auth_id,))
         conn.commit()
 
-        #Now to insert notification, i need empID, role and msg
-        cursor.execute("""select login.role, emp.employeeId from login
+        #Now to insert notification, i need empID, role and msg.
+        cursor.execute("""select login.role, emp.employeeId, login.email, emp.name from login
                        left join emp.'user' as emp on login.id = emp.auth_id
                        where login.id = ? """,(auth_id,))
         
@@ -258,9 +258,22 @@ def updatePassByHR(auth_id):
         
         if data:
             #Create a notification for user.
-            notifManager.insert_notification(role=data[0],employeeId=data[1],message=f"Your password has been updated by HR. New pass: {newPassword}")
+            notifManager.insert_notification(role=data[0],employeeId=data[1],message=f"Your password has been updated by {role}. New pass: {newPassword}")
+            
+            reqEmail = data[2]
+            name = data[3]
+            subject = f"Password updation for {data[1]}"
+            body = f""" Hello, {name}\n Your newly created account's password has been updated by {role}.\n 
+            Your new credentials,\n
+            Password : {getData.get("tempPass")}\n
+            Note:\n
+            - This is the only time you will receive password update email with attached password. No department can now update your account credentials.\n
+            - It is good practice that you re-change your password again for security purpose."""
+            
+            emailService.send_email(emailService.username, reqEmail, subject, body)
 
         conn.close()
+
         #Create a json result
         return jsonify({"status":"success","message":"Password successfully updated. Reload the page."}),200
     except Exception as e:
@@ -329,7 +342,7 @@ def ForgotpasswordPhase2():
         #Get id from server to compare.
         #Get current otp typed from frontend.
         data = rq.get_json()
-        
+
         forid = data.get("forid")
         typed_otp = data.get("currentotp")
 
@@ -337,24 +350,24 @@ def ForgotpasswordPhase2():
         if forid:
             cursor.execute("select OTP,OTP_TIMESTAMP from login where id = ?",(forid,))
             record = cursor.fetchone()
-           
+
             #Now get otp and compare:
-            
+
             if record[0] and record:
                 #Clear the otp
                 serverotp = record[0]
                 stored_time = datetime.strptime(record[1], "%Y-%m-%d %H:%M:%S")
-                
+
                 # Calculate time difference
                 time_diff = datetime.now() - stored_time
                 seconds_passed = time_diff.total_seconds()
-                if int(serverotp) == int(typed_otp) and seconds_passed <= 120:  
+                if int(serverotp) == int(typed_otp) and seconds_passed <= 120:
                     cursor.execute("UPDATE login SET OTP = NULL,OTP_TIMESTAMP = NULL WHERE id = ?",(forid,))
                     return jsonify({"success": True, "message":"OTP matched successfully."}), 200
                 elif seconds_passed > 120:
                     cursor.execute("UPDATE login SET OTP = NULL,OTP_TIMESTAMP = NULL WHERE id = ?",(forid,))
                     return jsonify({"success": False, "message":"OTP time out."}), 200
-    
+
         return jsonify({"success": False, "message":"OTP incorrect."}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -362,7 +375,6 @@ def ForgotpasswordPhase2():
         if conn:
             conn.commit()
             conn.close()
-            
 @authlogin.route('/finalize-password-updation',methods=['POST'])
 def ForgotpasswordPhase3():
     try:

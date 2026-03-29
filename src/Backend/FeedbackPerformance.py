@@ -65,14 +65,11 @@ def FeedbackPerformanceSetup():
 @feedbackandperformance.route("/submitFeedback/<string:employeeId>",methods=['POST'])
 def submitFeedBack(employeeId):
 
-    print("Session contents:", dict(session))
-
+    
     if 'employeeId' not in session or int(session.get('permission', 0)) != 1:
         return jsonify({
                 "message": "Un-authorized access. Process blocked.",
                 "status": "error"}), 401
-    
-    
     try:
         data = rq.get_json()
     
@@ -83,6 +80,11 @@ def submitFeedBack(employeeId):
         createdAt = datetime.now()
         conn,cursor = FP_Handler._conn_globalInfo()
 
+        # print("Session contents:", dict(session))
+        # print("Feedback to: ",employeeId)
+        # print("Name: ",name)
+        # print("rating: ",rating)
+        # print("givenBy: ",givenBy)
         cursor.execute("""
         insert into Feedback(empId, name, rating, comment, givenBy, createdAt) values(?,?,?,?,?,?);
                     """,(employeeId,name,rating,comment,givenBy,createdAt,))
@@ -109,7 +111,7 @@ def submitFeedBack(employeeId):
 @feedbackandperformance.route('/myPeformancesAndFeedbacks', methods=['GET'])
 def myPeformancesandFeedbacks():
     try:
-        if 'employeeId' not in session or (session.get('permission') != 2 or session.get('permission') != 3):
+        if 'employeeId' not in session or session.get('permission') not in [2,3]:
             return jsonify({"message":"Un-authorized access"}),401
 
         employeeID = session.get("employeeId")
@@ -176,14 +178,54 @@ def fetchAllFeedback():
 #This is to delete feedback
 @feedbackandperformance.route('/feedback/<int:feedbackId>', methods=['DELETE'])
 def deleteFeedback(feedbackId):
-    if 'employeeId' not in session or int(session.get('permission', 0)) != 1:
+    
+    if not session or session.get("permission") != 1:
         return jsonify({"message": "Unauthorized access.", "status": "error"}), 401
 
+    conn = None
+    conn2 = None
     try:
         conn, cursor = FP_Handler._conn_globalInfo()
+
+        # Get empId before deleting
+        cursor.execute("SELECT empId FROM Feedback WHERE id = ?", (feedbackId,))
+        row = cursor.fetchone()
+        if not row:
+            conn.close()
+            return jsonify({"message": "Feedback not found.", "status": "error"}), 404
+
+        empID = row[0]  # extract string from tuple
+
+        # Delete feedback
         cursor.execute("DELETE FROM Feedback WHERE id = ?", (feedbackId,))
         conn.commit()
         conn.close()
+        conn = None
+
+        # Get role of employee whose feedback was deleted
+        conn2, cursor2 = FP_Handler._conn_comp()
+        cursor2.execute("""SELECT login.role FROM login
+                        LEFT JOIN emp.'user' AS emp ON login.id = emp.auth_id
+                        WHERE emp.employeeId = ?""", (empID,))
+        roleRow = cursor2.fetchone()
+        fetchedRole = roleRow[0] if roleRow else ""
+        conn2.close()
+        conn2 = None
+
+        # Notify employee and admins
+        notifManager.insert_notification(
+            employeeId=empID, role=fetchedRole,
+            message="Your feedback has been deleted.")
+        notifManager.insert_notification(
+            message=f"A feedback given to {empID} has been deleted.",
+            adminOnly=True)
+
         return jsonify({"message": "Feedback removed.", "status": "success"}), 200
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    finally:
+        if conn:
+            conn.close()
+        if conn2:
+            conn2.close()

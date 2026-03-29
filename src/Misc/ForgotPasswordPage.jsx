@@ -60,7 +60,7 @@ function ForgotPasswordPage() {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ currentotp: parseInt(currentotp), forid })
+                body: JSON.stringify({ currentotp, forid })
             });
             const data = await response.json();
             if (data.success == true) {
