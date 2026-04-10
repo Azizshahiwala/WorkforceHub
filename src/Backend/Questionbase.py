@@ -104,7 +104,6 @@ def start_parsing():
 
     applyingFor = queHandler.fetch_role(candidateId)
     
-    
     ai_raw = queHandler.generate_questions(resume_text[:6000],candidateId,applyingFor)
 
     print("===== AI RAW OUTPUT =====")
