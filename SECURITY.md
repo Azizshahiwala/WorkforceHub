@@ -131,4 +131,4 @@ Once a reported vulnerability is fixed and deployed, we will:
 2. Document the fix in the commit message with a `[SECURITY]` prefix
 3. Close any related private communication
 
-We follow a **90-day disclosure timeline** — if a fix is not deployed within 90 days of the report, the reporter is free to disclose publicly.
+But please note that the creators of this project might / might not respond or fix issues **right away.** At the end this is a college project. Thankyou for reading!
