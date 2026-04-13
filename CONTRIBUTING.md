@@ -16,7 +16,7 @@ Thank you for your interest in contributing to WorkforceHub! This document outli
 - [Code Style](#code-style)
 - [Reporting Bugs](#reporting-bugs)
 - [Feature Requests](#feature-requests)
-
+  
 ---
 
 ## Getting Started
@@ -96,7 +96,7 @@ smtp_password=your-app-password
 3. **Make your changes** following the code style guidelines
 4. **Test locally** — both frontend and backend
 5. **Open a Pull Request** with a clear description
-
+   
 ---
 
 ## Branch Naming
@@ -138,7 +138,7 @@ add email notification for promote and demote actions
 3. PRs require at least one review before merging
 4. Resolve all review comments before requesting a re-review
 5. Squash commits if the history is noisy before merging
-
+   
 ---
 
 ## Code Style
@@ -174,7 +174,7 @@ Open a GitHub Issue with the following information:
 - **Environment** (local / Vercel + PythonAnywhere)
 - **Browser and OS** (if frontend issue)
 - **Relevant error from browser console or PythonAnywhere error log**
-
+- 
 ---
 
 ## Feature Requests
