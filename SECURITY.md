@@ -17,7 +17,7 @@ If you discover a security vulnerability in WorkforceHub, please **do not open a
 
 Instead, please report it responsibly by emailing the maintainer directly:
 
-**Email**: your@email.com  
+**Email**: shahiwalaaziz8@outlook.com  
 **Subject line**: `[SECURITY] WorkforceHub - Brief description`
 
 Please include the following in your report:
