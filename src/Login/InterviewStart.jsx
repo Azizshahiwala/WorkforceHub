@@ -174,6 +174,10 @@ export default function InterviewStart() {
       setMessage({ type: "Error", text: "Candidate ID is missing from the URL." });
       return;
     }
+    const formattedAnswers = allQuestions
+      .map((q, i) => `Q: ${q}\nA: ${answers[i] || "No response"}`)
+      .join("\n\n");
+
       setSubmitting(true);
     try {
       await SubmitAnswers(candidateId, answers);
