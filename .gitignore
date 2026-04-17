@@ -25,3 +25,5 @@ dist-ssr
 
 *.env
 *.bat
+*.zip
+*.log 
