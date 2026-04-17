@@ -11,7 +11,8 @@ function Activity() {
   // Fetch announcements from the database on load
   const loadActivities = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/fetchAnnouncements`);
+      const response = await fetch(`${API_BASE_URL}/fetchAnnouncements`,{method: 'GET',
+  credentials: 'include'});
       const data = await response.json();
       setActivities(data);
     } catch (error) {
@@ -52,7 +53,7 @@ function Activity() {
     <div className="activity-page">
       <MessageBox message={message} onClose={() => setMessage(null)} />
       <div className="activity-header">
-        <h2>HR Activity Dashboard</h2>
+        <h2>Admin Activity Dashboard</h2>
         <button className="activity-btn" onClick={() => setShowModal(true)}>
           + New Activity
         </button>

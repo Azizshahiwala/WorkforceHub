@@ -13,9 +13,8 @@ function AdminEmployeePerformance() {
 
   const fetchFeedback = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/feedback/all`, {
-        credentials: "include",
-      });
+      const response = await fetch(`${API_BASE_URL}/feedback/all`,{method: 'GET',
+  credentials: 'include'});
       const data = await response.json();
       if (response.ok) {
         setFeedback(data);

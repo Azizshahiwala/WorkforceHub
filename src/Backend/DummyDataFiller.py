@@ -9,7 +9,6 @@ login_data = [
     ("admin@workforce.com", encrypter.create_hash("admin123"), "Admin", "Male", "+911111111111"),
     ("ceo@workforce.com", encrypter.create_hash("ceo999"), "CEO", "Female", "+912222222222"),
     ("hr@workforce.com", encrypter.create_hash("hr_secure"), "HR", "Male", "+913333333333"),
-    ("interview@workforce.com", encrypter.create_hash("test456"), "Interviewer", "Female", "+914444444444"),
     ("finance@workforce.com", encrypter.create_hash("money123"), "Finance", "Male", "+915555555555"),
     ("dev1@workforce.com", encrypter.create_hash("dev123"), "Developer", "Male", "+916666666666"),
     ("dev2@workforce.com", encrypter.create_hash("dev123"), "Developer", "Female", "+916666666667"),

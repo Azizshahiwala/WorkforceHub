@@ -10,7 +10,8 @@ function Activity() {
   // Fetch announcements from the database on load
   const loadActivities = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/fetchAnnouncements`);
+      const response = await fetch(`${API_BASE_URL}/fetchAnnouncements`,{method: 'GET',
+  credentials: 'include'});
       const data = await response.json();
       setActivities(data);
     } catch (error) {

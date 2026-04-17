@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import "../../styles/HR/Payroll.css";
+import "../../styles/HR/PayRoll.css"
 import MessageBox from "../../Misc/MessageBox";
 function PayRoll() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -82,7 +82,8 @@ function PayRoll() {
   useEffect(() => {
     const loadEmployees = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
+        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`,{method: 'GET',
+  credentials: 'include'});
         const empdata = await response.json();
         if (Array.isArray(empdata)) {
           setEmployee(empdata);

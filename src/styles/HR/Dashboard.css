@@ -310,12 +310,45 @@ Those would break chart colors and text we fixed here.
 ================================ */
 @media (max-width: 768px) {
   .dashboard {
-    gap: 20px;
-    padding: 10px;
+    gap: 16px;
+    padding: 12px;
   }
-  
+
   .emp-summary {
     max-width: 100%;
     flex: 1 1 100%;
+  }
+
+  .performance-card {
+    max-width: 100% !important;
+  }
+
+  .pie-wrapper {
+    height: 220px;
+  }
+
+  .bar-wrapper {
+    height: 200px;
+  }
+
+  .card-title {
+    font-size: 18px;
+  }
+
+  .todo-input-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .todo-input-row label {
+    min-width: unset;
+  }
+
+  .todo-input-row input {
+    width: 100%;
+  }
+
+  .todo-input-row button {
+    width: 100%;
   }
 }

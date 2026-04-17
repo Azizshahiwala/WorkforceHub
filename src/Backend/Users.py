@@ -3,6 +3,8 @@ import sqlite3 as sq
 from PathConfig import CompanyUserPath,CredentialsPath
 from flask import Blueprint, jsonify,session,request as rq
 from Notification import notifManager
+from Core.EmailService import emailService
+
 users = Blueprint('CentralUserBase', __name__, url_prefix='/api')
 
 LEVELS = {
@@ -114,7 +116,7 @@ def promote(auth_id):
             return jsonify({"message": "Amount must be greater than 0.", "status": "error"}), 400
  
         conn, cursor = user_manager._get_cred_connection()
- 
+
         cursor.execute("""
             SELECT login.role, emp."user".BaseSalary, emp."user".employeeId, emp."user".name
             FROM login
@@ -159,7 +161,26 @@ def promote(auth_id):
             """, (new_salary, new_department, auth_id))
         else:
             cursor.execute("""UPDATE emp."user" SET BaseSalary = ? WHERE auth_id = ?""", (new_salary, auth_id))
- 
+
+        
+        cursor.execute("SELECT email FROM cred_db.login WHERE id = ?", (auth_id,))
+        emailRow = cursor.fetchone()
+        empEmail = emailRow[0] if emailRow else None
+
+        if empEmail:
+            emailService.send_email(
+            from_email=emailService.username,
+            to_email=empEmail,
+            subject="Congratulations on Your Promotion!",
+            body=(
+                f"Dear {name},\n\n"
+                f"You have been promoted!\n\n"
+                f"Previous Role   : {current_role}\n"
+                f"New Role        : {new_role}\n"
+                f"Salary Increment: +{amount}\n"
+                f"New Salary      : {new_salary}\n\n"
+                f"Best regards,\n\nWorkforceHub"))
+            
         conn.commit()
         conn.close()
  
@@ -195,7 +216,8 @@ def demote(auth_id):
             return jsonify({"message": "Amount must be greater than 0.", "status": "error"}), 400
  
         conn, cursor = user_manager._get_cred_connection()
- 
+
+        
         cursor.execute("""
             SELECT login.role, emp."user".BaseSalary, emp."user".employeeId, emp."user".name
             FROM login
@@ -243,6 +265,26 @@ def demote(auth_id):
                 UPDATE emp."user" SET BaseSalary = ? WHERE auth_id = ?
             """, (new_salary, auth_id))
 
+
+        cursor.execute("SELECT email FROM cred_db.login WHERE id = ?", (auth_id,))
+        emailRow = cursor.fetchone()
+        empEmail = emailRow[0] if emailRow else None
+
+        if empEmail:
+            emailService.send_email(
+            from_email=emailService.username,
+            to_email=empEmail,
+            subject="Update Regarding Your Role",
+            body=(
+                f"Dear {name},\n\n"
+                f"Your role has been updated.\n\n"
+                f"Previous Role    : {current_role}\n"
+                f"New Role         : {new_role}\n"
+                f"Salary Adjustment: -{amount}\n"
+                f"New Salary       : {new_salary}\n\n"
+                f"Please contact HR if you have any questions.\n\n"
+                f"Best regards,\n\nWorkforceHub"))
+                
         conn.commit()
         conn.close()
 
@@ -276,7 +318,7 @@ def bonus(auth_id):
             return jsonify({"message": "Bonus amount must be greater than 0.", "status": "error"}), 400
  
         conn, cursor = user_manager._get_cred_connection()
- 
+
         cursor.execute("""
             SELECT emp."user".BaseSalary, emp."user".employeeId, emp."user".name, login.role
             FROM login
@@ -295,7 +337,24 @@ def bonus(auth_id):
         cursor.execute("""
             UPDATE emp."user" SET BaseSalary = ? WHERE auth_id = ?
         """, (new_salary, auth_id))
- 
+
+        cursor.execute("SELECT email FROM cred_db.login WHERE id = ?", (auth_id,))
+        emailRow = cursor.fetchone()
+        empEmail = emailRow[0] if emailRow else None
+
+        if empEmail:
+            emailService.send_email(
+            from_email=emailService.username,
+            to_email=empEmail,
+            subject="Bonus Credited!",
+            body=(
+                f"Dear {name},\n\n"
+                f"A bonus has been added to your salary.\n\n"
+                f"Bonus Amount  : {amount}\n"
+                f"Updated Salary: {new_salary}\n\n"
+                f"Thank you for your outstanding contribution.\n\n"
+                f"Best regards,\n\nWorkforceHub"))
+            
         conn.commit()
         conn.close()
  
@@ -335,26 +394,46 @@ def updateRole(auth_id):
         new_permission = LEVELS[new_role][1]
 
         conn, cursor = user_manager._get_cred_connection()
-
+        
         cursor.execute("""
-            SELECT emp."user".employeeId, emp."user".name
-            FROM login
-            LEFT JOIN emp."user" ON login.id = emp."user".auth_id
-            WHERE login.id = ?
-        """, (auth_id,))
+        SELECT emp."user".employeeId, emp."user".name, login.email, login.role
+        FROM login
+        LEFT JOIN emp."user" ON login.id = emp."user".auth_id
+        WHERE login.id = ?
+    """, (auth_id,))
         row = cursor.fetchone()
+
+        employeeId, name, empEmail, old_role = row
 
         if not row:
             conn.close()
             return jsonify({"message": "Employee not found.", "status": "error"}), 404
-
-        employeeId, name = row
 
         cursor.execute("UPDATE login SET role = ? WHERE id = ?", (new_role, auth_id))
 
         if new_department:
             cursor.execute('UPDATE emp."user" SET department = ? WHERE auth_id = ?', (new_department, auth_id,))
  
+
+        cursor.execute("SELECT email FROM cred_db.login WHERE id = ?", (auth_id,))
+        emailRow = cursor.fetchone()
+        empEmail = emailRow[0] if emailRow else None
+
+        if empEmail:
+            emailService.send_email(
+            from_email=emailService.username,
+            to_email=empEmail,
+            subject="Your Role Has Been Updated",
+            body=(
+            f"Dear {name},\n\n"
+            f"Your role has been officially updated.\n\n"
+            f"Previous Role: {old_role}\n"
+            f"New Role     : {new_role}\n"
+            f"Department   : {new_department or 'Unchanged'}\n\n"
+            f"Please log in to the portal to review your updated profile.\n\n"
+            f"Best regards,\n\nWorkforceHub"))
+
+        
         notifManager.insert_notification(
             employeeId=employeeId,
             role=new_role,

@@ -33,7 +33,8 @@ function CompanyUser() {
     const loadUser = async () => {
       try {
         //Get response into 'response'
-        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
+        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`,{method: 'GET',
+  credentials: 'include'});
         //convert response to json
         const data = await response.json();
         setEmployees(data)

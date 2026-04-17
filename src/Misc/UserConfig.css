@@ -287,3 +287,53 @@
   font-size: 14px;
   color: #6b7280;
 }
+
+@media (max-width: 768px) {
+  .userconfig-page {
+    padding: 16px;
+  }
+
+  .userconfig-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .userconfig-card {
+    max-width: 100%;
+    padding: 18px 16px;
+  }
+
+  .userconfig-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .userconfig-row input[type="text"],
+  .userconfig-row input[type="number"] {
+    width: 100%;
+  }
+
+  .userconfig-actions {
+    flex-direction: column;
+  }
+
+  .userconfig-actions button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .role-modal-box {
+    width: 95%;
+    padding: 20px 16px;
+  }
+
+  .role-modal-actions {
+    flex-direction: column;
+  }
+
+  .role-modal-actions button {
+    width: 100%;
+  }
+}

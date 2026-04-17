@@ -32,7 +32,7 @@ export default function InterviewStart() {
   const { profession = "", questions = [] } = location.state;
 
   // ---- GREETING + INTRO QUESTION (FRONTEND CONTROLLED) ----
-  const interviewerName = "MSP Concept HR Team";
+  const interviewerName = "Workforce Hub AI System";
   const introQuestion = `Hello, I am ${interviewerName}. Please tell me about yourself and your background.`;
 
   // ---- Last greeting message ----
@@ -42,8 +42,6 @@ export default function InterviewStart() {
   "Have a great day!";
   const allQuestions = [introQuestion, ...questions];
 
-  
-  
   // ---- SPEAK FUNCTION ----
   const speak = (text) => {
     if (!window.speechSynthesis) return;
@@ -176,10 +174,6 @@ export default function InterviewStart() {
       setMessage({ type: "Error", text: "Candidate ID is missing from the URL." });
       return;
     }
-    const formattedAnswers = allQuestions
-      .map((q, i) => `Q: ${q}\nA: ${answers[i] || "No response"}`)
-      .join("\n\n");
-
       setSubmitting(true);
     try {
       await SubmitAnswers(candidateId, answers);

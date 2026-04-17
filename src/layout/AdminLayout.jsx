@@ -3,12 +3,13 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../Admin/AdminNavbar";
 import Sidebar from "../Admin/AdminSidebar";
 import "./AdminLayout.css";
-import { useState,useEffect, Children } from "react";
+import { useState,useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import MessageBox from "../Misc/MessageBox";
 function AdminLayout() {
 
   const [message, setMessage] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   const isAuthorized = MySession?.permission === 1
@@ -16,6 +17,10 @@ function AdminLayout() {
   const [darkMode, setDarkMode] = useState(()=>{
     return localStorage.getItem("theme") === "dark"
   });
+
+  useEffect(() => {
+    window._isNavigating = false; 
+}, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -40,9 +45,10 @@ function AdminLayout() {
      * to change state to null.
      */}
       <MessageBox message={message} onClose={() => setMessage(null)} />
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} session={MySession} />
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} session={MySession} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
       <div className="layout-body">
-        <Sidebar darkMode={darkMode}/>
+        <Sidebar darkMode={darkMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <main className="layout-content">
           
           <Outlet />

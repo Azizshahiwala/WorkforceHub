@@ -104,13 +104,11 @@ def start_parsing():
 
     applyingFor = queHandler.fetch_role(candidateId)
     
-    
     ai_raw = queHandler.generate_questions(resume_text[:6000],candidateId,applyingFor)
 
     print("===== AI RAW OUTPUT =====")
     print(ai_raw)
     print("=========================")
-
     # 5. Parse json from AI
     try:
         ai_data = json.loads(ai_raw)

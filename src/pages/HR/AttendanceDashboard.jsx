@@ -17,7 +17,8 @@ function AttendanceDashboard() {
   //fetch all attendance backend
   const fetchAttendance = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/fetchdashboard`);
+      const response = await fetch(`${API_BASE_URL}/fetchdashboard`,{method: 'GET',
+  credentials: 'include'});
       const attdata = await response.json();
       setAttendanceRecords(attdata);
      } catch (error) {
@@ -27,7 +28,8 @@ function AttendanceDashboard() {
   //fetch all employees from backend
     const loadEmployees = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`);
+        const response = await fetch(`${API_BASE_URL}/getCompanyUsers`,{method: 'GET',
+  credentials: 'include'});
         const empdata = await response.json();
 
         if (Array.isArray(empdata) && empdata.length > 0) {
@@ -42,7 +44,8 @@ function AttendanceDashboard() {
     const setupAttendanceEntries = async () => {
       
         try {
-      const response = await fetch(`${API_BASE_URL}/attendance/entrysetup`);
+      const response = await fetch(`${API_BASE_URL}/attendance/entrysetup`,{method: 'GET',
+  credentials: 'include'});
 
       const data = await response.json();
       if(response.ok)
