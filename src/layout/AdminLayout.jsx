@@ -1,5 +1,6 @@
 // layout/AdminLayout.jsx
 import { Outlet } from "react-router-dom";
+import { useHeartbeat } from "../Misc/useHeartBeat";
 import Navbar from "../Admin/AdminNavbar";
 import Sidebar from "../Admin/AdminSidebar";
 import "./AdminLayout.css";
@@ -7,7 +8,9 @@ import { useState,useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import MessageBox from "../Misc/MessageBox";
 function AdminLayout() {
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  useHeartbeat(API_BASE_URL);
+  
   const [message, setMessage] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 

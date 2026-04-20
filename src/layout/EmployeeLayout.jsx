@@ -1,5 +1,6 @@
 // layout/EmployeeLayout.jsx
 import { Outlet } from "react-router-dom";
+import { useHeartbeat } from "../Misc/useHeartBeat";
 import Navbar from "../Employees/EmployeeNavBar";
 import Sidebar from "../Employees/EmployeeSidebar";
 import "./AdminLayout.css";
@@ -7,6 +8,8 @@ import { useState,useEffect} from "react";
 import MessageBox from "../Misc/MessageBox";
 import { Navigate } from "react-router-dom";
 function EmployeeLayout() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  useHeartbeat(API_BASE_URL);
   const [message, setMessage] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const MySession = JSON.parse(localStorage.getItem("MySession"));

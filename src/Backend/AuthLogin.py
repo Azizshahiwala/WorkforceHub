@@ -405,3 +405,31 @@ def ForgotpasswordPhase3():
         if conn:
             conn.commit()
             conn.close()
+@authlogin.route('/heartbeat', methods=['POST'])
+def heartbeat():
+    try:
+        if 'employeeId' not in session:
+            return jsonify({"success": False}), 401
+
+        empId = session.get("employeeId")
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        conn = sq.connect(CompanyUserPath)
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("ALTER TABLE user ADD COLUMN lastSeen TEXT DEFAULT NULL")
+            conn.commit()
+        except:
+            pass
+        
+        try:
+            cursor.execute("UPDATE user SET lastSeen = ? WHERE employeeId = ?", (current_time, empId))
+            conn.commit()
+            conn.close()
+        except:
+            return jsonify({"success": False,"message":"Could not find user data."}), 500
+        
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

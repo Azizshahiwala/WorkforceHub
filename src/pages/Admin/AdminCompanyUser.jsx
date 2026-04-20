@@ -196,7 +196,7 @@ function CompanyUser() {
                 </div>
                 <div className="emp-card-row">
                   <span>Status:</span>
-                  {emp.status?.toLowerCase() === "logged in" ? <strong className="status-active">Active</strong> : 
+                  {emp.isActive ? <strong className="status-active">Active</strong> : 
                   <strong className="status-inactive">In-active</strong>}
                   </div>
                 <div className="emp-card-row">

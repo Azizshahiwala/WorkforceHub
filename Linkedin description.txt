@@ -1,0 +1,114 @@
+🚀 Excited to share our College Semester 5 & 6 project — WorkforceHub!
+
+
+
+Over the past two semesters, our team had the privilege of building a full-stack HR Management System under the guidance and mentorship of MSP Concepts.
+
+
+
+👥 Team:
+
+- Aziz Shahiwala
+
+- Divya Shah
+
+- Vivek Mahesh Kumar Wadhwani
+
+
+
+🏢 Built under the guidance of: MSP Concepts
+
+🎓 College: GLS University - Faculty of Computer applications and IT
+
+College External Guide: Prof. Shital Stavan Patel
+
+---
+
+
+
+💡 About WorkforceHub:
+
+
+
+WorkforceHub is a role-based HR management platform designed to streamline core workforce operations. The system supports three user roles — HR, Admin, and Employee — each with a dedicated portal and module set.
+
+
+
+---
+
+
+
+🔧 Key Features:
+
+
+
+✅ AI-Powered Recruitment Pipeline — Resume parsing using Gemini 2.5 Flash, AI interview question generation using Groq/LLaMA, automated scoring and admit/reject recommendations
+
+
+
+✅ Leave Management — Employee leave applications, HR approval workflow, automated attendance updates
+
+
+
+✅ Payroll System — Attendance-based salary calculation with tax, provident fund, and loss-of-pay breakdown, payslip delivery via email
+
+
+
+✅ Attendance Tracking — Daily login-based attendance, holiday management, leave duration tracking
+
+
+
+✅ Employee Performance & Feedback — Star ratings, comments, AI-scored interview results
+
+
+
+✅ Notifications & Activity Log — Real-time notifications, announcements, and audit trail across all roles
+
+
+
+✅ Forgot Password Flow — OTP-based identity verification via email
+
+
+
+---
+
+
+
+🛠️ Tech Stack:
+
+
+
+Frontend: React (Vite) — deployed on Vercel
+
+Backend: Flask + SQLite — deployed on PythonAnywhere
+
+AI: Google Gemini 2.5 Flash + Groq LLaMA 3.1
+
+Email: SMTP via Gmail
+
+Version Control: GitHub
+
+
+
+---
+
+
+
+📄 We are proud to have received a certificate of completion from MSP Concepts for this project. A Huge Thankyou to them!
+
+
+
+This project challenged us to think beyond academics — tackling real-world problems like cross-origin authentication, AI integration, mobile responsiveness, and production deployment on free-tier infrastructure.
+
+
+
+---
+
+To access the project deployed, Use the link: https://workforce-hub-three.vercel.app
+
+
+If you're registering for a demo, Please do not enter original email's password or mobile number.
+
+---
+
+#WorkforceHub #HRTech #FullStackDevelopment #React #Flask #ArtificialIntelligence #Gemini #Groq #Python #WebDevelopment #CollegeProject #Semester5 #Semester6 #glsfcait #MSPconcepts

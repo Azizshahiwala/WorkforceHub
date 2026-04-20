@@ -172,8 +172,7 @@ function CompanyUser() {
               <div className="emp-card" key={emp.auth_id}>
                 <button
                   className="remove-icon-btn"
-                  onClick={() => deleteAccount(emp.auth_id,emp.role,emp.employeeId)}
-                >
+                  onClick={() => deleteAccount(emp.auth_id,emp.role,emp.employeeId)}>
                   ✖
                 </button>
                 {/**This condition checks if status is just admitted. Then only it puts a change pass btn */}
@@ -197,7 +196,7 @@ function CompanyUser() {
                 </div>
                 <div className="emp-card-row">
                   <span>Status:</span>
-                  {emp.status?.toLowerCase() === "logged in" ? <strong className="status-active">Active</strong> : 
+                  {emp.isActive ? <strong className="status-active">Active</strong> : 
                   <strong className="status-inactive">In-active</strong>}
                   </div>
                 <div className="emp-card-row">

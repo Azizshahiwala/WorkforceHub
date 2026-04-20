@@ -1,5 +1,6 @@
 # src/Database/Users.py
 import sqlite3 as sq 
+from datetime import datetime
 from PathConfig import CompanyUserPath,CredentialsPath
 from flask import Blueprint, jsonify,session,request as rq
 from Notification import notifManager
@@ -59,6 +60,7 @@ class UserDB:
             department TEXT,
             status TEXT DEFAULT 'Logged Out',
             lastLogin TEXT,
+            lastSeen TEXT,
             BaseSalary REAL DEFAULT 0.0
         );
         """
@@ -71,7 +73,7 @@ class UserDB:
         
         query = """
    SELECT emp.name, emp.employeeId, emp.department, emp.status, emp.lastLogin, 
-   login.role, login.gender, login.email, login.phoneNumber, emp.BaseSalary, emp.auth_id
+   login.role, login.gender, login.email, login.phoneNumber, emp.BaseSalary, emp.auth_id, emp.lastSeen
    FROM "user" AS emp 
    LEFT JOIN cred_db.login AS login ON emp.auth_id = login.id
     """
@@ -90,12 +92,27 @@ def createCompanyUsers():
 def get_company_users():
     try:
         data = user_manager.fetch_all_with_credentials()
+        now = datetime.now()
+        result = []
+        is_active=False 
+
+        for r in data:
+            last_seen = r[11] if len(r) > 11 else None
+            if last_seen:
+                try:
+                    diff = (now - datetime.strptime(last_seen, "%Y-%m-%d %H:%M:%S")).total_seconds()
+                    is_active = diff <= 60
+                except:
+                    is_active = False
+            else:
+                is_active = False
+
         result = [
             {
                 "name": r[0], "employeeId": r[1], "department": r[2], 
                 "status": r[3], "lastLogin": r[4], "role": r[5], 
                 "gender": r[6], "email":r[7], "phoneNumber": r[8],"BaseSalary": r[9],
-                "auth_id":r[10]
+                "auth_id":r[10], "isActive":is_active
             } for r in data
         ]
         return jsonify(result), 200

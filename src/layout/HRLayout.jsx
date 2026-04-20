@@ -1,5 +1,6 @@
 // layout/HRLayout.jsx
 import { Outlet, Navigate } from "react-router-dom";
+import { useHeartbeat } from "../Misc/useHeartBeat";
 import Navbar from "../HR/Navbar";
 import Sidebar from "../HR/Sidebar";
 import "./HRLayout.css";
@@ -7,6 +8,8 @@ import { useState, useEffect } from "react";
 import MessageBox from "../Misc/MessageBox";
 
 function HRLayout() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  useHeartbeat(API_BASE_URL);
   const MySession = JSON.parse(localStorage.getItem("MySession"));
   const [message, setMessage] = useState(null);
   const [darkMode, setDarkMode] = useState(() => {
